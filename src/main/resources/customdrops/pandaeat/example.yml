@@ -1,0 +1,7 @@
+active: false
+drop:
+    type: Bamboo
+chance: 0.5
+eatenItem:
+    type: Bamboo
+matchNBT: true

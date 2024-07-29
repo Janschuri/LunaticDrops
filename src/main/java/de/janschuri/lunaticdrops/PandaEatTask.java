@@ -20,7 +20,7 @@ import java.util.*;
 
 public class PandaEatTask implements Runnable {
 
-    private final List<UUID> eatingTasks = new ArrayList<>();
+    private final Map<UUID, ItemStack> eatingTasks = new HashMap<>();
 
 
 
@@ -31,13 +31,17 @@ public class PandaEatTask implements Runnable {
                 if (entity.getType() == EntityType.PANDA) {
                     Panda panda = (Panda) entity;
                     UUID pandaUUID = panda.getUniqueId();
+                    ItemStack item = panda.getEquipment().getItemInMainHand();
                     if (isPandaEating(panda)) {
-                        if (!eatingTasks.contains(pandaUUID)) {
-                            eatingTasks.add(panda.getUniqueId());
+                        if (!eatingTasks.containsKey(pandaUUID)) {
+                            Logger.debugLog("Panda started eating");
+                            eatingTasks.put(panda.getUniqueId(), item);
                         }
                     } else {
-                        if (eatingTasks.contains(pandaUUID)) {
-                            spawnBambooItem(panda.getLocation());
+                        if (eatingTasks.containsKey(pandaUUID)) {
+                            Logger.debugLog("Panda stopped eating");
+                            PandaEatDropItemEvent event = new PandaEatDropItemEvent(panda, eatingTasks.get(pandaUUID));
+                            Bukkit.getPluginManager().callEvent(event);
                             eatingTasks.remove(pandaUUID);
                         }
                     }
@@ -47,18 +51,6 @@ public class PandaEatTask implements Runnable {
     }
 
     private boolean isPandaEating(Panda panda) {
-        return panda.isEating() || panda.getEquipment().getItemInMainHand().getType() != Material.AIR;
-    }
-
-    private static void spawnBambooItem(Location location) {
-        ItemStack bambooItem = new ItemStack(Material.DIAMOND, 1);
-        ItemMeta bambooMeta = bambooItem.getItemMeta();
-        Enchantment protection = Enchantment.PROTECTION_ENVIRONMENTAL;
-        ItemFlag hideEnchants = ItemFlag.HIDE_ENCHANTS;
-        bambooMeta.addItemFlags(hideEnchants);
-//        bambooItem.addEnchantment(protection, 1);
-        bambooItem.setItemMeta(bambooMeta);
-
-        Item bamboo = location.getWorld().dropItemNaturally(location , bambooItem);
+        return panda.getEquipment().getItemInMainHand().getType() != Material.AIR;
     }
 }

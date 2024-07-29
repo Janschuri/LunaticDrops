@@ -2,3 +2,5 @@ name: LunaticDrops
 version: '${project.version}'
 main: de.janschuri.lunaticdrops.LunaticDrops
 api-version: '1.19'
+depend:
+  - LunaticLib
