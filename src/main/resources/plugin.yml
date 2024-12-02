@@ -2,5 +2,12 @@ name: LunaticDrops
 version: '${project.version}'
 main: de.janschuri.lunaticdrops.LunaticDrops
 api-version: '1.19'
+commands:
+    lunaticdrops:
+        description: Main command for LunaticDrops
+        usage: /lunaticdrops
+        permission: lunaticdrops.command
+        aliases:
+        - ld
 depend:
   - LunaticLib

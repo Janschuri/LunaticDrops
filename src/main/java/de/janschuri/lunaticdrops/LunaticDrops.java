@@ -1,11 +1,10 @@
 package de.janschuri.lunaticdrops;
 
-import de.janschuri.lunaticdrops.config.PandaEatDropConfig;
-import de.janschuri.lunaticdrops.drops.CustomDropPandaEat;
-import de.janschuri.lunaticdrops.utils.Logger;
+import de.janschuri.lunaticdrops.commands.LunaticDropCommand;
+import de.janschuri.lunaticdrops.config.LanguageConfig;
+import de.janschuri.lunaticdrops.drops.PandaEat;
+import de.janschuri.lunaticlib.common.LunaticLib;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -21,8 +20,9 @@ public final class LunaticDrops extends JavaPlugin {
     private static LunaticDrops instance;
     public static boolean debug = true;
     private static Path dataDirectory;
+    private static LanguageConfig languageConfig;
 
-    private static List<CustomDropPandaEat> pandaEatDrops = new ArrayList<>();
+    private static List<PandaEat> pandaEatDrops = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -36,9 +36,12 @@ public final class LunaticDrops extends JavaPlugin {
 
         try {
             loadConfig();
+            languageConfig = new LanguageConfig(dataDirectory, "en");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        LunaticLib.getPlatform().registerCommand(instance, new LunaticDropCommand());
     }
 
     @Override
@@ -47,17 +50,17 @@ public final class LunaticDrops extends JavaPlugin {
     }
 
     public void loadConfig() throws IOException {
-        Path pandaEatPath = dataDirectory.resolve("customdrops/pandaeat");
-
-        for (Path file : getFiles(pandaEatPath)) {
-            if (!file.toString().endsWith(".yml")) {
-                continue;
-            }
-            PandaEatDropConfig config = new PandaEatDropConfig(dataDirectory, file.getFileName().toString());
-            config.load();
-            CustomDropPandaEat drop = config.getDrop();
-            pandaEatDrops.add(drop);
-        }
+//        Path pandaEatPath = dataDirectory.resolve("customdrops/pandaeat");
+//
+//        for (Path file : getFiles(pandaEatPath)) {
+//            if (!file.toString().endsWith(".yml")) {
+//                continue;
+//            }
+//            AbstractDropConfig config = new AbstractDropConfig(dataDirectory, file.getFileName().toString());
+//            config.load();
+//            PandaEat drop = config.getDrop();
+//            pandaEatDrops.add(drop);
+//        }
     }
 
     public static List<Path> getFiles(Path directory) throws IOException {
@@ -65,6 +68,10 @@ public final class LunaticDrops extends JavaPlugin {
             return paths.filter(Files::isRegularFile)
                     .collect(Collectors.toList());
         }
+    }
+
+    public static Path getDataDirectory() {
+        return dataDirectory;
     }
 
     public static LunaticDrops getInstance() {
@@ -75,7 +82,11 @@ public final class LunaticDrops extends JavaPlugin {
         return debug;
     }
 
-    public static List<CustomDropPandaEat> getPandaEatDrops() {
+    public static List<PandaEat> getPandaEatDrops() {
         return pandaEatDrops;
+    }
+
+    public static LanguageConfig getLanguageConfig() {
+        return languageConfig;
     }
 }

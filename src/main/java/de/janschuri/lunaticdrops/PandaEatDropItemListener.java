@@ -1,10 +1,8 @@
 package de.janschuri.lunaticdrops;
 
-import de.janschuri.lunaticdrops.drops.CustomDropPandaEat;
+import de.janschuri.lunaticdrops.drops.PandaEat;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,11 +26,11 @@ public class PandaEatDropItemListener implements Listener {
 
         ItemStack consumedItem = event.getConsumedItem();
 
-        List<CustomDropPandaEat> customDrops = LunaticDrops.getPandaEatDrops();
+        List<PandaEat> customDrops = LunaticDrops.getPandaEatDrops();
 
         Logger.debugLog("Drops: " + customDrops.size());
 
-        for (CustomDropPandaEat customDrop : customDrops) {
+        for (PandaEat customDrop : customDrops) {
             Logger.debugLog("Checking drop: " + customDrop.getDrop().getType());
 
             if (!customDrop.isActive()) {

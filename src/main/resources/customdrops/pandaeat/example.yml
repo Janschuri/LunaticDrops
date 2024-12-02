@@ -1,7 +1,17 @@
 active: false
 drop:
-    type: Bamboo
+    material: Bamboo
+    meta:
+        display: "&aBamboo"
+        lore:
+            - "&7This is a bamboo"
+        enchants:
+            - "DURABILITY:1"
+        flags:
+            - "HIDE_ENCHANTS"
+        unbreakable: true
+        customModelData: 1
 chance: 0.5
 eatenItem:
-    type: Bamboo
+    material: Bamboo
 matchNBT: true

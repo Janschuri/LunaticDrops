@@ -25,8 +25,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
+          <source>9</source>
+          <target>9</target>
         </configuration>
       </plugin>
       <plugin>
@@ -72,7 +72,7 @@
       <dependency>
           <groupId>de.janschuri</groupId>
           <artifactId>LunaticLib</artifactId>
-          <version>1.2.0</version>
+          <version>1.2.3</version>
           <scope>provided</scope>
       </dependency>
       <dependency>
