@@ -1,6 +1,7 @@
 package de.janschuri.lunaticdrops.drops;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
+import de.janschuri.lunaticdrops.utils.DropType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -11,9 +12,7 @@ import java.io.FileOutputStream;
 import java.util.Map;
 import java.util.Random;
 
-public abstract class AbstractCustomDrop {
-
-    private static final String filePath = "/drops";
+public abstract class CustomDrop {
 
     protected final String name;
     protected final float chance;
@@ -21,7 +20,7 @@ public abstract class AbstractCustomDrop {
     protected final ItemStack drop;
     protected final boolean active;
 
-    public AbstractCustomDrop(@NotNull String name, @NotNull  ItemStack drop, @NotNull Float chance, @NotNull Boolean active) {
+    public CustomDrop(@NotNull String name, @NotNull  ItemStack drop, @NotNull Float chance, @NotNull Boolean active) {
         this.name = name;
         this.chance = chance;
         this.drop = drop;
@@ -55,7 +54,7 @@ public abstract class AbstractCustomDrop {
 
         String name = (String) data.get("name");
 
-        File file = new File( LunaticDrops.getDataDirectory() + filePath + "/" + getDropType() + "/" + name + ".yml");
+        File file = new File( LunaticDrops.getDataDirectory() + "/" + LunaticDrops.getCustomDropPath() + getDropType().getConfigPath() + "/" + name + ".yml");
 
         Logger.debugLog("Saving to: " + file.getAbsolutePath());
 
@@ -80,5 +79,5 @@ public abstract class AbstractCustomDrop {
 
     public abstract Map<String, Object> toMap();
 
-    protected abstract String getDropType();
+    protected abstract DropType getDropType();
 }

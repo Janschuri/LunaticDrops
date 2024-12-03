@@ -1,6 +1,8 @@
 package de.janschuri.lunaticdrops;
 
+import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.drops.PandaEat;
+import de.janschuri.lunaticdrops.utils.DropType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -26,25 +28,27 @@ public class PandaEatDropItemListener implements Listener {
 
         ItemStack consumedItem = event.getConsumedItem();
 
-        List<PandaEat> customDrops = LunaticDrops.getPandaEatDrops();
+        List<CustomDrop> customDrops = LunaticDrops.getDrops(DropType.PANDA_EAT);
 
         Logger.debugLog("Drops: " + customDrops.size());
 
-        for (PandaEat customDrop : customDrops) {
-            Logger.debugLog("Checking drop: " + customDrop.getDrop().getType());
+        for (CustomDrop customDrop : customDrops) {
+            PandaEat pandaDrop = (PandaEat) customDrop;
 
-            if (!customDrop.isActive()) {
+            Logger.debugLog("Checking drop: " + pandaDrop.getDrop().getType());
+
+            if (!pandaDrop.isActive()) {
                 Logger.debugLog("Drop is not active");
                 continue;
             }
 
-            if (customDrop.matchEatenItem(consumedItem)) {
-                Logger.debugLog("Panda ate " + consumedItem.getType() + " and has a chance of " + customDrop.getChance() + " to get " + customDrop.getDrop().getType());
-                if (customDrop.isLucky()) {
-                    Logger.debugLog("Panda ate " + consumedItem.getType() + " and got lucky with " + customDrop.getDrop().getType());
-                    event.getDrops().add(customDrop.getDrop());
+            if (pandaDrop.matchEatenItem(consumedItem)) {
+                Logger.debugLog("Panda ate " + consumedItem.getType() + " and has a chance of " + pandaDrop.getChance() + " to get " + pandaDrop.getDrop().getType());
+                if (pandaDrop.isLucky()) {
+                    Logger.debugLog("Panda ate " + consumedItem.getType() + " and got lucky with " + pandaDrop.getDrop().getType());
+                    event.getDrops().add(pandaDrop.getDrop());
                 } else {
-                    Logger.debugLog("Panda ate " + consumedItem.getType() + " but was unlucky with " + customDrop.getDrop().getType());
+                    Logger.debugLog("Panda ate " + consumedItem.getType() + " but was unlucky with " + pandaDrop.getDrop().getType());
                 }
             }
         }

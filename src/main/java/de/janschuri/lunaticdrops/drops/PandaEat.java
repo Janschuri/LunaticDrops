@@ -1,5 +1,6 @@
 package de.janschuri.lunaticdrops.drops;
 
+import de.janschuri.lunaticdrops.utils.DropType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +11,7 @@ import java.util.Map;
 import static de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils.itemStackToMap;
 import static de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils.mapToItemStack;
 
-public class PandaEat extends AbstractCustomDrop {
+public class PandaEat extends CustomDrop {
 
     private final ItemStack eatenItem;
     private final boolean matchNBT;
@@ -52,7 +53,7 @@ public class PandaEat extends AbstractCustomDrop {
     }
 
     @Override
-    protected String getDropType() {
-        return "pandaeat";
+    protected DropType getDropType() {
+        return DropType.PANDA_EAT;
     }
 }
