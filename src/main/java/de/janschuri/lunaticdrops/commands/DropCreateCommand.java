@@ -1,8 +1,7 @@
 package de.janschuri.lunaticdrops.commands;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.gui.MainGUI;
-import de.janschuri.lunaticdrops.gui.PandaEatDropGUI;
+import de.janschuri.lunaticdrops.gui.PandaEatEditorGUI;
 import de.janschuri.lunaticlib.LunaticLanguageConfig;
 import de.janschuri.lunaticlib.PlayerSender;
 import de.janschuri.lunaticlib.Sender;
@@ -40,7 +39,7 @@ public class DropCreateCommand extends AbstractLunaticCommand {
 
         Player p = Bukkit.getPlayer(player.getUniqueId());
 
-        GUIManager.openGUI(new PandaEatDropGUI(p, name), p);
+        GUIManager.openGUI(new PandaEatEditorGUI(p, name), p);
         return true;
 
     }

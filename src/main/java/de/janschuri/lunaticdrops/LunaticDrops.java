@@ -13,10 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,7 +24,7 @@ public final class LunaticDrops extends JavaPlugin {
     private static Path dataDirectory;
     private static LanguageConfig languageConfig;
 
-    private static Map<String, List<CustomDrop>> customDrops = new HashMap<>();
+    private static Map<String, Map<String, CustomDrop>> customDrops = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -59,35 +56,35 @@ public final class LunaticDrops extends JavaPlugin {
         for (DropType dropType : DropType.values()) {
             getInstance().saveResource(getCustomDropPath() + dropType.getConfigPath() + "/example.yml", true);
 
-            List<CustomDrop> drops = new ArrayList<>();
             Path dropPath = dataDirectory.resolve(getCustomDropPath() + dropType.getConfigPath());
+            if (!Files.exists(dropPath)) {
+                Files.createDirectories(dropPath);
+            }
+
+            customDrops.put(dropType.getConfigPath(), new HashMap<>());
 
             for (Path path : getFiles(dropPath)) {
                 if (!path.toString().endsWith(".yml")) {
                     continue;
                 }
-                AbstractDropConfig config = dropType.getConfig(path);
-                config.load();
-                CustomDrop drop = config.getDrop();
-                Logger.debugLog("Drop: " + drop);
-                drops.add(drop);
+
+                loadCustomDrop(dropType, path);
             }
 
-            Logger.infoLog("Loaded " + drops.size() + " " + dropType.getConfigPath() + " drops");
-
-            customDrops.put(dropType.getConfigPath(), drops);
+            Logger.debugLog("Loaded " + customDrops.get(dropType.getConfigPath()).size() + " " + dropType.getConfigPath() + " drops");
         }
-//        Path pandaEatPath = dataDirectory.resolve("customdrops/pandaeat");
-//
-//        for (Path file : getFiles(pandaEatPath)) {
-//            if (!file.toString().endsWith(".yml")) {
-//                continue;
-//            }
-//            AbstractDropConfig config = new AbstractDropConfig(dataDirectory, file.getFileName().toString());
-//            config.load();
-//            PandaEat drop = config.getDrop();
-//            pandaEatDrops.add(drop);
-//        }
+    }
+
+    public static void loadCustomDrop(DropType dropType, Path path) {
+        AbstractDropConfig config = dropType.getConfig(path);
+        config.load();
+        CustomDrop drop = config.getDrop();
+        Logger.debugLog("Drop: " + drop);
+        if (drop == null) {
+            Logger.errorLog("Failed to load drop from " + path);
+            return;
+        }
+        customDrops.get(dropType.getConfigPath()).put(drop.getName(), drop);
     }
 
     public static List<Path> getFiles(Path directory) throws IOException {
@@ -110,7 +107,7 @@ public final class LunaticDrops extends JavaPlugin {
     }
 
     public static List<CustomDrop> getDrops(DropType dropType) {
-        return customDrops.getOrDefault(dropType.getConfigPath(), new ArrayList<>());
+        return new ArrayList<>(customDrops.getOrDefault(dropType.getConfigPath(), new HashMap<>(0)).values());
     }
 
     public static LanguageConfig getLanguageConfig() {

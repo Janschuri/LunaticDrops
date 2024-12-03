@@ -2,7 +2,6 @@ package de.janschuri.lunaticdrops.commands;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.gui.MainGUI;
-import de.janschuri.lunaticdrops.gui.PandaEatDropGUI;
 import de.janschuri.lunaticlib.LunaticCommand;
 import de.janschuri.lunaticlib.LunaticLanguageConfig;
 import de.janschuri.lunaticlib.PlayerSender;

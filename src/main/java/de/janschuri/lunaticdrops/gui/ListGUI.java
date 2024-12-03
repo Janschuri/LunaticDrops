@@ -3,6 +3,7 @@ package de.janschuri.lunaticdrops.gui;
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.utils.DropType;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
 import org.bukkit.Bukkit;
@@ -71,7 +72,7 @@ public class ListGUI extends InventoryGUI {
         return new InventoryButton()
                 .creator((player) -> drop.getDrop())
                 .consumer(event -> {
-
+                    GUIManager.openGUI(dropType.getEditorGUI(player, drop), player);
                 });
     }
 }

@@ -56,4 +56,12 @@ public class PandaEat extends CustomDrop {
     protected DropType getDropType() {
         return DropType.PANDA_EAT;
     }
+
+    public boolean isMatchNBT() {
+        return matchNBT;
+    }
+
+    public ItemStack getEatenItem() {
+        return eatenItem;
+    }
 }

@@ -31,7 +31,7 @@ public abstract class CustomDrop {
         return name;
     }
 
-    public double getChance() {
+    public float getChance() {
         return chance;
     }
 
@@ -70,11 +70,12 @@ public abstract class CustomDrop {
             fos.write(output.getBytes());
             fos.close();
 
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
+            LunaticDrops.loadCustomDrop(getDropType(), file.toPath());
+            return true;
     }
 
     public abstract Map<String, Object> toMap();
