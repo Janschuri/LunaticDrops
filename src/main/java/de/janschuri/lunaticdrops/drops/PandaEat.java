@@ -34,7 +34,7 @@ public class PandaEat extends CustomDrop {
 
     @Override
     public Map<String, Object> toMap() {
-        Map<String,Object> map = Map.of(
+        return Map.of(
                 "name", name,
                 "drop", itemStackToMap(drop),
                 "chance", chance,
@@ -42,14 +42,6 @@ public class PandaEat extends CustomDrop {
                 "eatenItem", itemStackToMap(eatenItem),
                 "matchNBT", matchNBT
         );
-
-        Map<String, Object> test = (Map<String, Object>) map.get("drop");
-
-        ItemStack item = mapToItemStack(test);
-
-        Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().addItem(item));
-
-        return map;
     }
 
     @Override

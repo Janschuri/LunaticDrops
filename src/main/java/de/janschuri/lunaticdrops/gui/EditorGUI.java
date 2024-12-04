@@ -97,10 +97,6 @@ public abstract class EditorGUI extends InventoryGUI {
     protected Inventory createInventory() {
         Inventory inventory = Bukkit.createInventory(null, 54, "Panda Eat Drop");
 
-        for (int i = 0; i < 54; i++) {
-            inventory.setItem(i, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
-        }
-
         return inventory;
     }
 

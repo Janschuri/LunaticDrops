@@ -90,6 +90,14 @@ public class MobKillEditorGUI extends EditorGUI {
     }
 
     protected void save() {
+        MobKill mobKill = new MobKill(
+                getName(),
+                getDropItem(),
+                getChance(),
+                isActive(),
+                getMobType()
+        );
 
+        mobKill.save();
     }
 }

@@ -17,11 +17,6 @@ public class PandaEatConfig extends AbstractDropConfig {
     }
 
     @Override
-    public void load() {
-        super.load();
-    }
-
-    @Override
     public PandaEat getDrop() {
         try {
             return new PandaEat(
@@ -36,17 +31,5 @@ public class PandaEatConfig extends AbstractDropConfig {
             e.printStackTrace();
             return null;
         }
-    }
-
-    protected ItemStack getItemStack(String key) {
-        Map<String, Object> map = getMap(key);
-
-        Logger.debugLog("Map: " + map);
-
-        return ItemStackUtils.mapToItemStack(map);
-    }
-
-    public static String getPath() {
-        return path;
     }
 }

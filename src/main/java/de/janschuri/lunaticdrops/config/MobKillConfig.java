@@ -1,11 +1,10 @@
 package de.janschuri.lunaticdrops.config;
 
 import de.janschuri.lunaticdrops.drops.MobKill;
-import de.janschuri.lunaticdrops.drops.PandaEat;
-import org.bukkit.inventory.ItemStack;
+import de.janschuri.lunaticdrops.utils.Logger;
+import org.bukkit.entity.EntityType;
 
 import java.nio.file.Path;
-import java.util.Map;
 
 public class MobKillConfig extends AbstractDropConfig {
 
@@ -18,7 +17,29 @@ public class MobKillConfig extends AbstractDropConfig {
         super.load();
     }
 
+    @Override
     public MobKill getDrop() {
-        return null;
+        try {
+            return new MobKill(
+                    getString("name"),
+                    getItemStack("drop"),
+                    getFloat("chance"),
+                    getBoolean("active"),
+                    getMobType("mob")
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    protected EntityType getMobType(String key) {
+        String mobType = getString(key);
+        try {
+            return EntityType.valueOf(mobType);
+        } catch (IllegalArgumentException e) {
+            Logger.errorLog("Invalid mob type: " + mobType);
+            return null;
+        }
     }
 }
