@@ -18,36 +18,32 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class EditorGUI extends InventoryGUI {
 
-    private final Integer id;
-    private static final AtomicInteger atomicInteger = new AtomicInteger();
-    private static final Map<Integer, Boolean> editModes = new HashMap<>();
-    private static final Map<Integer, Player> players = new HashMap<>();
-    private static final Map<Integer, String> names = new HashMap<>();
-    private static final Map<Integer, Float> chances = new HashMap<>();
-    private static final Map<Integer, Boolean> active = new HashMap<>();
-    private static final Map<Integer, ItemStack> dropItems = new HashMap<>();
+    private final Inventory inventory;
+    private static final Map<Inventory, Boolean> editModes = new HashMap<>();
+    private static final Map<Inventory, String> names = new HashMap<>();
+    private static final Map<Inventory, Float> chances = new HashMap<>();
+    private static final Map<Inventory, Boolean> active = new HashMap<>();
+    private static final Map<Inventory, ItemStack> dropItems = new HashMap<>();
 
     public EditorGUI(Player player, String name) {
-        super(createInventory());
-        this.id = atomicInteger.getAndIncrement();
-        editModes.put(id, true);
-        players.put(id, player);
-        names.put(id, name);
-        chances.putIfAbsent(id, 1.0f);
-        active.putIfAbsent(id, true);
+        super();
+        this.inventory = getInventory();
+        editModes.put(inventory, true);
+        names.put(inventory, name);
+        chances.putIfAbsent(inventory, 1.0f);
+        active.putIfAbsent(inventory, true);
 
         decorate(player);
     }
 
     public EditorGUI(Player player, CustomDrop customDrop) {
-        super(createInventory());
-        this.id = atomicInteger.getAndIncrement();
-        editModes.put(id, false);
-        players.put(id, player);
-        names.put(id, customDrop.getName());
-        chances.put(id, customDrop.getChance());
-        active.put(id, customDrop.isActive());
-        dropItems.put(id, customDrop.getDrop());
+        super();
+        this.inventory = getInventory();
+        editModes.put(inventory, false);
+        names.put(inventory, customDrop.getName());
+        chances.put(inventory, customDrop.getChance());
+        active.put(inventory, customDrop.isActive());
+        dropItems.put(inventory, customDrop.getDrop());
 
 
         decorate(player);
@@ -55,59 +51,50 @@ public abstract class EditorGUI extends InventoryGUI {
 
     public EditorGUI(Player player, String name, Inventory inventory) {
         super(inventory);
-        this.id = atomicInteger.getAndIncrement();
-        editModes.put(id, true);
-        players.put(id, player);
-        names.put(id, name);
-        chances.putIfAbsent(id, 1.0f);
-        active.putIfAbsent(id, true);
+        this.inventory = inventory;
+        editModes.put(inventory, true);
+        names.put(inventory, name);
+        chances.putIfAbsent(inventory, 1.0f);
+        active.putIfAbsent(inventory, true);
 
         decorate(player);
     }
 
     public EditorGUI(Player player, CustomDrop customDrop, Inventory inventory) {
         super(inventory);
-        this.id = atomicInteger.getAndIncrement();
-        editModes.put(id, false);
-        players.put(id, player);
-        names.put(id, customDrop.getName());
-        chances.put(id, customDrop.getChance());
-        active.put(id, customDrop.isActive());
-        dropItems.put(id, customDrop.getDrop());
+        this.inventory = inventory;
+        editModes.put(inventory, false);
+        names.put(inventory, customDrop.getName());
+        chances.put(inventory, customDrop.getChance());
+        active.put(inventory, customDrop.isActive());
+        dropItems.put(inventory, customDrop.getDrop());
 
 
         decorate(player);
     }
 
-    protected Integer getId() {
-        return id;
-    }
-
-    protected Player getPlayer() {
-        return players.get(id);
-    }
-
     protected String getName() {
-        return names.get(id);
+        return names.get(inventory);
     }
 
     protected Float getChance() {
-        return chances.get(id);
+        return chances.get(inventory);
     }
 
     protected boolean isActive() {
-        return active.get(id);
+        return active.get(inventory);
     }
 
     protected boolean isEditMode() {
-        return editModes.get(id);
+        return editModes.get(inventory);
     }
 
     protected ItemStack getDropItem() {
-        return dropItems.get(id);
+        return dropItems.get(inventory);
     }
 
-    private static Inventory createInventory() {
+    @Override
+    protected Inventory createInventory() {
         Inventory inventory = Bukkit.createInventory(null, 54, "Panda Eat Drop");
 
         for (int i = 0; i < 54; i++) {
@@ -140,9 +127,9 @@ public abstract class EditorGUI extends InventoryGUI {
     protected abstract Map<InventoryButton, Integer> getButtons();
 
     protected boolean allowSave() {
-        return names.get(id) != null
-                && dropItems.get(id) != null
-                && chances.get(id) != null;
+        return getName() != null
+                && getDropItem() != null
+                && getChance() != null;
     }
 
     private InventoryButton saveButton() {
@@ -151,8 +138,8 @@ public abstract class EditorGUI extends InventoryGUI {
                 .consumer(event -> {
                     save();
 
-                    names.remove(id);
-                    chances.remove(id);
+                    names.remove(inventory);
+                    chances.remove(inventory);
 
                     event.getWhoClicked().closeInventory();
                 });
@@ -164,14 +151,15 @@ public abstract class EditorGUI extends InventoryGUI {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
-                    editModes.put(id, true);
-                    reloadGui();
+                    Player player = (Player) event.getWhoClicked();
+                    editModes.put(inventory, true);
+                    reloadGui(player);
                 });
     }
 
     private InventoryButton createAddDropItemButton() {
 
-        ItemStack item = dropItems.get(id) == null ? new ItemStack(Material.AIR) : dropItems.get(id);
+        ItemStack item = getDropItem() == null ? new ItemStack(Material.AIR) : getDropItem();
 
         return new InventoryButton()
                 .creator((player) -> item)
@@ -179,6 +167,8 @@ public abstract class EditorGUI extends InventoryGUI {
                     if (!isEditMode()) {
                         return;
                     }
+
+                    Player player = (Player) event.getWhoClicked();
 
                     ItemStack cursorItem = event.getCursor();
                     if (cursorItem == null || cursorItem.getType() == Material.AIR) {
@@ -188,16 +178,16 @@ public abstract class EditorGUI extends InventoryGUI {
                     ItemStack newItem = cursorItem.clone();
                     newItem.setAmount(1);
 
-                    dropItems.put(id, newItem);
+                    dropItems.put(inventory, newItem);
 
-                    reloadGui();
+                    reloadGui(player);
                 });
     }
 
     private InventoryButton chanceButton() {
         ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("Chance: " + chances.get(id));
+        meta.setDisplayName("Chance: " + getChance());
         List<String> lore = List.of("Chance for the drop to happen");
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -214,12 +204,6 @@ public abstract class EditorGUI extends InventoryGUI {
     private InventoryButton unableToSaveButton() {
         return new InventoryButton()
                 .creator((player) -> new ItemStack(Material.RED_STAINED_GLASS_PANE));
-    }
-
-    protected void reloadGui() {
-        Player player = players.get(id);
-        GUIManager.openGUI(this, player);
-        this.decorate(player);
     }
 
     protected abstract void save();

@@ -18,7 +18,7 @@ public class MainGUI extends InventoryGUI {
     private Player player;
 
     public MainGUI(Player player) {
-        super(createInventory());
+        super();
         this.player = player;
 
         decorate(player);
@@ -30,7 +30,7 @@ public class MainGUI extends InventoryGUI {
         decorate(gui.player);
     }
 
-    private static Inventory createInventory() {
+    protected Inventory createInventory() {
         Inventory inventory = Bukkit.createInventory(null, 54, "Panda Eat Drop");
 
         for (int i = 0; i < 54; i++) {

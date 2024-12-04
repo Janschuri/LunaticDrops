@@ -28,7 +28,7 @@ public class ListGUI extends InventoryGUI {
     }
 
     public ListGUI(Player player, DropType dropType) {
-        super(createInventory());
+        super();
         this.player = player;
         this.dropType = dropType;
 
@@ -41,7 +41,7 @@ public class ListGUI extends InventoryGUI {
         decorate(gui.player);
     }
 
-    private static Inventory createInventory() {
+    protected Inventory createInventory() {
         Inventory inventory = Bukkit.createInventory(null, 54, "Panda Eat Drop");
 
         return createInventory(inventory);

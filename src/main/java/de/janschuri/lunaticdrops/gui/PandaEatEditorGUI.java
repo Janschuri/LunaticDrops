@@ -13,40 +13,40 @@ import java.util.Map;
 
 public class PandaEatEditorGUI extends EditorGUI {
 
-    private final Integer id;
-    private static final Map<Integer, ItemStack> eatItems = new HashMap<>();
-    private static final Map<Integer, Boolean> matchNBT = new HashMap<>();
+    private final Inventory inventory;
+    private static final Map<Inventory, ItemStack> eatItems = new HashMap<>();
+    private static final Map<Inventory, Boolean> matchNBT = new HashMap<>();
 
     public PandaEatEditorGUI(Player player, String name) {
         super(player, name);
-        this.id = getId();
-        matchNBT.putIfAbsent(id, false);
+        this.inventory = getInventory();
+        matchNBT.putIfAbsent(inventory, false);
 
         decorate(player);
     }
 
     public PandaEatEditorGUI(Player player, PandaEat pandaEat) {
         super(player, pandaEat);
-        this.id = getId();
-        matchNBT.put(id, pandaEat.isMatchNBT());
-        eatItems.put(id, pandaEat.getEatenItem());
+        this.inventory = getInventory();
+        matchNBT.put(inventory, pandaEat.isMatchNBT());
+        eatItems.put(inventory, pandaEat.getEatenItem());
 
         decorate(player);
     }
 
     public PandaEatEditorGUI(Player player, String name, Inventory inventory) {
         super(player, name, inventory);
-        this.id = getId();
-        matchNBT.putIfAbsent(id, false);
+        this.inventory = inventory;
+        matchNBT.putIfAbsent(inventory, false);
 
         decorate(player);
     }
 
     public PandaEatEditorGUI(Player player, PandaEat pandaEat, Inventory inventory) {
         super(player, pandaEat, inventory);
-        this.id = getId();
-        matchNBT.put(id, pandaEat.isMatchNBT());
-        eatItems.put(id, pandaEat.getEatenItem());
+        this.inventory = inventory;
+        matchNBT.put(inventory, pandaEat.isMatchNBT());
+        eatItems.put(inventory, pandaEat.getEatenItem());
 
         decorate(player);
     }
@@ -58,16 +58,24 @@ public class PandaEatEditorGUI extends EditorGUI {
         );
     }
 
+    public ItemStack getEatenItem() {
+        return eatItems.get(inventory);
+    }
+
+    public Boolean isMatchNBT() {
+        return matchNBT.get(inventory);
+    }
+
     @Override
     protected boolean allowSave() {
         return super.allowSave()
-                && eatItems.get(id) != null
-                && matchNBT.get(id) != null;
+                && getEatenItem() != null
+                && isMatchNBT() != null;
     }
 
     private InventoryButton createAddEatItemButton() {
 
-        ItemStack item = eatItems.get(id) == null ? new ItemStack(Material.AIR) : eatItems.get(id);
+        ItemStack item = getEatenItem() == null ? new ItemStack(Material.AIR) : getEatenItem();
 
         return new InventoryButton()
                 .creator((player) -> item)
@@ -75,6 +83,8 @@ public class PandaEatEditorGUI extends EditorGUI {
                     if (!isEditMode()) {
                         return;
                     }
+
+                    Player player = (Player) event.getWhoClicked();
 
                     ItemStack cursorItem = event.getCursor();
                     if (cursorItem == null || cursorItem.getType() == Material.AIR) {
@@ -84,9 +94,9 @@ public class PandaEatEditorGUI extends EditorGUI {
                     ItemStack newItem = cursorItem.clone();
                     newItem.setAmount(1);
 
-                    eatItems.put(id, newItem);
+                    eatItems.put(inventory, newItem);
 
-                    reloadGui();
+                    reloadGui(player);
                 });
     }
 
@@ -96,8 +106,8 @@ public class PandaEatEditorGUI extends EditorGUI {
                 getDropItem(),
                 getChance(),
                 isActive(),
-                eatItems.get(id),
-                matchNBT.get(id)
+                getEatenItem(),
+                isMatchNBT()
         );
 
         pandaEat.save();
