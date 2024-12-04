@@ -1,4 +1,4 @@
-package de.janschuri.lunaticdrops;
+package de.janschuri.lunaticdrops.events;
 
 import org.bukkit.entity.Panda;
 import org.bukkit.event.Cancellable;

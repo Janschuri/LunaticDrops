@@ -1,5 +1,7 @@
-package de.janschuri.lunaticdrops;
+package de.janschuri.lunaticdrops.listener;
 
+import de.janschuri.lunaticdrops.LunaticDrops;
+import de.janschuri.lunaticdrops.events.PandaEatDropItemEvent;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.drops.PandaEat;
 import de.janschuri.lunaticdrops.utils.DropType;

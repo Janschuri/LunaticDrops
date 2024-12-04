@@ -4,6 +4,8 @@ import de.janschuri.lunaticdrops.commands.LunaticDropCommand;
 import de.janschuri.lunaticdrops.config.AbstractDropConfig;
 import de.janschuri.lunaticdrops.config.LanguageConfig;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
+import de.janschuri.lunaticdrops.events.PandaEatTask;
+import de.janschuri.lunaticdrops.listener.PandaEatDropItemListener;
 import de.janschuri.lunaticdrops.utils.DropType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticlib.common.LunaticLib;
