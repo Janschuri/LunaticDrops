@@ -57,4 +57,17 @@ public class MobKillListener implements Listener {
             dropEvents.put(event, drops);
         }
     }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onMobKillMonitor(EntityDeathEvent event) {
+        if (dropEvents.containsKey(event)) {
+            dropEvents.get(event).forEach(drop -> {
+                if (!event.getDrops().contains(drop.getItemStack())) {
+                    drop.remove();
+                }
+            });
+
+            dropEvents.remove(event);
+        }
+    }
 }
