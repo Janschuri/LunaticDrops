@@ -5,6 +5,7 @@ import de.janschuri.lunaticdrops.config.AbstractDropConfig;
 import de.janschuri.lunaticdrops.config.LanguageConfig;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.events.PandaEatTask;
+import de.janschuri.lunaticdrops.listener.BlockBreakListener;
 import de.janschuri.lunaticdrops.listener.MobKillListener;
 import de.janschuri.lunaticdrops.listener.PandaEatDropItemListener;
 import de.janschuri.lunaticdrops.utils.DropType;
@@ -39,6 +40,7 @@ public final class LunaticDrops extends JavaPlugin {
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new PandaEatTask(), 0L, 20L); // Check every second (20 ticks)
         Bukkit.getPluginManager().registerEvents(new PandaEatDropItemListener(), this);
         Bukkit.getPluginManager().registerEvents(new MobKillListener(), this);
+        Bukkit.getPluginManager().registerEvents(new BlockBreakListener(), this);
 
         try {
             loadConfig();

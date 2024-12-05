@@ -4,9 +4,11 @@ import de.janschuri.lunaticdrops.config.AbstractDropConfig;
 import de.janschuri.lunaticdrops.config.BlockBreakConfig;
 import de.janschuri.lunaticdrops.config.MobKillConfig;
 import de.janschuri.lunaticdrops.config.PandaEatConfig;
+import de.janschuri.lunaticdrops.drops.BlockBreak;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.drops.MobKill;
 import de.janschuri.lunaticdrops.drops.PandaEat;
+import de.janschuri.lunaticdrops.gui.BlockBreakEditorGUI;
 import de.janschuri.lunaticdrops.gui.EditorGUI;
 import de.janschuri.lunaticdrops.gui.MobKillEditorGUI;
 import de.janschuri.lunaticdrops.gui.PandaEatEditorGUI;
@@ -96,12 +98,16 @@ public enum DropType {
             return new BlockBreakConfig(path);
         }
         @Override
-        public EditorGUI getEditorGUI(Player player, CustomDrop drop) {
+        public BlockBreakEditorGUI getEditorGUI(Player player, CustomDrop drop) {
+            if (drop instanceof BlockBreak) {
+                return new BlockBreakEditorGUI(player, (BlockBreak) drop);
+            }
+            Logger.errorLog("Drop is not an instance of BlockBreak");
             return null;
         }
         @Override
-        public EditorGUI getEditorGUI(Player player, String name) {
-            return null;
+        public BlockBreakEditorGUI getEditorGUI(Player player, String name) {
+            return new BlockBreakEditorGUI(player, name);
         }
     };
 

@@ -56,16 +56,8 @@ public class DropCreateCommand extends AbstractLunaticCommand {
 
         Logger.debugLog("Creating drop of type " + dropType + " with name " + name);
 
-        switch (dropType) {
-            case PANDA_EAT:
-                Logger.debugLog("Opening PandaEatEditorGUI");
-                GUIManager.openGUI(new PandaEatEditorGUI(p, name), p);
-                break;
-            case MOB_KILL:
-                Logger.debugLog("Opening MobKillEditorGUI");
-                GUIManager.openGUI(new MobKillEditorGUI(p, name), p);
-                break;
-        }
+        InventoryGUI gui = dropType.getEditorGUI(p, name);
+        GUIManager.openGUI(gui, p);
 
         return true;
     }

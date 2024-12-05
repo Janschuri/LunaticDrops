@@ -19,7 +19,7 @@ import java.util.Map;
 public class MobKillEditorGUI extends EditorGUI {
 
     private final Inventory inventory;
-    private final Map<Inventory, EntityType> mobTypes = new HashMap<>();
+    private static final Map<Inventory, EntityType> mobTypes = new HashMap<>();
 
     public MobKillEditorGUI(Player player, String name) {
         super(player, name);
@@ -68,7 +68,7 @@ public class MobKillEditorGUI extends EditorGUI {
     private InventoryButton selectMobButton() {
 
         ItemStack item =
-//                getMobType() != null ? ItemStackUtils.getSpawnEgg(getMobType()) :
+                getMobType() != null ? ItemStackUtils.getSpawnEgg(getMobType()) :
                 new ItemStack(Material.GHAST_SPAWN_EGG);
 
         return new InventoryButton()
