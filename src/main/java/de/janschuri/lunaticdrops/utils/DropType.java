@@ -38,16 +38,16 @@ public enum DropType {
             return new PandaEatConfig(path);
         }
         @Override
-        public EditorGUI getEditorGUI(Player player, CustomDrop drop) {
+        public EditorGUI getEditorGUI(CustomDrop drop) {
             if (drop instanceof PandaEat) {
-                return new PandaEatEditorGUI(player, (PandaEat) drop);
+                return new PandaEatEditorGUI((PandaEat) drop);
             }
             Logger.errorLog("Drop is not an instance of PandaEat");
             return null;
         }
         @Override
-        public EditorGUI getEditorGUI(Player player, String name) {
-            return new PandaEatEditorGUI(player, name);
+        public EditorGUI getEditorGUI(String name) {
+            return new PandaEatEditorGUI(name);
         }
     },
     MOB_KILL {
@@ -68,16 +68,16 @@ public enum DropType {
             return new MobKillConfig(path);
         }
         @Override
-        public MobKillEditorGUI getEditorGUI(Player player, CustomDrop drop) {
+        public MobKillEditorGUI getEditorGUI(CustomDrop drop) {
             if (drop instanceof MobKill) {
-                return new MobKillEditorGUI(player, (MobKill) drop);
+                return new MobKillEditorGUI((MobKill) drop);
             }
             Logger.errorLog("Drop is not an instance of MobKill");
             return null;
         }
         @Override
-        public MobKillEditorGUI getEditorGUI(Player player, String name) {
-            return new MobKillEditorGUI(player, name);
+        public MobKillEditorGUI getEditorGUI(String name) {
+            return new MobKillEditorGUI(name);
         }
     },
     BLOCK_BREAK {
@@ -98,16 +98,16 @@ public enum DropType {
             return new BlockBreakConfig(path);
         }
         @Override
-        public BlockBreakEditorGUI getEditorGUI(Player player, CustomDrop drop) {
+        public BlockBreakEditorGUI getEditorGUI(CustomDrop drop) {
             if (drop instanceof BlockBreak) {
-                return new BlockBreakEditorGUI(player, (BlockBreak) drop);
+                return new BlockBreakEditorGUI((BlockBreak) drop);
             }
             Logger.errorLog("Drop is not an instance of BlockBreak");
             return null;
         }
         @Override
-        public BlockBreakEditorGUI getEditorGUI(Player player, String name) {
-            return new BlockBreakEditorGUI(player, name);
+        public BlockBreakEditorGUI getEditorGUI(String name) {
+            return new BlockBreakEditorGUI(name);
         }
     };
 
@@ -115,8 +115,8 @@ public enum DropType {
     public abstract ItemStack getDisplayItem();
     public abstract String getConfigPath();
     public abstract AbstractDropConfig getConfig(Path path);
-    public abstract EditorGUI getEditorGUI(Player player, CustomDrop drop);
-    public abstract EditorGUI getEditorGUI(Player player, String name);
+    public abstract EditorGUI getEditorGUI(CustomDrop drop);
+    public abstract EditorGUI getEditorGUI(String name);
 
     public static DropType fromString(String string) {
         for (DropType dropType : DropType.values()) {

@@ -14,6 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,8 +47,9 @@ public class BlockBreakListener implements Listener {
             }
 
             if (blockBreak.isLucky()) {
-                Logger.debugLog("Mob killed and got lucky with " + blockBreak.getDrop().getType());
-                Item item = location.getWorld().dropItem(location, blockBreak.getDrop());
+                Logger.debugLog("Block broken and got lucky with " + blockBreak.getDrop().getType());
+                Location adjustedLocation = location.clone().add(0.5, 0.5, 0.5);
+                Item item = adjustedLocation.getWorld().dropItem(adjustedLocation, blockBreak.getDrop());
                 event.getItems().add(item);
                 drops.add(item);
             }

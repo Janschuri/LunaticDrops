@@ -12,45 +12,26 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class MobKillEditorGUI extends EditorGUI {
 
-    private final Inventory inventory;
-    private static final Map<Inventory, EntityType> mobTypes = new HashMap<>();
+    private static final Map<Integer, EntityType> mobTypes = new HashMap<>();
 
-    public MobKillEditorGUI(Player player, String name) {
-        super(player, name);
-        this.inventory = getInventory();
-
-        decorate(player);
+    public MobKillEditorGUI(String name) {
+        super(name);
     }
 
-    public MobKillEditorGUI(Player player, MobKill mobKill) {
-        super(player, mobKill);
-        this.inventory = getInventory();
-
-        decorate(player);
-    }
-
-    public MobKillEditorGUI(Player player, String name, Inventory inventory) {
-        super(player, name, inventory);
-        this.inventory = inventory;
-
-        decorate(player);
-    }
-
-    public MobKillEditorGUI(Player player, MobKill mobKill, Inventory inventory) {
-        super(player, mobKill, inventory);
-        this.inventory = inventory;
-
-        decorate(player);
+    public MobKillEditorGUI(MobKill mobKill) {
+        super(mobKill);
+        mobTypes.put(getId(), mobKill.getMobType());
     }
 
     private EntityType getMobType() {
-        return mobTypes.get(inventory);
+        return mobTypes.get(getId());
     }
 
     @Override
@@ -67,18 +48,23 @@ public class MobKillEditorGUI extends EditorGUI {
 
     private InventoryButton selectMobButton() {
 
+        ItemStack itemStack = new ItemStack(Material.GHAST_SPAWN_EGG);
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setDisplayName("§dNo mob selected");
+        itemStack.setItemMeta(meta);
+
         ItemStack item =
                 getMobType() != null ? ItemStackUtils.getSpawnEgg(getMobType()) :
-                new ItemStack(Material.GHAST_SPAWN_EGG);
+                itemStack;
 
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
 
-                    SelectMobGUI selectMobGUI = new SelectMobGUI(getInventory())
+                    SelectMobGUI selectMobGUI = new SelectMobGUI(getId())
                             .consumer(entityType -> {
-                                mobTypes.put(getInventory(), entityType);
+                                mobTypes.put(getId(), entityType);
 
                                 Logger.debugLog("Selected mob: " + entityType);
                                 this.reloadGui(player);

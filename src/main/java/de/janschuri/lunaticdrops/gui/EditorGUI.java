@@ -1,16 +1,19 @@
 package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.drops.CustomDrop;
+import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.nio.file.LinkOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,90 +21,51 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class EditorGUI extends InventoryGUI {
 
-    private final Inventory inventory;
-    private static final Map<Inventory, Boolean> editModes = new HashMap<>();
-    private static final Map<Inventory, String> names = new HashMap<>();
-    private static final Map<Inventory, Float> chances = new HashMap<>();
-    private static final Map<Inventory, Boolean> active = new HashMap<>();
-    private static final Map<Inventory, ItemStack> dropItems = new HashMap<>();
+    private static final Map<Integer, Boolean> editModes = new HashMap<>();
+    private static final Map<Integer, String> names = new HashMap<>();
+    private static final Map<Integer, Float> chances = new HashMap<>();
+    private static final Map<Integer, Boolean> active = new HashMap<>();
+    private static final Map<Integer, ItemStack> dropItems = new HashMap<>();
 
-    public EditorGUI(Player player, String name) {
+    public EditorGUI(String name) {
         super();
-        this.inventory = getInventory();
-        editModes.put(inventory, true);
-        names.put(inventory, name);
-        chances.putIfAbsent(inventory, 1.0f);
-        active.putIfAbsent(inventory, true);
-
-        decorate(player);
+        editModes.put(getId(), true);
+        names.put(getId(), name);
+        chances.putIfAbsent(getId(), 0.5f);
+        active.putIfAbsent(getId(), true);
     }
 
-    public EditorGUI(Player player, CustomDrop customDrop) {
+    public EditorGUI(CustomDrop customDrop) {
         super();
-        this.inventory = getInventory();
-        editModes.put(inventory, false);
-        names.put(inventory, customDrop.getName());
-        chances.put(inventory, customDrop.getChance());
-        active.put(inventory, customDrop.isActive());
-        dropItems.put(inventory, customDrop.getDrop());
-
-
-        decorate(player);
-    }
-
-    public EditorGUI(Player player, String name, Inventory inventory) {
-        super(inventory);
-        this.inventory = inventory;
-        editModes.put(inventory, true);
-        names.put(inventory, name);
-        chances.putIfAbsent(inventory, 1.0f);
-        active.putIfAbsent(inventory, true);
-
-        decorate(player);
-    }
-
-    public EditorGUI(Player player, CustomDrop customDrop, Inventory inventory) {
-        super(inventory);
-        this.inventory = inventory;
-        editModes.put(inventory, false);
-        names.put(inventory, customDrop.getName());
-        chances.put(inventory, customDrop.getChance());
-        active.put(inventory, customDrop.isActive());
-        dropItems.put(inventory, customDrop.getDrop());
-
-
-        decorate(player);
+        editModes.put(getId(), false);
+        names.put(getId(), customDrop.getName());
+        chances.put(getId(), customDrop.getChance());
+        active.put(getId(), customDrop.isActive());
+        dropItems.put(getId(), customDrop.getDrop());
     }
 
     protected String getName() {
-        return names.get(inventory);
+        return names.get(getId());
     }
 
     protected Float getChance() {
-        return chances.get(inventory);
+        return chances.get(getId());
     }
 
     protected boolean isActive() {
-        return active.get(inventory);
+        return active.get(getId());
     }
 
     protected boolean isEditMode() {
-        return editModes.get(inventory);
+        return editModes.get(getId());
     }
 
     protected ItemStack getDropItem() {
-        return dropItems.get(inventory);
+        return dropItems.get(getId());
     }
 
     @Override
-    protected Inventory createInventory() {
-        Inventory inventory = Bukkit.createInventory(null, 54, "Panda Eat Drop");
-
-        return inventory;
-    }
-
-    @Override
-    public void decorate(Player player) {
+    public void init(Player player) {
         if (!isEditMode()) {
             addButton(35, editButton());
         }
@@ -111,13 +75,16 @@ public abstract class EditorGUI extends InventoryGUI {
             addButton(35, unableToSaveButton());
         }
 
-        addButton(24, createAddDropItemButton());
+        addButton(22, createAddDropItemButton());
+        addButton(15, increaseChanceButton());
+        addButton(24, chanceButton());
+        addButton(33, decreaseChanceButton());
 
         for (Map.Entry<InventoryButton, Integer> entry : getButtons().entrySet()) {
             addButton(entry.getValue(), entry.getKey());
         }
 
-        super.decorate(player);
+        super.init(player);
     }
 
     protected abstract Map<InventoryButton, Integer> getButtons();
@@ -134,8 +101,8 @@ public abstract class EditorGUI extends InventoryGUI {
                 .consumer(event -> {
                     save();
 
-                    names.remove(inventory);
-                    chances.remove(inventory);
+                    names.remove(getId());
+                    chances.remove(getId());
 
                     event.getWhoClicked().closeInventory();
                 });
@@ -148,7 +115,7 @@ public abstract class EditorGUI extends InventoryGUI {
                 .creator((player) -> item)
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
-                    editModes.put(inventory, true);
+                    editModes.put(getId(), true);
                     reloadGui(player);
                 });
     }
@@ -174,7 +141,7 @@ public abstract class EditorGUI extends InventoryGUI {
                     ItemStack newItem = cursorItem.clone();
                     newItem.setAmount(1);
 
-                    dropItems.put(inventory, newItem);
+                    dropItems.put(getId(), newItem);
 
                     reloadGui(player);
                 });
@@ -183,19 +150,120 @@ public abstract class EditorGUI extends InventoryGUI {
     private InventoryButton chanceButton() {
         ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("Chance: " + getChance());
+        meta.setDisplayName("Chance: " + formatChance(getChance()));
         List<String> lore = List.of("Chance for the drop to happen");
         meta.setLore(lore);
         item.setItemMeta(meta);
 
 
         return new InventoryButton()
+                .creator((player) -> item);
+    }
+
+    private InventoryButton increaseChanceButton() {
+        ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("Chance: " + formatChance(getChance()));
+        List<String> lore = List.of("Chance for the drop to happen");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
-                    save();
-                    event.getWhoClicked().closeInventory();
+                    if (processingClickEvent()) {
+                        return;
+                    }
+
+                    ClickType clickType = event.getClick();
+
+                    if (clickType == ClickType.WINDOW_BORDER_LEFT || clickType == ClickType.WINDOW_BORDER_RIGHT) {
+                        return;
+                    }
+
+                    switch (clickType) {
+                        case SHIFT_RIGHT:
+                            increaseChance((Player) event.getWhoClicked(), 0.0001f);
+                            break;
+                        case RIGHT:
+                            increaseChance((Player) event.getWhoClicked(), 0.001f);
+                            break;
+                        case LEFT:
+                            increaseChance((Player) event.getWhoClicked(), 0.01f);
+                            break;
+                        case SHIFT_LEFT:
+                            increaseChance((Player) event.getWhoClicked(), 0.1f);
+                            break;
+                    }
                 });
     }
+
+    private InventoryButton decreaseChanceButton() {
+        ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("Chance: " + formatChance(getChance()));
+        List<String> lore = List.of("Chance for the drop to happen");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (processingClickEvent()) {
+                        return;
+                    }
+
+                    ClickType clickType = event.getClick();
+
+                    if (clickType == ClickType.WINDOW_BORDER_LEFT || clickType == ClickType.WINDOW_BORDER_RIGHT) {
+                        return;
+                    }
+
+                    switch (clickType) {
+                        case SHIFT_RIGHT:
+                            decreaseChance((Player) event.getWhoClicked(), 0.0001f);
+                            break;
+                        case RIGHT:
+                            decreaseChance((Player) event.getWhoClicked(), 0.001f);
+                            break;
+                        case LEFT:
+                            decreaseChance((Player) event.getWhoClicked(), 0.01f);
+                            break;
+                        case SHIFT_LEFT:
+                            decreaseChance((Player) event.getWhoClicked(), 0.1f);
+                            break;
+                    }
+                });
+    }
+
+    private void decreaseChance(Player player, float amount) {
+        float newChance = getChance() - amount;
+
+        if (newChance < 0) {
+            newChance = 0;
+        }
+
+        chances.put(getId(), newChance);
+
+        reloadGui(player);
+    }
+
+    private static String formatChance(float chance) {
+        return String.format("%.2f", chance * 100) + "%";
+    }
+
+    private void increaseChance(Player player, float amount) {
+        float newChance = getChance() + amount;
+
+        if (newChance > 1) {
+            newChance = 1;
+        }
+
+        chances.put(getId(), newChance);
+
+        reloadGui(player);
+    }
+
 
     private InventoryButton unableToSaveButton() {
         return new InventoryButton()

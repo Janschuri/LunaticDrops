@@ -9,25 +9,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.List;
 
 public class MainGUI extends InventoryGUI {
 
-    private Player player;
-
-    public MainGUI(Player player) {
+    public MainGUI() {
         super();
-        this.player = player;
-
-        decorate(player);
-    }
-
-    public MainGUI(MainGUI gui) {
-        super(gui.getInventory());
-
-        decorate(gui.player);
     }
 
     protected Inventory createInventory() {
@@ -41,14 +27,14 @@ public class MainGUI extends InventoryGUI {
     }
 
     @Override
-    public void decorate(Player player) {
+    public void init(Player player) {
         for (int i = 0; i < DropType.values().length; i++) {
             DropType dropType = DropType.values()[i];
             InventoryButton button = dropButton(dropType);
             addButton(10 + i, button);
         }
 
-        super.decorate(player);
+        super.init(player);
     }
 
     private InventoryButton dropButton(DropType dropType) {
@@ -56,7 +42,8 @@ public class MainGUI extends InventoryGUI {
         return new InventoryButton()
                 .creator((player) -> dropType.getDisplayItem())
                 .consumer(event -> {
-                    GUIManager.openGUI(new ListGUI(player, dropType, getInventory()), player);
+                    Player player = (Player) event.getWhoClicked();
+                    GUIManager.openGUI(new ListDropGUI(dropType).inventory(getInventory()), player);
                 });
     }
 }

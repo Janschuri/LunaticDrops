@@ -56,7 +56,7 @@ public class DropCreateCommand extends AbstractLunaticCommand {
 
         Logger.debugLog("Creating drop of type " + dropType + " with name " + name);
 
-        InventoryGUI gui = dropType.getEditorGUI(p, name);
+        InventoryGUI gui = dropType.getEditorGUI(name);
         GUIManager.openGUI(gui, p);
 
         return true;

@@ -55,7 +55,7 @@ public class LunaticDropCommand extends AbstractLunaticCommand {
 
         Player p = Bukkit.getPlayer(player.getUniqueId());
 
-        GUIManager.openGUI(new MainGUI(p), p);
+        GUIManager.openGUI(new MainGUI(), p);
         return true;
 
     }

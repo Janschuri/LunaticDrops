@@ -17,38 +17,17 @@ public class PandaEatEditorGUI extends EditorGUI {
     private static final Map<Inventory, ItemStack> eatItems = new HashMap<>();
     private static final Map<Inventory, Boolean> matchNBT = new HashMap<>();
 
-    public PandaEatEditorGUI(Player player, String name) {
-        super(player, name);
+    public PandaEatEditorGUI(String name) {
+        super(name);
         this.inventory = getInventory();
         matchNBT.putIfAbsent(inventory, false);
-
-        decorate(player);
     }
 
-    public PandaEatEditorGUI(Player player, PandaEat pandaEat) {
-        super(player, pandaEat);
+    public PandaEatEditorGUI(PandaEat pandaEat) {
+        super(pandaEat);
         this.inventory = getInventory();
         matchNBT.put(inventory, pandaEat.isMatchNBT());
         eatItems.put(inventory, pandaEat.getEatenItem());
-
-        decorate(player);
-    }
-
-    public PandaEatEditorGUI(Player player, String name, Inventory inventory) {
-        super(player, name, inventory);
-        this.inventory = inventory;
-        matchNBT.putIfAbsent(inventory, false);
-
-        decorate(player);
-    }
-
-    public PandaEatEditorGUI(Player player, PandaEat pandaEat, Inventory inventory) {
-        super(player, pandaEat, inventory);
-        this.inventory = inventory;
-        matchNBT.put(inventory, pandaEat.isMatchNBT());
-        eatItems.put(inventory, pandaEat.getEatenItem());
-
-        decorate(player);
     }
 
     @Override

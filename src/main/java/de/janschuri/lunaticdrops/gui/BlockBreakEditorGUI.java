@@ -12,41 +12,19 @@ import java.util.Map;
 
 public class BlockBreakEditorGUI extends EditorGUI {
 
-    private final Inventory inventory;
-    private static final Map<Inventory, Material> blockTypes = new HashMap<>();
+    private static final Map<Integer, Material> blockTypes = new HashMap<>();
 
-    public BlockBreakEditorGUI(Player player, String name) {
-        super(player, name);
-        this.inventory = getInventory();
-
-        decorate(player);
+    public BlockBreakEditorGUI(String name) {
+        super(name);
     }
 
-    public BlockBreakEditorGUI(Player player, BlockBreak blockBreak) {
-        super(player, blockBreak);
-        this.inventory = getInventory();
-        blockTypes.put(inventory, blockBreak.getBlock());
-
-        decorate(player);
-    }
-
-    public BlockBreakEditorGUI(Player player, String name, Inventory inventory) {
-        super(player, name, inventory);
-        this.inventory = inventory;
-
-        decorate(player);
-    }
-
-    public BlockBreakEditorGUI(Player player, BlockBreak blockBreak, Inventory inventory) {
-        super(player, blockBreak, inventory);
-        this.inventory = inventory;
-        blockTypes.put(inventory, blockBreak.getBlock());
-
-        decorate(player);
+    public BlockBreakEditorGUI(BlockBreak blockBreak) {
+        super(blockBreak);
+        blockTypes.put(getId(), blockBreak.getBlock());
     }
 
     private Material getBlockType() {
-        return blockTypes.get(inventory);
+        return blockTypes.get(getId());
     }
 
     @Override
@@ -89,7 +67,7 @@ public class BlockBreakEditorGUI extends EditorGUI {
                     ItemStack newItem = cursorItem.clone();
                     newItem.setAmount(1);
 
-                    blockTypes.put(inventory, newItem.getType());
+                    blockTypes.put(getId(), newItem.getType());
 
                     reloadGui(player);
                 });
