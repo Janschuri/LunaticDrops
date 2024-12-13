@@ -1,6 +1,9 @@
 package de.janschuri.lunaticdrops.config;
 
 import de.janschuri.lunaticdrops.drops.CustomDrop;
+import de.janschuri.lunaticdrops.loot.Loot;
+import de.janschuri.lunaticdrops.loot.LootTable;
+import de.janschuri.lunaticdrops.loot.SingleLoot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticlib.common.config.LunaticConfigImpl;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
@@ -25,5 +28,11 @@ public abstract class AbstractDropConfig extends LunaticConfigImpl  {
     protected ItemStack getItemStack(String key) {
         Map<String, Object> map = getMap(key);
         return ItemStackUtils.mapToItemStack(map);
+    }
+
+
+    private LootTable getLootTable(String key) {
+        Map<String, Object> map = getMap(key);
+        return LootTable.fromMap(map);
     }
 }

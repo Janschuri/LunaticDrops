@@ -1,6 +1,8 @@
 package de.janschuri.lunaticdrops.drops;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
+import de.janschuri.lunaticdrops.loot.Loot;
+import de.janschuri.lunaticdrops.loot.SingleLoot;
 import de.janschuri.lunaticdrops.utils.DropType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.inventory.ItemStack;
@@ -11,12 +13,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Map;
 import java.util.Random;
+import java.util.SimpleTimeZone;
 
 public abstract class CustomDrop {
 
     protected final String name;
     protected final float chance;
-    protected final Random random = new Random();
     protected final ItemStack drop;
     protected final boolean active;
 
@@ -33,12 +35,6 @@ public abstract class CustomDrop {
 
     public float getChance() {
         return chance;
-    }
-
-    public boolean isLucky() {
-        float randomValue = random.nextFloat(0, 1); // Generates a float between 0.0 (inclusive) and 1.0 (exclusive)
-        Logger.debugLog("Random value: " + randomValue + " Chance: " + chance);
-        return randomValue <= chance;
     }
 
     public boolean isActive() {
