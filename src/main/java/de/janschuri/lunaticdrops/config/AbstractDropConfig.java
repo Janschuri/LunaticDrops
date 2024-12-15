@@ -24,6 +24,20 @@ public abstract class AbstractDropConfig extends LunaticConfigImpl  {
 
     protected ItemStack getItemStack(String key) {
         Map<String, Object> map = getMap(key);
+
+        if (!map.containsKey("type")) {
+            Logger.errorLog("ItemStack type not found in config");
+            return null;
+        }
+
+        if (!map.containsKey("==")) {
+            map.put("==", "org.bukkit.inventory.ItemStack");
+        }
+
+        if (!map.containsKey("v")) {
+            map.put("v", 1);
+        }
+
         return ItemStackUtils.mapToItemStack(map);
     }
 }
