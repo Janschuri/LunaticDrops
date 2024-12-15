@@ -1,6 +1,6 @@
 matchNBT: false
 name: test2
 active: true
-eatenItem: {type: BAMBOO, ==: org.bukkit.inventory.ItemStack, v: 4082}
+eatenItem: {type: BAMBOO, ==: org.bukkit.inventory.ItemStack}
 chance: 1.0
-drop: {type: DIAMOND, ==: org.bukkit.inventory.ItemStack, v: 4082}
+drop: {type: DIAMOND, ==: org.bukkit.inventory.ItemStack}

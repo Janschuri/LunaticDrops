@@ -2,4 +2,4 @@ name: eqqe
 chance: 1.0
 active: true
 mob: SHEEP
-drop: {type: ALLAY_SPAWN_EGG, ==: org.bukkit.inventory.ItemStack, v: 4082}
+drop: {type: ALLAY_SPAWN_EGG, ==: org.bukkit.inventory.ItemStack}

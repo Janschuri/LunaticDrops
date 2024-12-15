@@ -2,4 +2,4 @@ active: true
 block: DIRT
 chance: 1.0
 name: tes67
-drop: {type: CREEPER_HEAD, ==: org.bukkit.inventory.ItemStack, v: 4082}
+drop: {type: CREEPER_HEAD, ==: org.bukkit.inventory.ItemStack}
