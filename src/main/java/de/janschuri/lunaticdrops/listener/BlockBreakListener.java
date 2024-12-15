@@ -6,6 +6,7 @@ import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.drops.MobKill;
 import de.janschuri.lunaticdrops.utils.DropType;
 import de.janschuri.lunaticdrops.utils.Logger;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
@@ -27,6 +28,10 @@ public class BlockBreakListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockDropLowest(BlockDropItemEvent event) {
+        if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+            return;
+        }
+
         Location location = event.getBlock().getLocation();
 
         List<CustomDrop> customDrops = LunaticDrops.getDrops(DropType.BLOCK_BREAK);
