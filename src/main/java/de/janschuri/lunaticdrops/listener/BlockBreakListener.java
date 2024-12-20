@@ -3,24 +3,21 @@ package de.janschuri.lunaticdrops.listener;
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.BlockBreak;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
-import de.janschuri.lunaticdrops.drops.MobKill;
-import de.janschuri.lunaticdrops.utils.DropType;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +28,20 @@ public class BlockBreakListener implements Listener {
 
     private static final Map<BlockDropItemEvent, List<Item>> dropEvents = new HashMap<>();
 
+    @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event) {
+        event.blockList().forEach(block ->
+                Logger.infoLog("Block destroyed by explosion: " + block.getType()));
+    }
+
+    @EventHandler
+    public void onBlockPhysics(BlockPhysicsEvent event) {
+        Block block = event.getBlock();
+        if (block.getType() == Material.SAND || block.getType() == Material.GRAVEL) {
+            Logger.infoLog("Block affected by physics: " + block.getType());
+        }
+    }
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockDropLowest(BlockDropItemEvent event) {
         if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
@@ -39,7 +50,7 @@ public class BlockBreakListener implements Listener {
 
         Location location = event.getBlock().getLocation();
 
-        List<CustomDrop> customDrops = LunaticDrops.getDrops(DropType.BLOCK_BREAK);
+        List<CustomDrop> customDrops = LunaticDrops.getDrops(TriggerType.BLOCK_BREAK);
 
         Logger.debugLog("Drops: " + customDrops.size());
 

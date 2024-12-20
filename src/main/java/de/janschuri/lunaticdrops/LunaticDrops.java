@@ -8,7 +8,7 @@ import de.janschuri.lunaticdrops.events.PandaEatTask;
 import de.janschuri.lunaticdrops.listener.BlockBreakListener;
 import de.janschuri.lunaticdrops.listener.MobKillListener;
 import de.janschuri.lunaticdrops.listener.PandaEatDropItemListener;
-import de.janschuri.lunaticdrops.utils.DropType;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticlib.common.LunaticLib;
 import org.bukkit.Bukkit;
@@ -59,7 +59,7 @@ public final class LunaticDrops extends JavaPlugin {
 
     public void loadConfig() throws IOException {
 
-        for (DropType dropType : DropType.values()) {
+        for (TriggerType dropType : TriggerType.values()) {
 
             Path dropPath = dataDirectory.resolve(getCustomDropPath() + dropType.getConfigPath());
             try {
@@ -95,19 +95,19 @@ public final class LunaticDrops extends JavaPlugin {
         }
     }
 
-    public static void updateDrop(DropType dropType, CustomDrop drop) {
+    public static void updateDrop(TriggerType dropType, CustomDrop drop) {
         customDrops.get(dropType.getConfigPath()).put(drop.getName(), drop);
     }
 
-    public static boolean dropExists(DropType dropType, String name) {
+    public static boolean dropExists(TriggerType dropType, String name) {
         return customDrops.get(dropType.getConfigPath()).containsKey(name);
     }
 
-    public void removeDrop(DropType dropType, String name) {
+    public void removeDrop(TriggerType dropType, String name) {
         customDrops.get(dropType.getConfigPath()).remove(name);
     }
 
-    public static CustomDrop getDrop(DropType dropType, String name) {
+    public static CustomDrop getDrop(TriggerType dropType, String name) {
         return customDrops.get(dropType.getConfigPath()).get(name);
     }
 
@@ -130,7 +130,7 @@ public final class LunaticDrops extends JavaPlugin {
         return debug;
     }
 
-    public static List<CustomDrop> getDrops(DropType dropType) {
+    public static List<CustomDrop> getDrops(TriggerType dropType) {
         return new ArrayList<>(customDrops.getOrDefault(dropType.getConfigPath(), new HashMap<>(0)).values());
     }
 

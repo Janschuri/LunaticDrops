@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MobKillEditorGUI extends EditorGUI {
@@ -23,6 +24,18 @@ public class MobKillEditorGUI extends EditorGUI {
 
     public MobKillEditorGUI() {
         super();
+    }
+
+    @Override
+    public InventoryButton listItemButton(ItemStack itemStack) {
+        ItemStack item = new ItemStack(Material.STONE);
+        return new InventoryButton()
+                .creator((player) -> item);
+    }
+
+    @Override
+    public List<ItemStack> getItems() {
+        return List.of();
     }
 
     public MobKillEditorGUI(MobKill mobKill) {

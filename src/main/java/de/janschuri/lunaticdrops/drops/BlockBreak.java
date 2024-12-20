@@ -1,9 +1,7 @@
 package de.janschuri.lunaticdrops.drops;
 
-import de.janschuri.lunaticdrops.utils.DropType;
-import de.janschuri.lunaticdrops.utils.Logger;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -37,8 +35,8 @@ public class BlockBreak extends CustomDrop {
     }
 
     @Override
-    protected DropType getDropType() {
-        return DropType.BLOCK_BREAK;
+    protected TriggerType getTriggerType() {
+        return TriggerType.BLOCK_BREAK;
     }
 
     @Override

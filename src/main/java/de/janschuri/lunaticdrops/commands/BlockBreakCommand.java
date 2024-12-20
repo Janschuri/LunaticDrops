@@ -4,16 +4,12 @@ import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.BlockBreak;
 import de.janschuri.lunaticdrops.gui.BlockBreakEditorGUI;
 import de.janschuri.lunaticdrops.gui.ListDropGUI;
-import de.janschuri.lunaticdrops.gui.MainGUI;
-import de.janschuri.lunaticdrops.utils.DropType;
-import de.janschuri.lunaticdrops.utils.Logger;
-import de.janschuri.lunaticlib.LunaticCommand;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.LunaticLanguageConfig;
 import de.janschuri.lunaticlib.PlayerSender;
 import de.janschuri.lunaticlib.Sender;
 import de.janschuri.lunaticlib.common.command.AbstractLunaticCommand;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -54,7 +50,7 @@ public class BlockBreakCommand extends AbstractLunaticCommand {
 
         if (args.length == 0) {
 
-            GUIManager.openGUI(new ListDropGUI(DropType.BLOCK_BREAK), p);
+            GUIManager.openGUI(new ListDropGUI(TriggerType.BLOCK_BREAK), p);
             return true;
         }
 
@@ -75,7 +71,7 @@ public class BlockBreakCommand extends AbstractLunaticCommand {
                 return true;
             }
 
-            if (LunaticDrops.dropExists(DropType.BLOCK_BREAK, blockName)) {
+            if (LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, blockName)) {
                 sender.sendMessage("Block already exists");
                 return true;
             }
@@ -99,12 +95,12 @@ public class BlockBreakCommand extends AbstractLunaticCommand {
                 return true;
             }
 
-            if (!LunaticDrops.dropExists(DropType.BLOCK_BREAK, blockName)) {
+            if (!LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, blockName)) {
                 sender.sendMessage("Block does not exist");
                 return true;
             }
 
-            BlockBreak blockBreak = (BlockBreak) LunaticDrops.getDrop(DropType.BLOCK_BREAK, blockName);
+            BlockBreak blockBreak = (BlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, blockName);
 
             GUIManager.openGUI(new BlockBreakEditorGUI(blockBreak), p);
             return true;

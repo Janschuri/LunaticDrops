@@ -1,6 +1,6 @@
 package de.janschuri.lunaticdrops.drops;
 
-import de.janschuri.lunaticdrops.utils.DropType;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -35,8 +35,8 @@ public class MobKill extends CustomDrop {
     }
 
     @Override
-    protected DropType getDropType() {
-        return DropType.MOB_KILL;
+    protected TriggerType getTriggerType() {
+        return TriggerType.MOB_KILL;
     }
 
     @Override

@@ -4,7 +4,7 @@ import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.events.PandaEatDropItemEvent;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.drops.PandaEat;
-import de.janschuri.lunaticdrops.utils.DropType;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -30,7 +30,7 @@ public class PandaEatDropItemListener implements Listener {
 
         ItemStack consumedItem = event.getConsumedItem();
 
-        List<CustomDrop> customDrops = LunaticDrops.getDrops(DropType.PANDA_EAT);
+        List<CustomDrop> customDrops = LunaticDrops.getDrops(TriggerType.PANDA_EAT);
 
         Logger.debugLog("Drops: " + customDrops.size());
 

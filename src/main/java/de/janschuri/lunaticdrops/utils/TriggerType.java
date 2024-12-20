@@ -13,13 +13,11 @@ import de.janschuri.lunaticdrops.gui.EditorGUI;
 import de.janschuri.lunaticdrops.gui.MobKillEditorGUI;
 import de.janschuri.lunaticdrops.gui.PandaEatEditorGUI;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 
-public enum DropType {
+public enum TriggerType {
     PANDA_EAT {
         @Override
         public String getDisplayName() {
@@ -118,8 +116,8 @@ public enum DropType {
     public abstract EditorGUI getEditorGUI(CustomDrop drop);
     public abstract EditorGUI getEditorGUI();
 
-    public static DropType fromString(String string) {
-        for (DropType dropType : DropType.values()) {
+    public static TriggerType fromString(String string) {
+        for (TriggerType dropType : TriggerType.values()) {
             if (dropType.name().equalsIgnoreCase(string)) {
                 return dropType;
             }

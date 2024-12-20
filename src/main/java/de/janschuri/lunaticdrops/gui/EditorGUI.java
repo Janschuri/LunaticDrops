@@ -1,30 +1,26 @@
 package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.drops.CustomDrop;
-import de.janschuri.lunaticdrops.utils.Logger;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
-import org.bukkit.Bukkit;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.ListGUI;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.PaginatedList;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.nio.file.LinkOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class EditorGUI extends InventoryGUI {
+public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedList<ItemStack> {
 
     private static final Map<Integer, Boolean> editModes = new HashMap<>();
     private static final Map<Integer, Float> chances = new HashMap<>();
     private static final Map<Integer, Boolean> active = new HashMap<>();
     private static final Map<Integer, ItemStack> dropItems = new HashMap<>();
+    private static final Map<Integer, Integer> pages = new HashMap<>();
 
     public EditorGUI() {
         super();
@@ -39,6 +35,26 @@ public abstract class EditorGUI extends InventoryGUI {
         chances.put(getId(), customDrop.getChance());
         active.put(getId(), customDrop.isActive());
         dropItems.put(getId(), customDrop.getDrop());
+    }
+
+    @Override
+    public int getPage() {
+        return pages.getOrDefault(getId(), 0);
+    }
+
+    @Override
+    public void setPage(int page) {
+        pages.put(getId(), page);
+    }
+
+    @Override
+    public int getPageSize() {
+        return 18;
+    }
+
+    @Override
+    public int getStartIndex() {
+        return 27;
     }
 
     protected Float getChance() {
@@ -60,19 +76,20 @@ public abstract class EditorGUI extends InventoryGUI {
     @Override
     public void init(Player player) {
         if (!isEditMode()) {
-            addButton(35, editButton());
+            addButton(17, editButton());
         }
         else if (allowSave()) {
-            addButton(35, saveButton());
-        } else {
-            addButton(35, unableToSaveButton());
+            addButton(17, saveButton());
+        }
+        else {
+            addButton(17, unableToSaveButton());
         }
 
-        addButton(22, createAddDropItemButton());
+        addButton(31, createAddDropItemButton());
         addButton(15, increaseChanceButton());
-        addButton(24, chanceButton());
-        addButton(33, decreaseChanceButton());
-        addButton(8, toggleActiveButton());
+        addButton(14, chanceButton());
+        addButton(13, decreaseChanceButton());
+        addButton(9, toggleActiveButton());
 
         for (Map.Entry<InventoryButton, Integer> entry : getButtons().entrySet()) {
             addButton(entry.getValue(), entry.getKey());

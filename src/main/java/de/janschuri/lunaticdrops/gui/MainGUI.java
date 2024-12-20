@@ -1,6 +1,6 @@
 package de.janschuri.lunaticdrops.gui;
 
-import de.janschuri.lunaticdrops.utils.DropType;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
@@ -28,8 +28,8 @@ public class MainGUI extends InventoryGUI {
 
     @Override
     public void init(Player player) {
-        for (int i = 0; i < DropType.values().length; i++) {
-            DropType dropType = DropType.values()[i];
+        for (int i = 0; i < TriggerType.values().length; i++) {
+            TriggerType dropType = TriggerType.values()[i];
             InventoryButton button = dropButton(dropType);
             addButton(10 + i, button);
         }
@@ -37,7 +37,7 @@ public class MainGUI extends InventoryGUI {
         super.init(player);
     }
 
-    private InventoryButton dropButton(DropType dropType) {
+    private InventoryButton dropButton(TriggerType dropType) {
 
         return new InventoryButton()
                 .creator((player) -> dropType.getDisplayItem())

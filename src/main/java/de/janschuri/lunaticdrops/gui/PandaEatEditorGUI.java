@@ -9,6 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PandaEatEditorGUI extends EditorGUI {
@@ -21,6 +22,18 @@ public class PandaEatEditorGUI extends EditorGUI {
         super();
         this.inventory = getInventory();
         matchNBT.putIfAbsent(inventory, false);
+    }
+
+    @Override
+    public InventoryButton listItemButton(ItemStack itemStack) {
+        ItemStack item = new ItemStack(Material.STONE);
+        return new InventoryButton()
+                .creator((player) -> item);
+    }
+
+    @Override
+    public List<ItemStack> getItems() {
+        return List.of();
     }
 
     public PandaEatEditorGUI(PandaEat pandaEat) {

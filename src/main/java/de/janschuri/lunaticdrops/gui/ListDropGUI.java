@@ -2,13 +2,12 @@ package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
-import de.janschuri.lunaticdrops.utils.DropType;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.ListGUI;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -17,9 +16,9 @@ import java.util.List;
 
 public class ListDropGUI extends ListGUI<CustomDrop> {
 
-    private DropType dropType;
+    private TriggerType dropType;
 
-    public ListDropGUI(DropType dropType) {
+    public ListDropGUI(TriggerType dropType) {
         super();
         this.dropType = dropType;
     }

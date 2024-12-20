@@ -1,7 +1,7 @@
 package de.janschuri.lunaticdrops.drops;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.utils.DropType;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +50,7 @@ public abstract class CustomDrop {
 
         String name = (String) data.get("name");
 
-        File file = new File( LunaticDrops.getDataDirectory() + "/" + LunaticDrops.getCustomDropPath() + getDropType().getConfigPath() + "/" + name + ".yml");
+        File file = new File( LunaticDrops.getDataDirectory() + "/" + LunaticDrops.getCustomDropPath() + getTriggerType().getConfigPath() + "/" + name + ".yml");
 
         Logger.debugLog("Saving to: " + file.getAbsolutePath());
 
@@ -70,13 +70,13 @@ public abstract class CustomDrop {
             e.printStackTrace();
             return false;
         }
-            LunaticDrops.updateDrop(getDropType(), this);
+            LunaticDrops.updateDrop(getTriggerType(), this);
             return true;
     }
 
     public abstract Map<String, Object> toMap();
 
-    protected abstract DropType getDropType();
+    protected abstract TriggerType getTriggerType();
 
     public abstract ItemStack getDisplayItem();
 }

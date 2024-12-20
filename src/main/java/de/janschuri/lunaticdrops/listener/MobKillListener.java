@@ -3,18 +3,14 @@ package de.janschuri.lunaticdrops.listener;
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.drops.MobKill;
-import de.janschuri.lunaticdrops.drops.PandaEat;
-import de.janschuri.lunaticdrops.events.PandaEatDropItemEvent;
-import de.janschuri.lunaticdrops.utils.DropType;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +25,7 @@ public class MobKillListener implements Listener {
     public void onMobKillLowest(EntityDeathEvent event) {
         Location location = event.getEntity().getLocation();
 
-        List<CustomDrop> customDrops = LunaticDrops.getDrops(DropType.MOB_KILL);
+        List<CustomDrop> customDrops = LunaticDrops.getDrops(TriggerType.MOB_KILL);
 
         Logger.debugLog("Drops: " + customDrops.size());
 
