@@ -17,8 +17,8 @@ public class PandaEatEditorGUI extends EditorGUI {
     private static final Map<Inventory, ItemStack> eatItems = new HashMap<>();
     private static final Map<Inventory, Boolean> matchNBT = new HashMap<>();
 
-    public PandaEatEditorGUI(String name) {
-        super(name);
+    public PandaEatEditorGUI() {
+        super();
         this.inventory = getInventory();
         matchNBT.putIfAbsent(inventory, false);
     }
@@ -35,6 +35,10 @@ public class PandaEatEditorGUI extends EditorGUI {
         return Map.of(
                 createAddEatItemButton(), 20
         );
+    }
+
+    public String getName() {
+        return "bamboo";
     }
 
     public ItemStack getEatenItem() {

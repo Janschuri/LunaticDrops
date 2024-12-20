@@ -60,37 +60,55 @@ public final class LunaticDrops extends JavaPlugin {
     public void loadConfig() throws IOException {
 
         for (DropType dropType : DropType.values()) {
-            getInstance().saveResource(getCustomDropPath() + dropType.getConfigPath() + "/example.yml", true);
 
             Path dropPath = dataDirectory.resolve(getCustomDropPath() + dropType.getConfigPath());
-            if (!Files.exists(dropPath)) {
-                Files.createDirectories(dropPath);
+            try {
+                if (!Files.exists(dropPath)) {
+                    Files.createDirectories(dropPath);
+                }
+            } catch (IOException e) {
+                Logger.errorLog("Error creating directory " + dropPath);
+                e.printStackTrace();
+            }
+
+            List<Path> files = new ArrayList<>();
+            try {
+                files = getFiles(dropPath);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
             customDrops.put(dropType.getConfigPath(), new HashMap<>());
 
-            for (Path path : getFiles(dropPath)) {
+            for (Path path : files) {
                 if (!path.toString().endsWith(".yml")) {
                     continue;
                 }
 
-                loadCustomDrop(dropType, path);
+                AbstractDropConfig config = dropType.getConfig(path);
+                config.load();
+
+                customDrops.get(dropType.getConfigPath()).put(config.getDrop().getName(), config.getDrop());
             }
 
             Logger.debugLog("Loaded " + customDrops.get(dropType.getConfigPath()).size() + " " + dropType.getConfigPath() + " drops");
         }
     }
 
-    public static void loadCustomDrop(DropType dropType, Path path) {
-        AbstractDropConfig config = dropType.getConfig(path);
-        config.load();
-        CustomDrop drop = config.getDrop();
-        Logger.debugLog("Drop: " + drop);
-        if (drop == null) {
-            Logger.errorLog("Failed to load drop from " + path);
-            return;
-        }
+    public static void updateDrop(DropType dropType, CustomDrop drop) {
         customDrops.get(dropType.getConfigPath()).put(drop.getName(), drop);
+    }
+
+    public static boolean dropExists(DropType dropType, String name) {
+        return customDrops.get(dropType.getConfigPath()).containsKey(name);
+    }
+
+    public void removeDrop(DropType dropType, String name) {
+        customDrops.get(dropType.getConfigPath()).remove(name);
+    }
+
+    public static CustomDrop getDrop(DropType dropType, String name) {
+        return customDrops.get(dropType.getConfigPath()).get(name);
     }
 
     public static List<Path> getFiles(Path directory) throws IOException {

@@ -1,21 +1,33 @@
 package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.drops.BlockBreak;
+import de.janschuri.lunaticdrops.utils.Logger;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectBlockGUI;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectMobGUI;
+import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BinaryOperator;
 
 public class BlockBreakEditorGUI extends EditorGUI {
 
     private static final Map<Integer, Material> blockTypes = new HashMap<>();
 
-    public BlockBreakEditorGUI(String name) {
-        super(name);
+    public BlockBreakEditorGUI() {
+        super();
+    }
+
+    public BlockBreakEditorGUI(Material block) {
+        super();
+        blockTypes.put(getId(), block);
     }
 
     public BlockBreakEditorGUI(BlockBreak blockBreak) {
@@ -36,46 +48,40 @@ public class BlockBreakEditorGUI extends EditorGUI {
 
     @Override
     protected boolean allowSave() {
-        return super.allowSave();
+        return super.allowSave() && getBlockType() != null;
     }
 
     private InventoryButton selectBlockButton() {
 
+        ItemStack itemStack = new ItemStack(Material.STONE);
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setDisplayName("§dNo block selected");
+        itemStack.setItemMeta(meta);
+
         ItemStack item =
                 getBlockType() != null ? new ItemStack(getBlockType()) :
-                new ItemStack(Material.STONE);
+                        itemStack;
 
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
-                    if (!isEditMode()) {
-                        return;
-                    }
-
                     Player player = (Player) event.getWhoClicked();
 
-                    ItemStack cursorItem = event.getCursor();
-                    if (cursorItem == null || cursorItem.getType() == Material.AIR) {
-                        return;
-                    }
+                    SelectBlockGUI selectBlockGUI = new SelectBlockGUI(getId())
+                            .consumer(block -> {
+                                blockTypes.put(getId(), block);
 
-                    if (!cursorItem.getType().isBlock()) {
-                        player.sendMessage("§cYou can only select blocks!");
-                        return;
-                    }
+                                Logger.debugLog("Selected block: " + block);
+                                this.reloadGui(player);
+                            })
+                            ;
 
-                    ItemStack newItem = cursorItem.clone();
-                    newItem.setAmount(1);
-
-                    blockTypes.put(getId(), newItem.getType());
-
-                    reloadGui(player);
+                    GUIManager.openGUI(selectBlockGUI, player);
                 });
     }
 
     protected void save() {
         BlockBreak blockBreak = new BlockBreak(
-                getName(),
                 getDropItem(),
                 getChance(),
                 isActive(),

@@ -14,22 +14,18 @@ import java.util.Random;
 
 public abstract class CustomDrop {
 
-    protected final String name;
     protected final float chance;
     protected final Random random = new Random();
     protected final ItemStack drop;
     protected final boolean active;
 
-    public CustomDrop(@NotNull String name, @NotNull  ItemStack drop, @NotNull Float chance, @NotNull Boolean active) {
-        this.name = name;
+    public CustomDrop(@NotNull  ItemStack drop, @NotNull Float chance, @NotNull Boolean active) {
         this.chance = chance;
         this.drop = drop;
         this.active = active;
     }
 
-    public String getName() {
-        return name;
-    }
+    public abstract String getName();
 
     public float getChance() {
         return chance;
@@ -74,11 +70,13 @@ public abstract class CustomDrop {
             e.printStackTrace();
             return false;
         }
-            LunaticDrops.loadCustomDrop(getDropType(), file.toPath());
+            LunaticDrops.updateDrop(getDropType(), this);
             return true;
     }
 
     public abstract Map<String, Object> toMap();
 
     protected abstract DropType getDropType();
+
+    public abstract ItemStack getDisplayItem();
 }

@@ -16,15 +16,19 @@ public class BlockBreak extends CustomDrop {
 
     private final Material block;
 
-    public BlockBreak(@NotNull String name,@NotNull  ItemStack drop,@NotNull Float chance,@NotNull Boolean active, Material block) {
-        super(name, drop, chance, active);
+    public BlockBreak(@NotNull  ItemStack drop,@NotNull Float chance,@NotNull Boolean active, Material block) {
+        super(drop, chance, active);
         this.block = block;
+    }
+
+    @Override
+    public String getName() {
+        return getBlock().name();
     }
 
     @Override
     public Map<String, Object> toMap() {
         return Map.of(
-                "name", name,
                 "drop", itemStackToMap(drop),
                 "chance", chance,
                 "active", active,
@@ -35,6 +39,11 @@ public class BlockBreak extends CustomDrop {
     @Override
     protected DropType getDropType() {
         return DropType.BLOCK_BREAK;
+    }
+
+    @Override
+    public ItemStack getDisplayItem() {
+        return new ItemStack(getBlock());
     }
 
     public Material getBlock() {

@@ -25,7 +25,6 @@ public class BlockBreakConfig extends AbstractDropConfig {
     public BlockBreak getDrop() {
         try {
             return new BlockBreak(
-                    getString("name"),
                     getItemStack("drop"),
                     getFloat("chance"),
                     getBoolean("active"),

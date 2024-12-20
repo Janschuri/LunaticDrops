@@ -15,9 +15,11 @@ public class PandaEat extends CustomDrop {
 
     private final ItemStack eatenItem;
     private final boolean matchNBT;
+    private final String name;
 
     public PandaEat(@NotNull String name, @NotNull ItemStack drop, @NotNull Float chance, @NotNull Boolean active, @NotNull ItemStack eatenItem, @NotNull Boolean matchNBT) {
-        super(name, drop, chance, active);
+        super(drop, chance, active);
+        this.name = name;
         this.eatenItem = eatenItem;
         this.matchNBT = matchNBT;
     }
@@ -30,6 +32,11 @@ public class PandaEat extends CustomDrop {
             Logger.debugLog("Not matching NBT");
             return item.getType() == eatenItem.getType();
         }
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -47,6 +54,11 @@ public class PandaEat extends CustomDrop {
     @Override
     protected DropType getDropType() {
         return DropType.PANDA_EAT;
+    }
+
+    @Override
+    public ItemStack getDisplayItem() {
+        return eatenItem.clone();
     }
 
     public boolean isMatchNBT() {

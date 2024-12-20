@@ -22,15 +22,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class EditorGUI extends InventoryGUI {
 
     private static final Map<Integer, Boolean> editModes = new HashMap<>();
-    private static final Map<Integer, String> names = new HashMap<>();
     private static final Map<Integer, Float> chances = new HashMap<>();
     private static final Map<Integer, Boolean> active = new HashMap<>();
     private static final Map<Integer, ItemStack> dropItems = new HashMap<>();
 
-    public EditorGUI(String name) {
+    public EditorGUI() {
         super();
         editModes.put(getId(), true);
-        names.put(getId(), name);
         chances.putIfAbsent(getId(), 0.5f);
         active.putIfAbsent(getId(), true);
     }
@@ -38,14 +36,9 @@ public abstract class EditorGUI extends InventoryGUI {
     public EditorGUI(CustomDrop customDrop) {
         super();
         editModes.put(getId(), false);
-        names.put(getId(), customDrop.getName());
         chances.put(getId(), customDrop.getChance());
         active.put(getId(), customDrop.isActive());
         dropItems.put(getId(), customDrop.getDrop());
-    }
-
-    protected String getName() {
-        return names.get(getId());
     }
 
     protected Float getChance() {
@@ -79,6 +72,7 @@ public abstract class EditorGUI extends InventoryGUI {
         addButton(15, increaseChanceButton());
         addButton(24, chanceButton());
         addButton(33, decreaseChanceButton());
+        addButton(8, toggleActiveButton());
 
         for (Map.Entry<InventoryButton, Integer> entry : getButtons().entrySet()) {
             addButton(entry.getValue(), entry.getKey());
@@ -90,8 +84,7 @@ public abstract class EditorGUI extends InventoryGUI {
     protected abstract Map<InventoryButton, Integer> getButtons();
 
     protected boolean allowSave() {
-        return getName() != null
-                && getDropItem() != null
+        return getDropItem() != null
                 && getChance() != null;
     }
 
@@ -101,7 +94,6 @@ public abstract class EditorGUI extends InventoryGUI {
                 .consumer(event -> {
                     save();
 
-                    names.remove(getId());
                     chances.remove(getId());
 
                     event.getWhoClicked().closeInventory();
@@ -117,6 +109,20 @@ public abstract class EditorGUI extends InventoryGUI {
                     Player player = (Player) event.getWhoClicked();
                     editModes.put(getId(), true);
                     reloadGui(player);
+                });
+    }
+
+    private InventoryButton toggleActiveButton() {
+        ItemStack item = new ItemStack(Material.REDSTONE_TORCH);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("Active: " + (isActive() ? "§aYes" : "§cNo"));
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    active.put(getId(), !isActive());
+                    reloadGui((Player) event.getWhoClicked());
                 });
     }
 

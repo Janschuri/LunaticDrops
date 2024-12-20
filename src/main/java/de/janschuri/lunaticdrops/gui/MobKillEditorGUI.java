@@ -21,8 +21,8 @@ public class MobKillEditorGUI extends EditorGUI {
 
     private static final Map<Integer, EntityType> mobTypes = new HashMap<>();
 
-    public MobKillEditorGUI(String name) {
-        super(name);
+    public MobKillEditorGUI() {
+        super();
     }
 
     public MobKillEditorGUI(MobKill mobKill) {
@@ -77,7 +77,6 @@ public class MobKillEditorGUI extends EditorGUI {
 
     protected void save() {
         MobKill mobKill = new MobKill(
-                getName(),
                 getDropItem(),
                 getChance(),
                 isActive(),

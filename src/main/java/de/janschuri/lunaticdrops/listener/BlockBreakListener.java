@@ -8,13 +8,18 @@ import de.janschuri.lunaticdrops.utils.DropType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -76,5 +81,9 @@ public class BlockBreakListener implements Listener {
 
             dropEvents.remove(event);
         }
+    }
+
+    public boolean isSilk(ItemStack item) {
+        return item.getEnchantments().containsKey(Enchantment.SILK_TOUCH);
     }
 }

@@ -46,8 +46,8 @@ public enum DropType {
             return null;
         }
         @Override
-        public EditorGUI getEditorGUI(String name) {
-            return new PandaEatEditorGUI(name);
+        public EditorGUI getEditorGUI() {
+            return new PandaEatEditorGUI();
         }
     },
     MOB_KILL {
@@ -76,8 +76,8 @@ public enum DropType {
             return null;
         }
         @Override
-        public MobKillEditorGUI getEditorGUI(String name) {
-            return new MobKillEditorGUI(name);
+        public MobKillEditorGUI getEditorGUI() {
+            return new MobKillEditorGUI();
         }
     },
     BLOCK_BREAK {
@@ -106,8 +106,8 @@ public enum DropType {
             return null;
         }
         @Override
-        public BlockBreakEditorGUI getEditorGUI(String name) {
-            return new BlockBreakEditorGUI(name);
+        public BlockBreakEditorGUI getEditorGUI() {
+            return new BlockBreakEditorGUI();
         }
     };
 
@@ -116,7 +116,7 @@ public enum DropType {
     public abstract String getConfigPath();
     public abstract AbstractDropConfig getConfig(Path path);
     public abstract EditorGUI getEditorGUI(CustomDrop drop);
-    public abstract EditorGUI getEditorGUI(String name);
+    public abstract EditorGUI getEditorGUI();
 
     public static DropType fromString(String string) {
         for (DropType dropType : DropType.values()) {

@@ -21,7 +21,6 @@ public class MobKillConfig extends AbstractDropConfig {
     public MobKill getDrop() {
         try {
             return new MobKill(
-                    getString("name"),
                     getItemStack("drop"),
                     getFloat("chance"),
                     getBoolean("active"),

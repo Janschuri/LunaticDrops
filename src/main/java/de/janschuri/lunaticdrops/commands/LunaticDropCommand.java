@@ -32,7 +32,7 @@ public class LunaticDropCommand extends AbstractLunaticCommand {
     @Override
     public List<LunaticCommand> getSubcommands() {
         return List.of(
-                new DropCreateCommand()
+                new BlockBreakCommand()
         );
     }
 
