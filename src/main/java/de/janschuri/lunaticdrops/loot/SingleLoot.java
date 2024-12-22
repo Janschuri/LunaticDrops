@@ -1,5 +1,6 @@
 package de.janschuri.lunaticdrops.loot;
 
+import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.inventory.ItemStack;
 
@@ -61,6 +62,7 @@ public class SingleLoot implements Loot {
     @Override
     public Map<String, Object> toMap() {
         return Map.of(
+                "type", "single",
                 "drop", ItemStackUtils.itemStackToMap(drop),
                 "chance", chance,
                 "active", active,
@@ -98,17 +100,31 @@ public class SingleLoot implements Loot {
 
     public static SingleLoot fromMap(Map<String, Object> map) {
 
-        ItemStack drop = ItemStackUtils.mapToItemStack((Map<String, Object>) map.get("drop"));
+        Logger.debugLog("SingleLoot.fromMap: " + map);
 
-        return new SingleLoot(
-                drop,
-                (float) map.get("chance"),
-                (boolean) map.get("active"),
-                (int) map.get("minAmount"),
-                (int) map.get("maxAmount"),
-                (boolean) map.get("applyFortune"),
-                (boolean) map.get("dropWithSilkTouch"),
-                (boolean) map.get("eraseVanillaDrops")
-        );
+        try {
+            ItemStack drop = ItemStackUtils.mapToItemStack((Map<String, Object>) map.get("drop"));
+            float chance = Float.parseFloat(map.get("chance").toString());
+            boolean active = Boolean.parseBoolean(map.get("active").toString());
+            int minAmount = Integer.parseInt(map.get("minAmount").toString());
+            int maxAmount = Integer.parseInt(map.get("maxAmount").toString());
+            boolean applyFortune = Boolean.parseBoolean(map.get("applyFortune").toString());
+            boolean dropWithSilkTouch = Boolean.parseBoolean(map.get("dropWithSilkTouch").toString());
+            boolean eraseVanillaDrops = Boolean.parseBoolean(map.get("eraseVanillaDrops").toString());
+
+            return new SingleLoot(
+                    drop,
+                    chance,
+                    active,
+                    minAmount,
+                    maxAmount,
+                    applyFortune,
+                    dropWithSilkTouch,
+                    eraseVanillaDrops
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -1,10 +1,13 @@
 package de.janschuri.lunaticdrops.config;
 
 import de.janschuri.lunaticdrops.drops.MobKill;
+import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.entity.EntityType;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MobKillConfig extends AbstractDropConfig {
 
@@ -20,11 +23,18 @@ public class MobKillConfig extends AbstractDropConfig {
     @Override
     public MobKill getDrop() {
         try {
+            List<Loot> lootList = getLoot("loot");
+            boolean active = getBoolean("active");
+            EntityType mob = getMobType("mob");
+
+            if (lootList == null) {
+                lootList = new ArrayList<>();
+            }
+
             return new MobKill(
-                    getLoot("loot"),
-                    getFloat("chance"),
-                    getBoolean("active"),
-                    getMobType("mob")
+                    lootList,
+                    active,
+                    mob
             );
         } catch (Exception e) {
             e.printStackTrace();

@@ -17,7 +17,6 @@ public class LootGUI extends InventoryGUI {
 
     private float chance = 0.5f;
     private Consumer<SingleLoot> consumer;
-    private boolean editMode = false;
     private ItemStack dropItem;
     private boolean active = true;
     private int minAmount = 1;
@@ -28,7 +27,18 @@ public class LootGUI extends InventoryGUI {
 
     public LootGUI(boolean editMode) {
         super();
-        this.editMode = editMode;
+    }
+
+    public LootGUI(SingleLoot singleLoot) {
+        super();
+        this.dropItem = singleLoot.getItem();
+        this.chance = singleLoot.getChance();
+        this.active = singleLoot.isActive();
+        this.minAmount = singleLoot.getMinAmount();
+        this.maxAmount = singleLoot.getMaxAmount();
+        this.applyFortune = singleLoot.getApplyFortune();
+        this.dropWithSilkTouch = singleLoot.getDropWithSilkTouch();
+        this.eraseVanilla = singleLoot.isEraseVanillaDrops();
     }
 
     @Override
@@ -48,10 +58,6 @@ public class LootGUI extends InventoryGUI {
 
     public ItemStack getDropItem() {
         return dropItem;
-    }
-
-    public boolean isEditMode() {
-        return editMode;
     }
 
     public float getChance() {
@@ -103,9 +109,6 @@ public class LootGUI extends InventoryGUI {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
-                    if (!isEditMode()) {
-                        return;
-                    }
 
                     Player player = (Player) event.getWhoClicked();
 
@@ -178,10 +181,6 @@ public class LootGUI extends InventoryGUI {
                         return;
                     }
 
-                    if (!isEditMode()) {
-                        return;
-                    }
-
                     ClickType clickType = event.getClick();
 
                     if (clickType == ClickType.WINDOW_BORDER_LEFT || clickType == ClickType.WINDOW_BORDER_RIGHT) {
@@ -219,12 +218,6 @@ public class LootGUI extends InventoryGUI {
                     if (processingClickEvent()) {
                         return;
                     }
-
-
-                    if (!isEditMode()) {
-                        return;
-                    }
-
 
                     ClickType clickType = event.getClick();
 

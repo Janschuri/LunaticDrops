@@ -17,8 +17,8 @@ public class PandaEat extends CustomDrop {
     private final boolean matchNBT;
     private final String name;
 
-    public PandaEat(@NotNull String name, @NotNull List<Loot> loot, @NotNull Float chance, @NotNull Boolean active, @NotNull ItemStack eatenItem, @NotNull Boolean matchNBT) {
-        super(loot, chance, active);
+    public PandaEat(@NotNull String name, @NotNull List<Loot> loot, @NotNull Boolean active, @NotNull ItemStack eatenItem, @NotNull Boolean matchNBT) {
+        super(loot, active);
         this.name = name;
         this.eatenItem = eatenItem;
         this.matchNBT = matchNBT;
@@ -44,9 +44,7 @@ public class PandaEat extends CustomDrop {
         List<Map<String, Object>> lootMaps = getLoot().stream().map(Loot::toMap).toList();
 
         return Map.of(
-                "name", getName(),
                 "loot", lootMaps,
-                "chance", chance,
                 "active", active,
                 "eatenItem", itemStackToMap(eatenItem),
                 "matchNBT", matchNBT

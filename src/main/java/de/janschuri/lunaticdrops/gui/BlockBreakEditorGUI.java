@@ -67,6 +67,10 @@ public class BlockBreakEditorGUI extends EditorGUI {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!isEditMode()) {
+                        return;
+                    }
+
                     Player player = (Player) event.getWhoClicked();
 
                     SelectBlockGUI selectBlockGUI = new SelectBlockGUI()
@@ -89,7 +93,6 @@ public class BlockBreakEditorGUI extends EditorGUI {
     protected void save(Player player) {
         BlockBreak blockBreak = new BlockBreak(
                 getItems(),
-                getChance(),
                 isActive(),
                 getBlockType()
         );

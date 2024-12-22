@@ -16,8 +16,8 @@ public class BlockBreak extends CustomDrop {
 
     private final Material block;
 
-    public BlockBreak(@NotNull List<Loot> loot, @NotNull Float chance, @NotNull Boolean active, Material block) {
-        super(loot, chance, active);
+    public BlockBreak(@NotNull List<Loot> loot, @NotNull Boolean active, Material block) {
+        super(loot, active);
         this.block = block;
     }
 
@@ -31,9 +31,7 @@ public class BlockBreak extends CustomDrop {
         List<Map<String, Object>> lootMaps = getLoot().stream().map(Loot::toMap).toList();
 
         return Map.of(
-                "name", getName(),
                 "loot", lootMaps,
-                "chance", chance,
                 "active", active,
                 "block", block.name()
         );
@@ -51,9 +49,5 @@ public class BlockBreak extends CustomDrop {
 
     public Material getBlock() {
         return block;
-    }
-
-    public boolean matches(BlockState blockState) {
-        return this.block.equals(blockState.getType());
     }
 }

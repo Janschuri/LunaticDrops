@@ -88,7 +88,14 @@ public final class LunaticDrops extends JavaPlugin {
                 AbstractDropConfig config = dropType.getConfig(path);
                 config.load();
 
-                customDrops.get(dropType.getConfigPath()).put(config.getDrop().getName(), config.getDrop());
+                CustomDrop drop = config.getDrop();
+
+                if (drop == null) {
+                    Logger.errorLog("Error loading drop from " + path);
+                    continue;
+                }
+
+                customDrops.get(dropType.getConfigPath()).put(drop.getName(), drop);
             }
 
             Logger.debugLog("Loaded " + customDrops.get(dropType.getConfigPath()).size() + " " + dropType.getConfigPath() + " drops");

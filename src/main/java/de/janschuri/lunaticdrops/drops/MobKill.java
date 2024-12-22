@@ -16,8 +16,8 @@ public class MobKill extends CustomDrop {
 
     private final EntityType mobType;
 
-    public MobKill(@NotNull List<Loot> loot, @NotNull Float chance, @NotNull Boolean active, @NotNull EntityType mobType) {
-        super(loot, chance, active);
+    public MobKill(@NotNull List<Loot> loot, @NotNull Boolean active, @NotNull EntityType mobType) {
+        super(loot, active);
         this.mobType = mobType;
     }
 
@@ -31,9 +31,7 @@ public class MobKill extends CustomDrop {
         List<Map<String, Object>> lootMaps = getLoot().stream().map(Loot::toMap).toList();
 
         return Map.of(
-                "name", getName(),
                 "loot", lootMaps,
-                "chance", chance,
                 "active", active,
                 "mob", mobType.name()
         );

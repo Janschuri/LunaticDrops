@@ -33,7 +33,6 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
     public EditorGUI(CustomDrop customDrop) {
         super();
         editMode = false;
-        chance = customDrop.getChance();
         active = customDrop.isActive();
         loot = customDrop.getLoot();
     }
@@ -62,7 +61,28 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
     public InventoryButton listItemButton(Loot loot) {
         ItemStack item = loot.getItem();
         return new InventoryButton()
-                .creator((player) -> item);
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (!isEditMode()) {
+                        return;
+                    }
+
+                    if (loot instanceof SingleLoot) {
+                        LootGUI gui = new LootGUI((SingleLoot) loot)
+                                .consumer(newLoot -> {
+                                    if (newLoot != null) {
+                                        int index = this.loot.indexOf(loot);
+                                        this.loot.set(index, newLoot);
+                                    } else {
+                                        this.loot.remove(loot);
+                                    }
+
+                                    GUIManager.openGUI(this, (Player) event.getWhoClicked());
+                                });
+
+                        GUIManager.openGUI(gui, (Player) event.getWhoClicked());
+                    }
+                });
     }
 
     @Override

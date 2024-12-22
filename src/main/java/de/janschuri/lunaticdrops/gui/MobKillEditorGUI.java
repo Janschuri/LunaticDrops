@@ -93,7 +93,6 @@ public class MobKillEditorGUI extends EditorGUI {
 
         MobKill mobKill = new MobKill(
                 getItems(),
-                getChance(),
                 isActive(),
                 getMobType()
         );

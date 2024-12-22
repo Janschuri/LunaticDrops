@@ -16,22 +16,16 @@ import java.util.Random;
 
 public abstract class CustomDrop {
 
-    protected final float chance;
     protected final Random random = new Random();
     protected final List<Loot> loot;
     protected final boolean active;
 
-    public CustomDrop(@NotNull List<Loot> loot, @NotNull Float chance, @NotNull Boolean active) {
-        this.chance = chance;
+    public CustomDrop(@NotNull List<Loot> loot, @NotNull Boolean active) {
         this.loot = loot;
         this.active = active;
     }
 
     public abstract String getName();
-
-    public float getChance() {
-        return chance;
-    }
 
     public boolean isActive() {
         return active;
@@ -44,7 +38,7 @@ public abstract class CustomDrop {
     public final boolean save() {
         Map<String, Object> data = toMap();
 
-        String name = (String) data.get("name");
+        String name = getName();
 
         File file = new File( LunaticDrops.getDataDirectory() + "/" + LunaticDrops.getCustomDropPath() + getTriggerType().getConfigPath() + "/" + name + ".yml");
 

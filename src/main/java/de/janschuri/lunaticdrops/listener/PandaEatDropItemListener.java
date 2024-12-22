@@ -8,6 +8,7 @@ import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
+import jdk.jshell.execution.Util;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -50,14 +51,14 @@ public class PandaEatDropItemListener implements Listener {
             }
 
             if (pandaDrop.matchEatenItem(consumedItem)) {
-                if (Utils.isLucky(pandaDrop.getChance())) {
-                    Logger.debugLog("Panda ate " + consumedItem.getType() + " and got lucky with " + pandaDrop.getName());
                     List<Loot> lootList = pandaDrop.getLoot();
 
                     for (Loot loot : lootList) {
-                        drops.addAll(loot.getDrops());
+                        if (Utils.isLucky(loot.getChance())) {
+                            Logger.debugLog("Loot is lucky");
+                            drops.addAll(loot.getDrops());
+                        }
                     }
-                }
             }
         }
 

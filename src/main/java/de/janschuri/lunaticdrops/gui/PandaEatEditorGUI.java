@@ -92,7 +92,6 @@ public class PandaEatEditorGUI extends EditorGUI {
         PandaEat pandaEat = new PandaEat(
                 getName(),
                 getItems(),
-                getChance(),
                 isActive(),
                 getEatenItem(),
                 isMatchNBT()
