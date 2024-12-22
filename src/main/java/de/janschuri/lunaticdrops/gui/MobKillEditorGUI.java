@@ -79,12 +79,12 @@ public class MobKillEditorGUI extends EditorGUI {
 
                     Player player = (Player) event.getWhoClicked();
 
-                    SelectMobGUI selectMobGUI = new SelectMobGUI(getId())
+                    SelectMobGUI selectMobGUI = new SelectMobGUI()
                             .consumer(entityType -> {
                                 mobTypes.put(getId(), entityType);
 
                                 Logger.debugLog("Selected mob: " + entityType);
-                                this.reloadGui(player);
+                                this.reloadGui();
                             })
                             ;
 

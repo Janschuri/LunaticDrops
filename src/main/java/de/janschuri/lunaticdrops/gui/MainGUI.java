@@ -43,7 +43,7 @@ public class MainGUI extends InventoryGUI {
                 .creator((player) -> dropType.getDisplayItem())
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
-                    GUIManager.openGUI(new ListDropGUI(dropType).inventory(getInventory()), player);
+                    GUIManager.openGUI(new ListDropGUI(dropType), player);
                 });
     }
 }

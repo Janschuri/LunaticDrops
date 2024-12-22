@@ -82,12 +82,12 @@ public class BlockBreakEditorGUI extends EditorGUI {
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
 
-                    SelectBlockGUI selectBlockGUI = new SelectBlockGUI(getId())
+                    SelectBlockGUI selectBlockGUI = new SelectBlockGUI()
                             .consumer(block -> {
                                 blockTypes.put(getId(), block);
 
                                 Logger.debugLog("Selected block: " + block);
-                                this.reloadGui(player);
+                                this.reloadGui();
                             })
                             ;
 

@@ -91,7 +91,7 @@ public class PandaEatEditorGUI extends EditorGUI {
 
                     eatItems.put(inventory, newItem);
 
-                    reloadGui(player);
+                    reloadGui();
                 });
     }
 

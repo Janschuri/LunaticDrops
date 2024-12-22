@@ -2,6 +2,7 @@ package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.loot.Loot;
+import de.janschuri.lunaticlib.common.utils.Utils;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
@@ -133,9 +134,8 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
-                    Player player = (Player) event.getWhoClicked();
                     editModeMap.put(getId(), true);
-                    reloadGui(player);
+                    reloadGui();
                 });
     }
 
@@ -153,7 +153,7 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
                     }
 
                     active.put(getId(), !isActive());
-                    reloadGui((Player) event.getWhoClicked());
+                    reloadGui();
                 });
     }
 
@@ -265,7 +265,7 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
 
         chances.put(getId(), newChance);
 
-        reloadGui(player);
+        reloadGui();
     }
 
     private static String formatChance(float chance) {
@@ -281,7 +281,7 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
 
         chances.put(getId(), newChance);
 
-        reloadGui(player);
+        reloadGui();
     }
 
 
@@ -311,9 +311,8 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
                                 }
 
                                 addLoot(loot);
-                                reloadGui(player);
-                            })
-                            .inventory(getInventory());
+                                reloadGui();
+                            });
 
                     GUIManager.openGUI(gui, player);
                 });

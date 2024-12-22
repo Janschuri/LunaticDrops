@@ -36,7 +36,7 @@ public class ListDropGUI extends ListGUI<CustomDrop> {
                 .creator((player) -> drop.getDisplayItem())
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
-                    GUIManager.openGUI(dropType.getEditorGUI(drop).inventory(getInventory()), player);
+                    GUIManager.openGUI(dropType.getEditorGUI(drop), player);
                 });
     }
 
@@ -56,7 +56,7 @@ public class ListDropGUI extends ListGUI<CustomDrop> {
                 .creator((player) -> itemStack)
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
-                    GUIManager.openGUI(new MainGUI().inventory(getInventory()), player);
+                    GUIManager.openGUI(new MainGUI(), player);
                 });
     }
 
@@ -72,7 +72,7 @@ public class ListDropGUI extends ListGUI<CustomDrop> {
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
 
-                    GUIManager.openGUI(dropType.getEditorGUI().inventory(getInventory()), player);
+                    GUIManager.openGUI(dropType.getEditorGUI(), player);
                 });
     }
 }

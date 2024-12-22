@@ -126,7 +126,7 @@ public class LootGUI extends InventoryGUI {
 
                     dropMap.put(getId(), newItem);
 
-                    reloadGui(player);
+                    reloadGui();
                 });
     }
 
