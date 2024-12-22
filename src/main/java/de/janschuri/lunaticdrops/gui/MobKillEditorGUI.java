@@ -48,15 +48,15 @@ public class MobKillEditorGUI extends EditorGUI {
     }
 
     @Override
-    protected Map<InventoryButton, Integer> getButtons() {
-        return Map.of(
-                selectMobButton(), 20
-        );
+    public void init(Player player) {
+        addButton(11, selectMobButton());
+
+        super.init(player);
     }
 
     @Override
     protected boolean allowSave() {
-        return super.allowSave();
+        return true;
     }
 
     private InventoryButton selectMobButton() {
@@ -73,6 +73,10 @@ public class MobKillEditorGUI extends EditorGUI {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!isEditMode()) {
+                        return;
+                    }
+
                     Player player = (Player) event.getWhoClicked();
 
                     SelectMobGUI selectMobGUI = new SelectMobGUI(getId())
@@ -89,13 +93,5 @@ public class MobKillEditorGUI extends EditorGUI {
     }
 
     protected void save() {
-        MobKill mobKill = new MobKill(
-                getDropItem(),
-                getChance(),
-                isActive(),
-                getMobType()
-        );
-
-        mobKill.save();
     }
 }

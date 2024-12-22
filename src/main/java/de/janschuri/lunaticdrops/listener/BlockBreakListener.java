@@ -28,20 +28,6 @@ public class BlockBreakListener implements Listener {
 
     private static final Map<BlockDropItemEvent, List<Item>> dropEvents = new HashMap<>();
 
-    @EventHandler
-    public void onEntityExplode(EntityExplodeEvent event) {
-        event.blockList().forEach(block ->
-                Logger.infoLog("Block destroyed by explosion: " + block.getType()));
-    }
-
-    @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent event) {
-        Block block = event.getBlock();
-        if (block.getType() == Material.SAND || block.getType() == Material.GRAVEL) {
-            Logger.infoLog("Block affected by physics: " + block.getType());
-        }
-    }
-
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockDropLowest(BlockDropItemEvent event) {
         if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {

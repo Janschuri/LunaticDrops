@@ -44,10 +44,10 @@ public class PandaEatEditorGUI extends EditorGUI {
     }
 
     @Override
-    protected Map<InventoryButton, Integer> getButtons() {
-        return Map.of(
-                createAddEatItemButton(), 20
-        );
+    public void init(Player player) {
+        addButton(11, createAddEatItemButton());
+
+        super.init(player);
     }
 
     public String getName() {
@@ -64,8 +64,7 @@ public class PandaEatEditorGUI extends EditorGUI {
 
     @Override
     protected boolean allowSave() {
-        return super.allowSave()
-                && getEatenItem() != null
+        return getEatenItem() != null
                 && isMatchNBT() != null;
     }
 
@@ -97,15 +96,5 @@ public class PandaEatEditorGUI extends EditorGUI {
     }
 
     protected void save() {
-        PandaEat pandaEat = new PandaEat(
-                getName(),
-                getDropItem(),
-                getChance(),
-                isActive(),
-                getEatenItem(),
-                isMatchNBT()
-        );
-
-        pandaEat.save();
     }
 }

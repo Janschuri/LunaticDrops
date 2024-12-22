@@ -55,15 +55,15 @@ public class BlockBreakEditorGUI extends EditorGUI {
     }
 
     @Override
-    protected Map<InventoryButton, Integer> getButtons() {
-        return Map.of(
-                selectBlockButton(), 11
-        );
+    public void init(Player player) {
+        addButton(11, selectBlockButton());
+
+        super.init(player);
     }
 
     @Override
     protected boolean allowSave() {
-        return super.allowSave() && getBlockType() != null;
+        return getBlockType() != null;
     }
 
     private InventoryButton selectBlockButton() {
@@ -96,13 +96,5 @@ public class BlockBreakEditorGUI extends EditorGUI {
     }
 
     protected void save() {
-        BlockBreak blockBreak = new BlockBreak(
-                getDropItem(),
-                getChance(),
-                isActive(),
-                getBlockType()
-        );
-
-        blockBreak.save();
     }
 }

@@ -1,12 +1,17 @@
 package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.drops.CustomDrop;
+import de.janschuri.lunaticdrops.loot.Loot;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.ListGUI;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.PaginatedList;
+import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -16,25 +21,24 @@ import java.util.Map;
 
 public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedList<ItemStack> {
 
-    private static final Map<Integer, Boolean> editModes = new HashMap<>();
+    private static final Map<Integer, Boolean> editModeMap = new HashMap<>();
     private static final Map<Integer, Float> chances = new HashMap<>();
     private static final Map<Integer, Boolean> active = new HashMap<>();
-    private static final Map<Integer, ItemStack> dropItems = new HashMap<>();
+    private static final Map<Integer, List<Loot>> lootMap = new HashMap<>();
     private static final Map<Integer, Integer> pages = new HashMap<>();
 
     public EditorGUI() {
         super();
-        editModes.put(getId(), true);
+        editModeMap.put(getId(), true);
         chances.putIfAbsent(getId(), 0.5f);
         active.putIfAbsent(getId(), true);
     }
 
     public EditorGUI(CustomDrop customDrop) {
         super();
-        editModes.put(getId(), false);
+        editModeMap.put(getId(), false);
         chances.put(getId(), customDrop.getChance());
         active.put(getId(), customDrop.isActive());
-        dropItems.put(getId(), customDrop.getDrop());
     }
 
     @Override
@@ -66,11 +70,23 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
     }
 
     protected boolean isEditMode() {
-        return editModes.get(getId());
+        return editModeMap.get(getId());
     }
 
-    protected ItemStack getDropItem() {
-        return dropItems.get(getId());
+    protected List<Loot> getLoot() {
+        lootMap.putIfAbsent(getId(), List.of());
+        return lootMap.get(getId());
+    }
+
+    protected void setLoot(List<Loot> loot) {
+        lootMap.put(getId(), loot);
+    }
+
+    protected void addLoot(Loot loot) {
+        lootMap.putIfAbsent(getId(), List.of());
+        List<Loot> lootList = lootMap.get(getId());
+        lootList.add(loot);
+        lootMap.put(getId(), lootList);
     }
 
     @Override
@@ -85,25 +101,19 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
             addButton(17, unableToSaveButton());
         }
 
-        addButton(31, createAddDropItemButton());
         addButton(15, increaseChanceButton());
         addButton(14, chanceButton());
         addButton(13, decreaseChanceButton());
         addButton(9, toggleActiveButton());
 
-        for (Map.Entry<InventoryButton, Integer> entry : getButtons().entrySet()) {
-            addButton(entry.getValue(), entry.getKey());
+        if (isEditMode()) {
+            addButton(26, addLootButton());
         }
 
         super.init(player);
     }
 
-    protected abstract Map<InventoryButton, Integer> getButtons();
-
-    protected boolean allowSave() {
-        return getDropItem() != null
-                && getChance() != null;
-    }
+    protected abstract boolean allowSave();
 
     private InventoryButton saveButton() {
         return new InventoryButton()
@@ -124,7 +134,7 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
                 .creator((player) -> item)
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
-                    editModes.put(getId(), true);
+                    editModeMap.put(getId(), true);
                     reloadGui(player);
                 });
     }
@@ -138,35 +148,12 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
-                    active.put(getId(), !isActive());
-                    reloadGui((Player) event.getWhoClicked());
-                });
-    }
-
-    private InventoryButton createAddDropItemButton() {
-
-        ItemStack item = getDropItem() == null ? new ItemStack(Material.AIR) : getDropItem();
-
-        return new InventoryButton()
-                .creator((player) -> item)
-                .consumer(event -> {
                     if (!isEditMode()) {
                         return;
                     }
 
-                    Player player = (Player) event.getWhoClicked();
-
-                    ItemStack cursorItem = event.getCursor();
-                    if (cursorItem == null || cursorItem.getType() == Material.AIR) {
-                        return;
-                    }
-
-                    ItemStack newItem = cursorItem.clone();
-                    newItem.setAmount(1);
-
-                    dropItems.put(getId(), newItem);
-
-                    reloadGui(player);
+                    active.put(getId(), !isActive());
+                    reloadGui((Player) event.getWhoClicked());
                 });
     }
 
@@ -195,6 +182,10 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
                 .creator((player) -> item)
                 .consumer(event -> {
                     if (processingClickEvent()) {
+                        return;
+                    }
+
+                    if (!isEditMode()) {
                         return;
                     }
 
@@ -235,6 +226,12 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
                     if (processingClickEvent()) {
                         return;
                     }
+
+
+                    if (!isEditMode()) {
+                        return;
+                    }
+
 
                     ClickType clickType = event.getClick();
 
@@ -294,4 +291,31 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
     }
 
     protected abstract void save();
+
+    private InventoryButton addLootButton() {
+        ItemStack itemStack = ItemStackUtils.getSkullFromURL("http://textures.minecraft.net/texture/5ff31431d64587ff6ef98c0675810681f8c13bf96f51d9cb07ed7852b2ffd1");
+
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setDisplayName("§aAdd new drop");
+        itemStack.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> itemStack)
+                .consumer(event -> {
+                    Player player = (Player) event.getWhoClicked();
+
+                    InventoryGUI gui = new LootGUI(isEditMode())
+                            .consumer(loot -> {
+                                if (loot == null) {
+                                    GUIManager.openGUI(this, player);
+                                }
+
+                                addLoot(loot);
+                                reloadGui(player);
+                            })
+                            .inventory(getInventory());
+
+                    GUIManager.openGUI(gui, player);
+                });
+    }
 }
