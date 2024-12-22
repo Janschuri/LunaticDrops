@@ -24,18 +24,6 @@ public class PandaEatEditorGUI extends EditorGUI {
         matchNBT.putIfAbsent(inventory, false);
     }
 
-    @Override
-    public InventoryButton listItemButton(ItemStack itemStack) {
-        ItemStack item = new ItemStack(Material.STONE);
-        return new InventoryButton()
-                .creator((player) -> item);
-    }
-
-    @Override
-    public List<ItemStack> getItems() {
-        return List.of();
-    }
-
     public PandaEatEditorGUI(PandaEat pandaEat) {
         super(pandaEat);
         this.inventory = getInventory();
@@ -95,6 +83,7 @@ public class PandaEatEditorGUI extends EditorGUI {
                 });
     }
 
-    protected void save() {
+    @Override
+    protected void save(Player player) {
     }
 }

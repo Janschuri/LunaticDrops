@@ -1,10 +1,12 @@
 package de.janschuri.lunaticdrops.drops;
 
+import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 
 import static de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils.itemStackToMap;
@@ -15,8 +17,8 @@ public class PandaEat extends CustomDrop {
     private final boolean matchNBT;
     private final String name;
 
-    public PandaEat(@NotNull String name, @NotNull ItemStack drop, @NotNull Float chance, @NotNull Boolean active, @NotNull ItemStack eatenItem, @NotNull Boolean matchNBT) {
-        super(drop, chance, active);
+    public PandaEat(@NotNull String name, @NotNull List<Loot> loot, @NotNull Float chance, @NotNull Boolean active, @NotNull ItemStack eatenItem, @NotNull Boolean matchNBT) {
+        super(loot, chance, active);
         this.name = name;
         this.eatenItem = eatenItem;
         this.matchNBT = matchNBT;
@@ -39,9 +41,11 @@ public class PandaEat extends CustomDrop {
 
     @Override
     public Map<String, Object> toMap() {
+        List<Map<String, Object>> lootMaps = getLoot().stream().map(Loot::toMap).toList();
+
         return Map.of(
-                "name", name,
-                "drop", itemStackToMap(drop),
+                "name", getName(),
+                "loot", lootMaps,
                 "chance", chance,
                 "active", active,
                 "eatenItem", itemStackToMap(eatenItem),

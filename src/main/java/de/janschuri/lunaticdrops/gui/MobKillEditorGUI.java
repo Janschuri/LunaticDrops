@@ -1,8 +1,11 @@
 package de.janschuri.lunaticdrops.gui;
 
+import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.MobKill;
 import de.janschuri.lunaticdrops.drops.PandaEat;
+import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectMobGUI;
@@ -24,18 +27,6 @@ public class MobKillEditorGUI extends EditorGUI {
 
     public MobKillEditorGUI() {
         super();
-    }
-
-    @Override
-    public InventoryButton listItemButton(ItemStack itemStack) {
-        ItemStack item = new ItemStack(Material.STONE);
-        return new InventoryButton()
-                .creator((player) -> item);
-    }
-
-    @Override
-    public List<ItemStack> getItems() {
-        return List.of();
     }
 
     public MobKillEditorGUI(MobKill mobKill) {
@@ -83,15 +74,33 @@ public class MobKillEditorGUI extends EditorGUI {
                             .consumer(entityType -> {
                                 mobTypes.put(getId(), entityType);
 
-                                Logger.debugLog("Selected mob: " + entityType);
-                                this.reloadGui();
-                            })
-                            ;
+                                if (LunaticDrops.dropExists(TriggerType.MOB_KILL, entityType.name())) {
+                                    Logger.debugLog("Mob kill drop already exists for " + entityType.name());
+                                    GUIManager.openGUI(new MobKillEditorGUI((MobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, entityType.name())), player);
+                                    return;
+                                }
+
+                                GUIManager.openGUI(this, player);
+                            });
 
                     GUIManager.openGUI(selectMobGUI, player);
                 });
     }
 
-    protected void save() {
+    @Override
+    protected void save(Player player) {
+        List<Loot> lootList = getItems();
+
+        MobKill mobKill = new MobKill(
+                getItems(),
+                getChance(),
+                isActive(),
+                getMobType()
+        );
+
+        if (mobKill.save()) {
+            MobKill newMobKill = (MobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, mobKill.getMobType().name());
+            GUIManager.openGUI(new MobKillEditorGUI(newMobKill), player);
+        }
     }
 }

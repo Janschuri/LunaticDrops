@@ -1,11 +1,13 @@
 package de.janschuri.lunaticdrops.drops;
 
+import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 
 import static de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils.itemStackToMap;
@@ -14,8 +16,8 @@ public class MobKill extends CustomDrop {
 
     private final EntityType mobType;
 
-    public MobKill(@NotNull ItemStack itemStack, @NotNull Float chance, @NotNull Boolean active, @NotNull EntityType mobType) {
-        super(itemStack, chance, active);
+    public MobKill(@NotNull List<Loot> loot, @NotNull Float chance, @NotNull Boolean active, @NotNull EntityType mobType) {
+        super(loot, chance, active);
         this.mobType = mobType;
     }
 
@@ -26,8 +28,11 @@ public class MobKill extends CustomDrop {
 
     @Override
     public Map<String, Object> toMap() {
+        List<Map<String, Object>> lootMaps = getLoot().stream().map(Loot::toMap).toList();
+
         return Map.of(
-                "drop", itemStackToMap(drop),
+                "name", getName(),
+                "loot", lootMaps,
                 "chance", chance,
                 "active", active,
                 "mob", mobType.name()

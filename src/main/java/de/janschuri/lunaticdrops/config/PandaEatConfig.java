@@ -21,7 +21,7 @@ public class PandaEatConfig extends AbstractDropConfig {
         try {
             return new PandaEat(
                     getString("name"),
-                    getItemStack("drop"),
+                    getLoot("loot"),
                     getFloat("chance"),
                     getBoolean("active"),
                     getItemStack("eatenItem"),

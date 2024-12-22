@@ -34,25 +34,25 @@ public class PandaEatDropItemListener implements Listener {
 
         Logger.debugLog("Drops: " + customDrops.size());
 
-        for (CustomDrop customDrop : customDrops) {
-            PandaEat pandaDrop = (PandaEat) customDrop;
-
-            Logger.debugLog("Checking drop: " + pandaDrop.getDrop().getType());
-
-            if (!pandaDrop.isActive()) {
-                Logger.debugLog("Drop is not active");
-                continue;
-            }
-
-            if (pandaDrop.matchEatenItem(consumedItem)) {
-                Logger.debugLog("Panda ate " + consumedItem.getType() + " and has a chance of " + pandaDrop.getChance() + " to get " + pandaDrop.getDrop().getType());
-                if (pandaDrop.isLucky()) {
-                    Logger.debugLog("Panda ate " + consumedItem.getType() + " and got lucky with " + pandaDrop.getDrop().getType());
-                    event.getDrops().add(pandaDrop.getDrop());
-                } else {
-                    Logger.debugLog("Panda ate " + consumedItem.getType() + " but was unlucky with " + pandaDrop.getDrop().getType());
-                }
-            }
-        }
+//        for (CustomDrop customDrop : customDrops) {
+//            PandaEat pandaDrop = (PandaEat) customDrop;
+//
+//            Logger.debugLog("Checking drop: " + pandaDrop.getName());
+//
+//            if (!pandaDrop.isActive()) {
+//                Logger.debugLog("Drop is not active");
+//                continue;
+//            }
+//
+//            if (pandaDrop.matchEatenItem(consumedItem)) {
+//                Logger.debugLog("Panda ate " + consumedItem.getType() + " and has a chance of " + pandaDrop.getChance() + " to get " + pandaDrop.getDrop().getType());
+//                if (pandaDrop.isLucky()) {
+//                    Logger.debugLog("Panda ate " + consumedItem.getType() + " and got lucky with " + pandaDrop.getName());
+//                    event.getDrops().add(pandaDrop.getLoot());
+//                } else {
+//                    Logger.debugLog("Panda ate " + consumedItem.getType() + " but was unlucky with " + pandaDrop.getDrop().getType());
+//                }
+//            }
+//        }
     }
 }

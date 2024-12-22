@@ -1,6 +1,7 @@
 package de.janschuri.lunaticdrops.drops;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
+import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.inventory.ItemStack;
@@ -9,6 +10,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -16,12 +18,12 @@ public abstract class CustomDrop {
 
     protected final float chance;
     protected final Random random = new Random();
-    protected final ItemStack drop;
+    protected final List<Loot> loot;
     protected final boolean active;
 
-    public CustomDrop(@NotNull  ItemStack drop, @NotNull Float chance, @NotNull Boolean active) {
+    public CustomDrop(@NotNull List<Loot> loot, @NotNull Float chance, @NotNull Boolean active) {
         this.chance = chance;
-        this.drop = drop;
+        this.loot = loot;
         this.active = active;
     }
 
@@ -41,8 +43,8 @@ public abstract class CustomDrop {
         return active;
     }
 
-    public ItemStack getDrop() {
-        return drop;
+    public List<Loot> getLoot() {
+        return loot;
     }
 
     public final boolean save() {

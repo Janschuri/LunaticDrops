@@ -40,31 +40,31 @@ public class BlockBreakListener implements Listener {
 
         Logger.debugLog("Drops: " + customDrops.size());
 
-        List<Item> drops = new ArrayList<>();
+//        List<Item> drops = new ArrayList<>();
+//
+//        for (CustomDrop customDrop : customDrops) {
+//            Logger.debugLog("Checking drop: " + customDrop.getName());
+//            if (!customDrop.isActive()) {
+//                continue;
+//            }
+//
+//            BlockBreak blockBreak = (BlockBreak) customDrop;
+//            if (!blockBreak.matches(event.getBlockState())) {
+//                continue;
+//            }
+//
+//            if (blockBreak.isLucky()) {
+//                Logger.debugLog("Block broken and got lucky with " + blockBreak.getDrop().getType());
+//                Location adjustedLocation = location.clone().add(0.5, 0.5, 0.5);
+//                Item item = adjustedLocation.getWorld().dropItem(adjustedLocation, blockBreak.getDrop());
+//                event.getItems().add(item);
+//                drops.add(item);
+//            }
+//        }
 
-        for (CustomDrop customDrop : customDrops) {
-            Logger.debugLog("Checking drop: " + customDrop.getName());
-            if (!customDrop.isActive()) {
-                continue;
-            }
-
-            BlockBreak blockBreak = (BlockBreak) customDrop;
-            if (!blockBreak.matches(event.getBlockState())) {
-                continue;
-            }
-
-            if (blockBreak.isLucky()) {
-                Logger.debugLog("Block broken and got lucky with " + blockBreak.getDrop().getType());
-                Location adjustedLocation = location.clone().add(0.5, 0.5, 0.5);
-                Item item = adjustedLocation.getWorld().dropItem(adjustedLocation, blockBreak.getDrop());
-                event.getItems().add(item);
-                drops.add(item);
-            }
-        }
-
-        if (!drops.isEmpty()) {
-            dropEvents.put(event, drops);
-        }
+//        if (!drops.isEmpty()) {
+//            dropEvents.put(event, drops);
+//        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

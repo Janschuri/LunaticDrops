@@ -1,7 +1,9 @@
 package de.janschuri.lunaticdrops.gui;
 
+import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.BlockBreak;
 import de.janschuri.lunaticdrops.utils.Logger;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectBlockGUI;
@@ -11,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BlockBreakEditorGUI extends EditorGUI {
@@ -21,23 +22,6 @@ public class BlockBreakEditorGUI extends EditorGUI {
 
     public BlockBreakEditorGUI() {
         super();
-    }
-
-    @Override
-    public InventoryButton listItemButton(ItemStack itemStack) {
-        ItemStack item = new ItemStack(Material.STONE);
-        return new InventoryButton()
-                .creator((player) -> item);
-    }
-
-    @Override
-    public List<ItemStack> getItems() {
-        return List.of();
-    }
-
-    @Override
-    public int getStartIndex() {
-        return 27;
     }
 
     public BlockBreakEditorGUI(Material block) {
@@ -86,15 +70,19 @@ public class BlockBreakEditorGUI extends EditorGUI {
                             .consumer(block -> {
                                 blockTypes.put(getId(), block);
 
-                                Logger.debugLog("Selected block: " + block);
-                                this.reloadGui();
-                            })
-                            ;
+                                if (LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, block.name())) {
+                                    Logger.debugLog("Mob kill drop already exists for " + block.name());
+                                    GUIManager.openGUI(new BlockBreakEditorGUI((BlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, block.name())), player);
+                                    return;
+                                }
+
+                                GUIManager.openGUI(new BlockBreakEditorGUI(block), player);
+                            });
 
                     GUIManager.openGUI(selectBlockGUI, player);
                 });
     }
 
-    protected void save() {
+    protected void save(Player player) {
     }
 }

@@ -2,7 +2,7 @@ package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.loot.Loot;
-import de.janschuri.lunaticlib.common.utils.Utils;
+import de.janschuri.lunaticdrops.loot.SingleLoot;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
@@ -11,45 +11,41 @@ import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.PaginatedList;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedList<ItemStack> {
+public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<Loot> {
 
-    private static final Map<Integer, Boolean> editModeMap = new HashMap<>();
-    private static final Map<Integer, Float> chances = new HashMap<>();
-    private static final Map<Integer, Boolean> active = new HashMap<>();
-    private static final Map<Integer, List<Loot>> lootMap = new HashMap<>();
-    private static final Map<Integer, Integer> pages = new HashMap<>();
+    private boolean editMode = false;
+    private float chance = 0.5f;
+    private boolean active = true;
+    private List<Loot> loot = new ArrayList<>();
+    private int page = 0;
 
     public EditorGUI() {
         super();
-        editModeMap.put(getId(), true);
-        chances.putIfAbsent(getId(), 0.5f);
-        active.putIfAbsent(getId(), true);
+        editMode = true;
     }
 
     public EditorGUI(CustomDrop customDrop) {
         super();
-        editModeMap.put(getId(), false);
-        chances.put(getId(), customDrop.getChance());
-        active.put(getId(), customDrop.isActive());
+        editMode = false;
+        chance = customDrop.getChance();
+        active = customDrop.isActive();
+        loot = customDrop.getLoot();
     }
 
     @Override
     public int getPage() {
-        return pages.getOrDefault(getId(), 0);
+        return page;
     }
 
     @Override
     public void setPage(int page) {
-        pages.put(getId(), page);
+        this.page = page;
     }
 
     @Override
@@ -62,32 +58,36 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
         return 27;
     }
 
+    @Override
+    public InventoryButton listItemButton(Loot loot) {
+        ItemStack item = loot.getItem();
+        return new InventoryButton()
+                .creator((player) -> item);
+    }
+
+    @Override
+    public List<Loot> getItems() {
+        return loot;
+    }
+
     protected Float getChance() {
-        return chances.get(getId());
+        return chance;
     }
 
     protected boolean isActive() {
-        return active.get(getId());
+        return active;
     }
 
     protected boolean isEditMode() {
-        return editModeMap.get(getId());
+        return editMode;
     }
 
-    protected List<Loot> getLoot() {
-        lootMap.putIfAbsent(getId(), List.of());
-        return lootMap.get(getId());
+    protected void setLootList(List<Loot> singleLootList) {
+        this.loot = singleLootList;
     }
 
-    protected void setLoot(List<Loot> loot) {
-        lootMap.put(getId(), loot);
-    }
-
-    protected void addLoot(Loot loot) {
-        lootMap.putIfAbsent(getId(), List.of());
-        List<Loot> lootList = lootMap.get(getId());
-        lootList.add(loot);
-        lootMap.put(getId(), lootList);
+    protected void addLoot(SingleLoot singleLoot) {
+        loot.add(singleLoot);
     }
 
     @Override
@@ -102,9 +102,6 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
             addButton(17, unableToSaveButton());
         }
 
-        addButton(15, increaseChanceButton());
-        addButton(14, chanceButton());
-        addButton(13, decreaseChanceButton());
         addButton(9, toggleActiveButton());
 
         if (isEditMode()) {
@@ -120,11 +117,7 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
         return new InventoryButton()
                 .creator((player) -> new ItemStack(Material.LIME_STAINED_GLASS_PANE))
                 .consumer(event -> {
-                    save();
-
-                    chances.remove(getId());
-
-                    event.getWhoClicked().closeInventory();
+                    save((Player) event.getWhoClicked());
                 });
     }
 
@@ -134,7 +127,7 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
-                    editModeMap.put(getId(), true);
+                    editMode = true;
                     reloadGui();
                 });
     }
@@ -152,136 +145,9 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
                         return;
                     }
 
-                    active.put(getId(), !isActive());
+                    active = !active;
                     reloadGui();
                 });
-    }
-
-    private InventoryButton chanceButton() {
-        ItemStack item = new ItemStack(Material.PAPER);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("Chance: " + formatChance(getChance()));
-        List<String> lore = List.of("Chance for the drop to happen");
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-
-
-        return new InventoryButton()
-                .creator((player) -> item);
-    }
-
-    private InventoryButton increaseChanceButton() {
-        ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("Chance: " + formatChance(getChance()));
-        List<String> lore = List.of("Chance for the drop to happen");
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-
-        return new InventoryButton()
-                .creator((player) -> item)
-                .consumer(event -> {
-                    if (processingClickEvent()) {
-                        return;
-                    }
-
-                    if (!isEditMode()) {
-                        return;
-                    }
-
-                    ClickType clickType = event.getClick();
-
-                    if (clickType == ClickType.WINDOW_BORDER_LEFT || clickType == ClickType.WINDOW_BORDER_RIGHT) {
-                        return;
-                    }
-
-                    switch (clickType) {
-                        case SHIFT_RIGHT:
-                            increaseChance((Player) event.getWhoClicked(), 0.0001f);
-                            break;
-                        case RIGHT:
-                            increaseChance((Player) event.getWhoClicked(), 0.001f);
-                            break;
-                        case LEFT:
-                            increaseChance((Player) event.getWhoClicked(), 0.01f);
-                            break;
-                        case SHIFT_LEFT:
-                            increaseChance((Player) event.getWhoClicked(), 0.1f);
-                            break;
-                    }
-                });
-    }
-
-    private InventoryButton decreaseChanceButton() {
-        ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("Chance: " + formatChance(getChance()));
-        List<String> lore = List.of("Chance for the drop to happen");
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-
-        return new InventoryButton()
-                .creator((player) -> item)
-                .consumer(event -> {
-                    if (processingClickEvent()) {
-                        return;
-                    }
-
-
-                    if (!isEditMode()) {
-                        return;
-                    }
-
-
-                    ClickType clickType = event.getClick();
-
-                    if (clickType == ClickType.WINDOW_BORDER_LEFT || clickType == ClickType.WINDOW_BORDER_RIGHT) {
-                        return;
-                    }
-
-                    switch (clickType) {
-                        case SHIFT_RIGHT:
-                            decreaseChance((Player) event.getWhoClicked(), 0.0001f);
-                            break;
-                        case RIGHT:
-                            decreaseChance((Player) event.getWhoClicked(), 0.001f);
-                            break;
-                        case LEFT:
-                            decreaseChance((Player) event.getWhoClicked(), 0.01f);
-                            break;
-                        case SHIFT_LEFT:
-                            decreaseChance((Player) event.getWhoClicked(), 0.1f);
-                            break;
-                    }
-                });
-    }
-
-    private void decreaseChance(Player player, float amount) {
-        float newChance = getChance() - amount;
-
-        if (newChance < 0) {
-            newChance = 0;
-        }
-
-        chances.put(getId(), newChance);
-
-        reloadGui();
-    }
-
-    private static String formatChance(float chance) {
-        return String.format("%.2f", chance * 100) + "%";
-    }
-
-    private void increaseChance(Player player, float amount) {
-        float newChance = getChance() + amount;
-
-        if (newChance > 1) {
-            newChance = 1;
-        }
-
-        chances.put(getId(), newChance);
-
-        reloadGui();
     }
 
 
@@ -290,7 +156,7 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
                 .creator((player) -> new ItemStack(Material.RED_STAINED_GLASS_PANE));
     }
 
-    protected abstract void save();
+    protected abstract void save(Player player);
 
     private InventoryButton addLootButton() {
         ItemStack itemStack = ItemStackUtils.getSkullFromURL("http://textures.minecraft.net/texture/5ff31431d64587ff6ef98c0675810681f8c13bf96f51d9cb07ed7852b2ffd1");
@@ -306,12 +172,11 @@ public abstract class EditorGUI extends ListGUI<ItemStack> implements PaginatedL
 
                     InventoryGUI gui = new LootGUI(isEditMode())
                             .consumer(loot -> {
-                                if (loot == null) {
-                                    GUIManager.openGUI(this, player);
+                                if (loot != null) {
+                                    addLoot(loot);
                                 }
 
-                                addLoot(loot);
-                                reloadGui();
+                                GUIManager.openGUI(this, player);
                             });
 
                     GUIManager.openGUI(gui, player);

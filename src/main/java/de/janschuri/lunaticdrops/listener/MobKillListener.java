@@ -29,29 +29,29 @@ public class MobKillListener implements Listener {
 
         Logger.debugLog("Drops: " + customDrops.size());
 
-        List<Item> drops = new ArrayList<>();
-
-        for (CustomDrop customDrop : customDrops) {
-            if (!customDrop.isActive()) {
-                continue;
-            }
-
-            MobKill mobKill = (MobKill) customDrop;
-            if (!mobKill.matches(event.getEntityType())) {
-                continue;
-            }
-
-            if (mobKill.isLucky()) {
-                Logger.debugLog("Mob killed and got lucky with " + mobKill.getDrop().getType());
-                Item item = location.getWorld().dropItem(location, mobKill.getDrop());
-                event.getDrops().add(item.getItemStack());
-                drops.add(item);
-            }
-        }
-
-        if (!drops.isEmpty()) {
-            dropEvents.put(event, drops);
-        }
+//        List<Item> drops = new ArrayList<>();
+//
+//        for (CustomDrop customDrop : customDrops) {
+//            if (!customDrop.isActive()) {
+//                continue;
+//            }
+//
+//            MobKill mobKill = (MobKill) customDrop;
+//            if (!mobKill.matches(event.getEntityType())) {
+//                continue;
+//            }
+//
+//            if (mobKill.isLucky()) {
+//                Logger.debugLog("Mob killed and got lucky with " + mobKill.getName());
+//                Item item = location.getWorld().dropItem(location, mobKill
+//                event.getDrops().add(item.getItemStack());
+//                drops.add(item);
+//            }
+//        }
+//
+//        if (!drops.isEmpty()) {
+//            dropEvents.put(event, drops);
+//        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
