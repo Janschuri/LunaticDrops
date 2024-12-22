@@ -52,8 +52,4 @@ public class MobKill extends CustomDrop {
     public EntityType getMobType() {
         return mobType;
     }
-
-    public boolean matches(EntityType entityType) {
-        return mobType.equals(entityType);
-    }
 }

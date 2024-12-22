@@ -33,12 +33,6 @@ public abstract class CustomDrop {
         return chance;
     }
 
-    public boolean isLucky() {
-        float randomValue = random.nextFloat(0, 1); // Generates a float between 0.0 (inclusive) and 1.0 (exclusive)
-        Logger.debugLog("Random value: " + randomValue + " Chance: " + chance);
-        return randomValue <= chance;
-    }
-
     public boolean isActive() {
         return active;
     }

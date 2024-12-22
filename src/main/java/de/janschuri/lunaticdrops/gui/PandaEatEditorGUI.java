@@ -1,7 +1,11 @@
 package de.janschuri.lunaticdrops.gui;
 
+import de.janschuri.lunaticdrops.LunaticDrops;
+import de.janschuri.lunaticdrops.drops.BlockBreak;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.drops.PandaEat;
+import de.janschuri.lunaticdrops.utils.TriggerType;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -85,5 +89,18 @@ public class PandaEatEditorGUI extends EditorGUI {
 
     @Override
     protected void save(Player player) {
+        PandaEat pandaEat = new PandaEat(
+                getName(),
+                getItems(),
+                getChance(),
+                isActive(),
+                getEatenItem(),
+                isMatchNBT()
+        );
+
+        if (pandaEat.save()) {
+            PandaEat newPandaEat = (PandaEat) LunaticDrops.getDrop(TriggerType.PANDA_EAT, pandaEat.getName());
+            GUIManager.openGUI(new PandaEatEditorGUI(newPandaEat), player);
+        }
     }
 }

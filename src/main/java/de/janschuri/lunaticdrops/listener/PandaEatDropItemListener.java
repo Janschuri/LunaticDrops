@@ -4,14 +4,17 @@ import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.events.PandaEatDropItemEvent;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.drops.PandaEat;
+import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
+import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PandaEatDropItemListener implements Listener {
@@ -34,25 +37,30 @@ public class PandaEatDropItemListener implements Listener {
 
         Logger.debugLog("Drops: " + customDrops.size());
 
-//        for (CustomDrop customDrop : customDrops) {
-//            PandaEat pandaDrop = (PandaEat) customDrop;
-//
-//            Logger.debugLog("Checking drop: " + pandaDrop.getName());
-//
-//            if (!pandaDrop.isActive()) {
-//                Logger.debugLog("Drop is not active");
-//                continue;
-//            }
-//
-//            if (pandaDrop.matchEatenItem(consumedItem)) {
-//                Logger.debugLog("Panda ate " + consumedItem.getType() + " and has a chance of " + pandaDrop.getChance() + " to get " + pandaDrop.getDrop().getType());
-//                if (pandaDrop.isLucky()) {
-//                    Logger.debugLog("Panda ate " + consumedItem.getType() + " and got lucky with " + pandaDrop.getName());
-//                    event.getDrops().add(pandaDrop.getLoot());
-//                } else {
-//                    Logger.debugLog("Panda ate " + consumedItem.getType() + " but was unlucky with " + pandaDrop.getDrop().getType());
-//                }
-//            }
-//        }
+        List<ItemStack> drops = new ArrayList<>();
+
+        for (CustomDrop customDrop : customDrops) {
+            PandaEat pandaDrop = (PandaEat) customDrop;
+
+            Logger.debugLog("Checking drop: " + pandaDrop.getName());
+
+            if (!pandaDrop.isActive()) {
+                Logger.debugLog("Drop is not active");
+                continue;
+            }
+
+            if (pandaDrop.matchEatenItem(consumedItem)) {
+                if (Utils.isLucky(pandaDrop.getChance())) {
+                    Logger.debugLog("Panda ate " + consumedItem.getType() + " and got lucky with " + pandaDrop.getName());
+                    List<Loot> lootList = pandaDrop.getLoot();
+
+                    for (Loot loot : lootList) {
+                        drops.addAll(loot.getDrops());
+                    }
+                }
+            }
+        }
+
+        event.getDrops().addAll(drops);
     }
 }

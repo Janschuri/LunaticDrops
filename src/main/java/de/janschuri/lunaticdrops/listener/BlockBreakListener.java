@@ -3,8 +3,10 @@ package de.janschuri.lunaticdrops.listener;
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.BlockBreak;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
+import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
+import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,37 +36,57 @@ public class BlockBreakListener implements Listener {
             return;
         }
 
+        Logger.debugLog("BlockDrop: " + event.getBlock().getType().name());
+
         Location location = event.getBlock().getLocation();
 
-        List<CustomDrop> customDrops = LunaticDrops.getDrops(TriggerType.BLOCK_BREAK);
+        BlockBreak blockBreak = (BlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, event.getBlockState().getType().name());
 
-        Logger.debugLog("Drops: " + customDrops.size());
+        if (blockBreak == null) {
+            return;
+        }
 
-//        List<Item> drops = new ArrayList<>();
-//
-//        for (CustomDrop customDrop : customDrops) {
-//            Logger.debugLog("Checking drop: " + customDrop.getName());
-//            if (!customDrop.isActive()) {
-//                continue;
-//            }
-//
-//            BlockBreak blockBreak = (BlockBreak) customDrop;
-//            if (!blockBreak.matches(event.getBlockState())) {
-//                continue;
-//            }
-//
-//            if (blockBreak.isLucky()) {
-//                Logger.debugLog("Block broken and got lucky with " + blockBreak.getDrop().getType());
-//                Location adjustedLocation = location.clone().add(0.5, 0.5, 0.5);
-//                Item item = adjustedLocation.getWorld().dropItem(adjustedLocation, blockBreak.getDrop());
-//                event.getItems().add(item);
-//                drops.add(item);
-//            }
-//        }
+        if (!blockBreak.isActive()) {
+            return;
+        }
 
-//        if (!drops.isEmpty()) {
-//            dropEvents.put(event, drops);
-//        }
+        List<Item> drops = new ArrayList<>();
+        boolean eraseVanillaDrops = false;
+
+        Logger.debugLog("BlockBreak: " + blockBreak.getName());
+
+        for (Loot loot : blockBreak.getLoot()) {
+            if (Utils.isLucky(loot.getChance())) {
+                List<ItemStack> items = loot.getDrops();
+
+                if (items == null) {
+                    continue;
+                }
+
+                if (items.isEmpty()) {
+                    continue;
+                }
+
+                if (loot.isEraseVanillaDrops()) {
+                    eraseVanillaDrops = true;
+                }
+
+                items.forEach(item -> {
+                    Item drop = location.getWorld().dropItem(location.clone().add(0.5, 0.5, 0.5), item);
+                    drops.add(drop);
+                });
+            }
+        }
+
+
+        if (!drops.isEmpty()) {
+            if (eraseVanillaDrops) {
+                event.getItems().clear();
+            }
+
+            event.getItems().addAll(drops);
+            dropEvents.put(event, drops);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

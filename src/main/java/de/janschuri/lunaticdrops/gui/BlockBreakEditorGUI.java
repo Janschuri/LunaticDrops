@@ -2,6 +2,8 @@ package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.BlockBreak;
+import de.janschuri.lunaticdrops.drops.MobKill;
+import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
@@ -13,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BlockBreakEditorGUI extends EditorGUI {
@@ -84,5 +87,16 @@ public class BlockBreakEditorGUI extends EditorGUI {
     }
 
     protected void save(Player player) {
+        BlockBreak blockBreak = new BlockBreak(
+                getItems(),
+                getChance(),
+                isActive(),
+                getBlockType()
+        );
+
+        if (blockBreak.save()) {
+            BlockBreak newBlockBreak = (BlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, blockBreak.getBlock().name());
+            GUIManager.openGUI(new BlockBreakEditorGUI(newBlockBreak), player);
+        }
     }
 }

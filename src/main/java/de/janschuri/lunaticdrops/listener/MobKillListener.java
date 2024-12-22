@@ -3,14 +3,17 @@ package de.janschuri.lunaticdrops.listener;
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.drops.MobKill;
+import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
+import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,51 +22,51 @@ import java.util.Map;
 
 public class MobKillListener implements Listener {
 
-    private static final Map<EntityDeathEvent, List<Item>> dropEvents = new HashMap<>();
+    private static final Map<EntityDeathEvent, List<ItemStack>> dropEvents = new HashMap<>();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onMobKillLowest(EntityDeathEvent event) {
-        Location location = event.getEntity().getLocation();
+        MobKill mobKill = (MobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, event.getEntityType().name());
 
-        List<CustomDrop> customDrops = LunaticDrops.getDrops(TriggerType.MOB_KILL);
+        if (mobKill == null) {
+            return;
+        }
 
-        Logger.debugLog("Drops: " + customDrops.size());
+        if (!mobKill.isActive()) {
+            return;
+        }
 
-//        List<Item> drops = new ArrayList<>();
-//
-//        for (CustomDrop customDrop : customDrops) {
-//            if (!customDrop.isActive()) {
-//                continue;
-//            }
-//
-//            MobKill mobKill = (MobKill) customDrop;
-//            if (!mobKill.matches(event.getEntityType())) {
-//                continue;
-//            }
-//
-//            if (mobKill.isLucky()) {
-//                Logger.debugLog("Mob killed and got lucky with " + mobKill.getName());
-//                Item item = location.getWorld().dropItem(location, mobKill
-//                event.getDrops().add(item.getItemStack());
-//                drops.add(item);
-//            }
-//        }
-//
-//        if (!drops.isEmpty()) {
-//            dropEvents.put(event, drops);
-//        }
-    }
+        List<ItemStack> drops = new ArrayList<>();
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onMobKillMonitor(EntityDeathEvent event) {
-        if (dropEvents.containsKey(event)) {
-            dropEvents.get(event).forEach(drop -> {
-                if (!event.getDrops().contains(drop.getItemStack())) {
-                    drop.remove();
+        boolean eraseVanillaDrops = false;
+
+        for (Loot loot : mobKill.getLoot()) {
+
+            if (Utils.isLucky(loot.getChance())) {
+                List<ItemStack> items = loot.getDrops();
+
+                if (items == null) {
+                    continue;
                 }
-            });
 
-            dropEvents.remove(event);
+                if (items.isEmpty()) {
+                    continue;
+                }
+
+                if (loot.isEraseVanillaDrops()) {
+                    eraseVanillaDrops = true;
+                }
+
+                drops.addAll(items);
+            }
+        }
+
+        if (!drops.isEmpty()) {
+            if (eraseVanillaDrops) {
+                event.getDrops().clear();
+            }
+
+            event.getDrops().addAll(drops);
         }
     }
 }
