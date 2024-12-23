@@ -3,6 +3,7 @@ package de.janschuri.lunaticdrops.gui;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
@@ -68,7 +69,7 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
                     }
 
                     if (loot instanceof SingleLoot) {
-                        LootGUI gui = new LootGUI((SingleLoot) loot)
+                        LootGUI gui = new LootGUI(getTriggerType(), (SingleLoot) loot)
                                 .consumer(newLoot -> {
                                     if (newLoot != null) {
                                         int index = this.loot.indexOf(loot);
@@ -190,7 +191,7 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
 
-                    InventoryGUI gui = new LootGUI(isEditMode())
+                    InventoryGUI gui = new LootGUI(getTriggerType(), isEditMode())
                             .consumer(loot -> {
                                 if (loot != null) {
                                     addLoot(loot);
@@ -202,4 +203,6 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
                     GUIManager.openGUI(gui, player);
                 });
     }
+
+    public abstract TriggerType getTriggerType();
 }

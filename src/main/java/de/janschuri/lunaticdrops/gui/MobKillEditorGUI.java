@@ -103,4 +103,9 @@ public class MobKillEditorGUI extends EditorGUI {
             GUIManager.openGUI(new MobKillEditorGUI(newMobKill), player);
         }
     }
+
+    @Override
+    public TriggerType getTriggerType() {
+        return TriggerType.MOB_KILL;
+    }
 }

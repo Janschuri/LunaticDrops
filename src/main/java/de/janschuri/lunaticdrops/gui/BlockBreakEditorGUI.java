@@ -102,4 +102,9 @@ public class BlockBreakEditorGUI extends EditorGUI {
             GUIManager.openGUI(new BlockBreakEditorGUI(newBlockBreak), player);
         }
     }
+
+    @Override
+    public TriggerType getTriggerType() {
+        return TriggerType.BLOCK_BREAK;
+    }
 }

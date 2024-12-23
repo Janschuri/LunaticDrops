@@ -106,4 +106,9 @@ public class PandaEatEditorGUI extends EditorGUI {
             GUIManager.openGUI(new PandaEatEditorGUI(newPandaEat), player);
         }
     }
+
+    @Override
+    public TriggerType getTriggerType() {
+        return TriggerType.PANDA_EAT;
+    }
 }

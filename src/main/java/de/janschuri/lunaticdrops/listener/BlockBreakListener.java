@@ -2,7 +2,6 @@ package de.janschuri.lunaticdrops.listener;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.BlockBreak;
-import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.utils.TriggerType;
@@ -10,16 +9,12 @@ import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;

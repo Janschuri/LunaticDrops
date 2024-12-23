@@ -3,11 +3,14 @@ package de.janschuri.lunaticdrops.gui;
 import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
 import de.janschuri.lunaticdrops.utils.Logger;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -23,24 +26,23 @@ public class LootGUI extends InventoryGUI {
     private boolean active = true;
     private int minAmount = 1;
     private int maxAmount = 1;
-    private boolean applyFortune = false;
-    private boolean dropWithSilkTouch = false;
-    private boolean eraseVanilla = false;
+    private List<LootFlag> flags = new ArrayList<>();
+    private TriggerType triggerType;
 
-    public LootGUI(boolean editMode) {
+    public LootGUI(TriggerType triggerType, boolean editMode) {
         super();
+        this.triggerType = triggerType;
     }
 
-    public LootGUI(SingleLoot singleLoot) {
+    public LootGUI(TriggerType triggerType, SingleLoot singleLoot) {
         super();
+        this.triggerType = triggerType;
         this.dropItem = singleLoot.getItem();
         this.chance = singleLoot.getChance();
         this.active = singleLoot.isActive();
         this.minAmount = singleLoot.getMinAmount();
         this.maxAmount = singleLoot.getMaxAmount();
-        this.applyFortune = singleLoot.isApplyFortune();
-        this.dropWithSilkTouch = singleLoot.isDropWithSilkTouch();
-        this.eraseVanilla = singleLoot.isEraseVanillaDrops();
+        this.flags = singleLoot.getFlags();
     }
 
     @Override
@@ -54,6 +56,33 @@ public class LootGUI extends InventoryGUI {
 
         addButton(17, saveButton());
 
+        List<LootFlag> flags = LootFlag.getFlags(triggerType);
+
+        List<InventoryButton> flagButtons = new ArrayList<>();
+
+        if (flags.contains(LootFlag.APPLY_FORTUNE)) {
+            flagButtons.add(applyFortuneButton());
+        }
+
+        if (flags.contains(LootFlag.APPLY_LOOTING)) {
+            flagButtons.add(applyLootingButton());
+        }
+
+        if (flags.contains(LootFlag.DROP_ONLY_TO_PLAYER)) {
+            flagButtons.add(dropOnlyToPlayerButton());
+        }
+
+        if (flags.contains(LootFlag.DROP_WITH_SILK_TOUCH)) {
+            flagButtons.add(dropWithSilkTouchButton());
+        }
+
+        if (flags.contains(LootFlag.ERASE_VANILLA_DROPS)) {
+            flagButtons.add(eraseVanillaButton());
+        }
+
+        for (int i = 0; i < flagButtons.size(); i++) {
+            addButton(45 + i, flagButtons.get(i));
+        }
 
         super.init(player);
     }
@@ -76,18 +105,6 @@ public class LootGUI extends InventoryGUI {
 
     public int getMaxAmount() {
         return maxAmount;
-    }
-
-    public boolean getApplyFortune() {
-        return applyFortune;
-    }
-
-    public boolean getDropWithSilkTouch() {
-        return dropWithSilkTouch;
-    }
-
-    public boolean getEraseVanilla() {
-        return eraseVanilla;
     }
 
     private InventoryButton returnButton() {
@@ -141,19 +158,6 @@ public class LootGUI extends InventoryGUI {
     }
 
     public void save() {
-        List<LootFlag> flags = new ArrayList<>();
-
-        if (applyFortune) {
-            flags.add(LootFlag.APPLY_FORTUNE);
-        }
-
-        if (dropWithSilkTouch) {
-            flags.add(LootFlag.DROP_WITH_SILK_TOUCH);
-        }
-
-        if (eraseVanilla) {
-            flags.add(LootFlag.ERASE_VANILLA_DROPS);
-        }
 
         SingleLoot singleLoot = new SingleLoot(
                 getDropItem(),
@@ -289,6 +293,180 @@ public class LootGUI extends InventoryGUI {
                 .creator((player) -> new ItemStack(Material.LIME_STAINED_GLASS_PANE))
                 .consumer(event -> {
                     save();
+                });
+    }
+
+    private InventoryButton eraseVanillaButton() {
+        ItemStack item = flags.contains(LootFlag.ERASE_VANILLA_DROPS) ? new ItemStack(Material.BARRIER) : new ItemStack(Material.STRUCTURE_VOID);
+
+        String displayName = "§bErase vanilla drops";
+
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add("If enabled, vanilla drops will be erased");
+        lore.add("if the drop happens");
+
+        if (flags.contains(LootFlag.ERASE_VANILLA_DROPS)) {
+            lore.add("§aEnabled");
+        } else {
+            lore.add("§cDisabled");
+        }
+
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(displayName);
+        meta.setLore(lore);
+
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (flags.contains(LootFlag.ERASE_VANILLA_DROPS)) {
+                        flags.remove(LootFlag.ERASE_VANILLA_DROPS);
+                    } else {
+                        flags.add(LootFlag.ERASE_VANILLA_DROPS);
+                    }
+
+                    reloadGui();
+                });
+    }
+
+    private InventoryButton dropWithSilkTouchButton() {
+        ItemStack item = flags.contains(LootFlag.DROP_WITH_SILK_TOUCH) ? new ItemStack(Material.ENCHANTED_BOOK) : new ItemStack(Material.BOOK);
+
+        String displayName = "§bDrop with silk touch";
+
+        List<String> lore = new ArrayList<>();
+        lore.add("If enabled, the drop will be happen");
+        lore.add("even if the block was mined with silk touch");
+
+        if (flags.contains(LootFlag.DROP_WITH_SILK_TOUCH)) {
+            lore.add("§aEnabled");
+        } else {
+            lore.add("§cDisabled");
+        }
+
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(displayName);
+        meta.setLore(lore);
+
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (flags.contains(LootFlag.DROP_WITH_SILK_TOUCH)) {
+                        flags.remove(LootFlag.DROP_WITH_SILK_TOUCH);
+                    } else {
+                        flags.add(LootFlag.DROP_WITH_SILK_TOUCH);
+                    }
+
+                    reloadGui();
+                });
+    }
+
+    private InventoryButton dropOnlyToPlayerButton() {
+        ItemStack item = flags.contains(LootFlag.DROP_ONLY_TO_PLAYER) ? new ItemStack(Material.DIAMOND_SWORD) : new ItemStack(Material.WOODEN_SWORD);
+
+
+        String displayName = "§bDrop only to player";
+
+        List<String> lore = new ArrayList<>();
+        lore.add("If enabled, the drop will only happen");
+        lore.add("if a player killed the mob");
+
+        ItemMeta meta = item.getItemMeta();
+
+        if (flags.contains(LootFlag.DROP_ONLY_TO_PLAYER)) {
+            lore.add("§aEnabled");
+        } else {
+            lore.add("§cDisabled");
+        }
+
+        meta.setDisplayName(displayName);
+        meta.setLore(lore);
+
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (flags.contains(LootFlag.DROP_ONLY_TO_PLAYER)) {
+                        flags.remove(LootFlag.DROP_ONLY_TO_PLAYER);
+                    } else {
+                        flags.add(LootFlag.DROP_ONLY_TO_PLAYER);
+                    }
+
+                    reloadGui();
+                });
+    }
+
+    private InventoryButton applyFortuneButton() {
+        ItemStack item = flags.contains(LootFlag.APPLY_FORTUNE) ? new ItemStack(Material.ENCHANTED_BOOK) : new ItemStack(Material.BOOK);
+
+        String displayName = "§bApply fortune";
+
+        List<String> lore = new ArrayList<>();
+        lore.add("If enabled, the drop will be affected");
+        lore.add("by the fortune enchantment");
+
+        if (flags.contains(LootFlag.APPLY_FORTUNE)) {
+            lore.add("§aEnabled");
+        } else {
+            lore.add("§cDisabled");
+        }
+
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(displayName);
+        meta.setLore(lore);
+
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (flags.contains(LootFlag.APPLY_FORTUNE)) {
+                        flags.remove(LootFlag.APPLY_FORTUNE);
+                    } else {
+                        flags.add(LootFlag.APPLY_FORTUNE);
+                    }
+
+                    reloadGui();
+                });
+    }
+
+    private InventoryButton applyLootingButton() {
+        ItemStack item = flags.contains(LootFlag.APPLY_LOOTING) ? new ItemStack(Material.ENCHANTED_BOOK) : new ItemStack(Material.BOOK);
+
+        String displayName = "§bApply looting";
+
+
+
+        List<String> lore = new ArrayList<>();
+        lore.add("If enabled, the drop will be affected");
+        lore.add("by the looting enchantment");
+
+        if (flags.contains(LootFlag.APPLY_LOOTING)) {
+            lore.add("§aEnabled");
+        } else {
+            lore.add("§cDisabled");
+        }
+
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(displayName);
+        meta.setLore(lore);
+
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (flags.contains(LootFlag.APPLY_LOOTING)) {
+                        flags.remove(LootFlag.APPLY_LOOTING);
+                    } else {
+                        flags.add(LootFlag.APPLY_LOOTING);
+                    }
+
+                    reloadGui();
                 });
     }
 }
