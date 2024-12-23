@@ -4,8 +4,14 @@ import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
+import de.janschuri.lunaticlib.platform.bukkit.BukkitLunaticLib;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
+import de.rapha149.signgui.SignGUI;
+import de.rapha149.signgui.SignGUIAction;
+import de.rapha149.signgui.exception.SignGUIVersionException;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
@@ -466,6 +472,10 @@ public class LootGUI extends InventoryGUI {
                 });
     }
 
+    private void setChance(float chance) {
+        this.chance = chance;
+    }
+
     private InventoryButton chanceButton() {
         ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
@@ -476,7 +486,55 @@ public class LootGUI extends InventoryGUI {
 
 
         return new InventoryButton()
-                .creator((player) -> item);
+                .creator((player) -> item)
+                .consumer(event -> {
+                    Player player = (Player) event.getWhoClicked();
+
+                    player.closeInventory();
+
+                    SignGUI gui = null;
+                    try {
+                        gui = SignGUI.builder()
+                                .setType(Material.DARK_OAK_SIGN)
+                                .setHandler((p, result) -> {
+                                    StringBuilder newChance = new StringBuilder();
+                                    for (int i = 0; i < 4; i++) {
+                                        newChance.append(result.getLine(i));
+                                    }
+
+                                    return List.of(
+                                            SignGUIAction.run(() ->{
+                                                Bukkit.getScheduler().runTask(BukkitLunaticLib.getInstance(), () -> {
+                                                    Logger.debugLog("New chance: " + newChance);
+                                                    float parsedChance;
+
+                                                    try {
+                                                        parsedChance = Float.parseFloat(newChance.toString());
+                                                        Logger.debugLog("Parsed chance: " + parsedChance);
+
+                                                        if (parsedChance < 0) {
+                                                            player.sendMessage("Chance must be greater than 0");
+                                                        } else if (parsedChance > 100) {
+                                                            player.sendMessage("Chance must be less than 100");
+                                                        } else {
+                                                            setChance(parsedChance/100);
+                                                        }
+                                                    } catch (NumberFormatException e) {
+                                                        player.sendMessage("Invalid number");
+                                                    }
+
+                                                    GUIManager.openGUI(this, player);
+                                                });
+                                            })
+                                    );
+                                })
+                                .build();
+                    } catch (SignGUIVersionException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    gui.open(player);
+                });
     }
 
     private InventoryButton increaseChanceButton() {
@@ -560,7 +618,17 @@ public class LootGUI extends InventoryGUI {
     }
 
     private static String formatChance(float chance) {
-        return String.format("%.2f", chance * 100) + "%";
+        // format to last existing decimal place
+        String chanceString = String.valueOf(chance*100);
+
+        //cut off trailing zeros
+
+        if (chanceString.contains(".")) {
+            chanceString = chanceString.replaceAll("0*$", "");
+            chanceString = chanceString.replaceAll("\\.$", "");
+        }
+
+        return chanceString + " %";
     }
 
     private void increaseChance(Player player, float amount) {
