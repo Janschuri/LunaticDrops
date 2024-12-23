@@ -92,6 +92,11 @@ public class SingleLoot implements Loot {
 
     @Override
     public Map<String, Object> toMap() {
+        List<String> flagStrings = new ArrayList<>();
+        for (LootFlag flag : flags) {
+            flagStrings.add(flag.name());
+        }
+
         return Map.of(
                 "type", "single",
                 "drop", ItemStackUtils.itemStackToMap(drop),
@@ -99,7 +104,7 @@ public class SingleLoot implements Loot {
                 "active", active,
                 "minAmount", minAmount,
                 "maxAmount", maxAmount,
-                "flags", flags
+                "flags", flagStrings
         );
     }
 

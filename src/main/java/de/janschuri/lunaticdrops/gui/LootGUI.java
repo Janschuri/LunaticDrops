@@ -56,6 +56,14 @@ public class LootGUI extends InventoryGUI {
 
         addButton(17, saveButton());
 
+        addButton(28, decreaseMinAmountButton());
+        addButton(29, minAmountButton());
+        addButton(30, increaseMinAmountButton());
+
+        addButton(32, decreaseMaxAmountButton());
+        addButton(33, maxAmountButton());
+        addButton(34, increaseMaxAmountButton());
+
         List<LootFlag> flags = LootFlag.getFlags(triggerType);
 
         List<InventoryButton> flagButtons = new ArrayList<>();
@@ -205,10 +213,6 @@ public class LootGUI extends InventoryGUI {
 
                     ClickType clickType = event.getClick();
 
-                    if (clickType == ClickType.WINDOW_BORDER_LEFT || clickType == ClickType.WINDOW_BORDER_RIGHT) {
-                        return;
-                    }
-
                     switch (clickType) {
                         case SHIFT_RIGHT:
                             increaseChance((Player) event.getWhoClicked(), 0.0001f);
@@ -242,10 +246,6 @@ public class LootGUI extends InventoryGUI {
                     }
 
                     ClickType clickType = event.getClick();
-
-                    if (clickType == ClickType.WINDOW_BORDER_LEFT || clickType == ClickType.WINDOW_BORDER_RIGHT) {
-                        return;
-                    }
 
                     switch (clickType) {
                         case SHIFT_RIGHT:
@@ -528,5 +528,193 @@ public class LootGUI extends InventoryGUI {
 
                     reloadGui();
                 });
+    }
+
+    private InventoryButton minAmountButton() {
+        ItemStack item = new ItemStack(Material.PAPER);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setDisplayName("min. Amount: " + getMinAmount());
+        List<String> lore = List.of("Minimum amount of the drop, if it happens");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+
+        return new InventoryButton()
+                .creator((player) -> item);
+    }
+
+    private InventoryButton increaseMinAmountButton() {
+        ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("min. Amount: " + getMinAmount());
+        List<String> lore = List.of("Minimum amount of the drop, if it happens");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (processingClickEvent()) {
+                        return;
+                    }
+
+                    ClickType clickType = event.getClick();
+
+                    switch (clickType) {
+                        case LEFT, RIGHT:
+                            increaseMinAmount(1);
+                            break;
+                        case SHIFT_LEFT, SHIFT_RIGHT:
+                            increaseMinAmount(10);
+                            break;
+                    }
+                });
+    }
+
+    private InventoryButton decreaseMinAmountButton() {
+        ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("min. Amount: " + getMinAmount());
+        List<String> lore = List.of("Minimum amount of the drop, if it happens");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (processingClickEvent()) {
+                        return;
+                    }
+
+                    ClickType clickType = event.getClick();
+
+                    switch (clickType) {
+                        case LEFT, RIGHT:
+                            decreaseMinAmount(1);
+                            break;
+                        case SHIFT_LEFT, SHIFT_RIGHT:
+                            decreaseMinAmount(10);
+                            break;
+                    }
+                });
+    }
+
+    private void decreaseMinAmount(int amount) {
+        int newMinAmount = getMinAmount() - amount;
+
+        if (newMinAmount < 1) {
+            newMinAmount = 1;
+        }
+
+        minAmount = newMinAmount;
+
+        reloadGui();
+    }
+
+    private void increaseMinAmount(int amount) {
+        int newMinAmount = getMinAmount() + amount;
+
+        if (newMinAmount > getMaxAmount()) {
+            newMinAmount = getMaxAmount();
+        }
+
+        minAmount = newMinAmount;
+
+        reloadGui();
+    }
+
+    private InventoryButton maxAmountButton() {
+        ItemStack item = new ItemStack(Material.PAPER);
+        ItemMeta meta = item.getItemMeta();
+        assert meta != null;
+        meta.setDisplayName("max. Amount: " + getMaxAmount());
+        List<String> lore = List.of("Maximum amount of the drop, if it happens");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+
+        return new InventoryButton()
+                .creator((player) -> item);
+    }
+
+    private InventoryButton increaseMaxAmountButton() {
+        ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("max. Amount: " + getMaxAmount());
+        List<String> lore = List.of("Maximum amount of the drop, if it happens");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (processingClickEvent()) {
+                        return;
+                    }
+
+                    ClickType clickType = event.getClick();
+
+                    switch (clickType) {
+                        case LEFT, RIGHT:
+                            increaseMaxAmount(1);
+                            break;
+                        case SHIFT_LEFT, SHIFT_RIGHT:
+                            increaseMaxAmount(10);
+                            break;
+                    }
+                });
+    }
+
+    private InventoryButton decreaseMaxAmountButton() {
+        ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("max. Amount: " + getMaxAmount());
+        List<String> lore = List.of("Maximum amount of the drop, if it happens");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (processingClickEvent()) {
+                        return;
+                    }
+
+                    ClickType clickType = event.getClick();
+
+                    switch (clickType) {
+                        case LEFT, RIGHT:
+                            decreaseMaxAmount(1);
+                            break;
+                        case SHIFT_LEFT, SHIFT_RIGHT:
+                            decreaseMaxAmount(10);
+                            break;
+                    }
+                });
+    }
+
+    private void decreaseMaxAmount(int amount) {
+        int newMaxAmount = getMaxAmount() - amount;
+
+        if (newMaxAmount < getMinAmount()) {
+            newMaxAmount = getMinAmount();
+        }
+
+        maxAmount = newMaxAmount;
+
+        reloadGui();
+    }
+
+    private void increaseMaxAmount(int amount) {
+        int newMaxAmount = getMaxAmount() + amount;
+
+        if (newMaxAmount < getMinAmount()) {
+            newMaxAmount = getMinAmount();
+        }
+
+        maxAmount = newMaxAmount;
+
+        reloadGui();
     }
 }
