@@ -42,6 +42,8 @@ public class SingleLoot implements Loot {
     @Override
     public List<ItemStack> getDrops(List<LootFlag> flags, int bonusRolls) {
 
+        Logger.debugLog("SingleLoot.getDrops: " + flags);
+
         if (!this.active) {
             return new ArrayList<>();
         }
@@ -51,6 +53,10 @@ public class SingleLoot implements Loot {
         }
 
         if (!isDropWithSilkTouch() && flags.contains(LootFlag.DROP_WITH_SILK_TOUCH)) {
+            return new ArrayList<>();
+        }
+
+        if (isOnlyFullGrown() && flags.contains(LootFlag.ONLY_FULL_GROWN)) {
             return new ArrayList<>();
         }
 
@@ -147,6 +153,10 @@ public class SingleLoot implements Loot {
 
     public boolean isForceMaxAmount() {
         return flags.contains(LootFlag.FORCE_MAX_AMOUNT);
+    }
+
+    public boolean isOnlyFullGrown() {
+        return flags.contains(LootFlag.ONLY_FULL_GROWN);
     }
 
     public static SingleLoot fromMap(Map<String, Object> map) {

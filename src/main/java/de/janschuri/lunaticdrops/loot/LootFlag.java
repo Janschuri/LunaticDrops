@@ -10,7 +10,8 @@ public enum LootFlag {
     DROP_ONLY_TO_PLAYER,
     APPLY_FORTUNE,
     APPLY_LOOTING,
-    FORCE_MAX_AMOUNT;
+    FORCE_MAX_AMOUNT,
+    ONLY_FULL_GROWN;
 
     public static List<LootFlag> getFlags(TriggerType triggerType) {
         List<LootFlag> flags = List.of();
@@ -20,7 +21,8 @@ public enum LootFlag {
                         ERASE_VANILLA_DROPS,
                         DROP_WITH_SILK_TOUCH,
                         APPLY_FORTUNE,
-                        FORCE_MAX_AMOUNT
+                        FORCE_MAX_AMOUNT,
+                        ONLY_FULL_GROWN
                 );
                 break;
             case MOB_KILL:

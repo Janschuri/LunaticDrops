@@ -7,6 +7,8 @@ import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
 import org.bukkit.Material;
+import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -91,6 +93,11 @@ public class LootGUI extends InventoryGUI {
         if (flags.contains(LootFlag.FORCE_MAX_AMOUNT)) {
             flagButtons.add(forceMaxAmountButton());
         }
+
+
+                if (flags.contains(LootFlag.ONLY_FULL_GROWN)) {
+                    flagButtons.add(onlyFullGrownButton());
+                }
 
         for (int i = 0; i < flagButtons.size(); i++) {
             addButton(45 + i, flagButtons.get(i));
@@ -181,115 +188,6 @@ public class LootGUI extends InventoryGUI {
         );
 
         getConsumer().accept(singleLoot);
-    }
-
-    private InventoryButton chanceButton() {
-        ItemStack item = new ItemStack(Material.PAPER);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("Chance: " + formatChance(getChance()));
-        List<String> lore = List.of("Chance for the drop to happen");
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-
-
-        return new InventoryButton()
-                .creator((player) -> item);
-    }
-
-    private InventoryButton increaseChanceButton() {
-        ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("Chance: " + formatChance(getChance()));
-        List<String> lore = List.of("Chance for the drop to happen");
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-
-        return new InventoryButton()
-                .creator((player) -> item)
-                .consumer(event -> {
-                    if (processingClickEvent()) {
-                        return;
-                    }
-
-                    ClickType clickType = event.getClick();
-
-                    switch (clickType) {
-                        case SHIFT_RIGHT:
-                            increaseChance((Player) event.getWhoClicked(), 0.0001f);
-                            break;
-                        case RIGHT:
-                            increaseChance((Player) event.getWhoClicked(), 0.001f);
-                            break;
-                        case LEFT:
-                            increaseChance((Player) event.getWhoClicked(), 0.01f);
-                            break;
-                        case SHIFT_LEFT:
-                            increaseChance((Player) event.getWhoClicked(), 0.1f);
-                            break;
-                    }
-                });
-    }
-
-    private InventoryButton decreaseChanceButton() {
-        ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("Chance: " + formatChance(getChance()));
-        List<String> lore = List.of("Chance for the drop to happen");
-        meta.setLore(lore);
-        item.setItemMeta(meta);
-
-        return new InventoryButton()
-                .creator((player) -> item)
-                .consumer(event -> {
-                    if (processingClickEvent()) {
-                        return;
-                    }
-
-                    ClickType clickType = event.getClick();
-
-                    switch (clickType) {
-                        case SHIFT_RIGHT:
-                            decreaseChance((Player) event.getWhoClicked(), 0.0001f);
-                            break;
-                        case RIGHT:
-                            decreaseChance((Player) event.getWhoClicked(), 0.001f);
-                            break;
-                        case LEFT:
-                            decreaseChance((Player) event.getWhoClicked(), 0.01f);
-                            break;
-                        case SHIFT_LEFT:
-                            decreaseChance((Player) event.getWhoClicked(), 0.1f);
-                            break;
-                    }
-                });
-    }
-
-    private void decreaseChance(Player player, float amount) {
-        float newChance = getChance() - amount;
-
-        if (newChance < 0) {
-            newChance = 0;
-        }
-
-        chance = newChance;
-
-        reloadGui();
-    }
-
-    private static String formatChance(float chance) {
-        return String.format("%.2f", chance * 100) + "%";
-    }
-
-    private void increaseChance(Player player, float amount) {
-        float newChance = getChance() + amount;
-
-        if (newChance > 1) {
-            newChance = 1;
-        }
-
-        chance = newChance;
-
-        reloadGui();
     }
 
     private InventoryButton saveButton() {
@@ -528,6 +426,153 @@ public class LootGUI extends InventoryGUI {
 
                     reloadGui();
                 });
+    }
+
+    private InventoryButton onlyFullGrownButton() {
+        ItemStack item = flags.contains(LootFlag.ONLY_FULL_GROWN) ? new ItemStack(Material.WHEAT) : new ItemStack(Material.WHEAT_SEEDS);
+
+        String displayName = "§bOnly full grown";
+
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add("If enabled, the drop will only happen");
+        lore.add("if the block is fully grown (only for ageable blocks)");
+
+        ItemMeta meta = item.getItemMeta();
+
+        if (flags.contains(LootFlag.ONLY_FULL_GROWN)) {
+            assert meta != null;
+            meta.addEnchant(Enchantment.MENDING, 1, true);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            lore.add("§aEnabled");
+        } else {
+            lore.add("§cDisabled");
+        }
+
+        meta.setDisplayName(displayName);
+        meta.setLore(lore);
+
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (flags.contains(LootFlag.ONLY_FULL_GROWN)) {
+                        flags.remove(LootFlag.ONLY_FULL_GROWN);
+                    } else {
+                        flags.add(LootFlag.ONLY_FULL_GROWN);
+                    }
+
+                    reloadGui();
+                });
+    }
+
+    private InventoryButton chanceButton() {
+        ItemStack item = new ItemStack(Material.PAPER);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("Chance: " + formatChance(getChance()));
+        List<String> lore = List.of("Chance for the drop to happen");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+
+        return new InventoryButton()
+                .creator((player) -> item);
+    }
+
+    private InventoryButton increaseChanceButton() {
+        ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("Chance: " + formatChance(getChance()));
+        List<String> lore = List.of("Chance for the drop to happen");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (processingClickEvent()) {
+                        return;
+                    }
+
+                    ClickType clickType = event.getClick();
+
+                    switch (clickType) {
+                        case SHIFT_RIGHT:
+                            increaseChance((Player) event.getWhoClicked(), 0.0001f);
+                            break;
+                        case RIGHT:
+                            increaseChance((Player) event.getWhoClicked(), 0.001f);
+                            break;
+                        case LEFT:
+                            increaseChance((Player) event.getWhoClicked(), 0.01f);
+                            break;
+                        case SHIFT_LEFT:
+                            increaseChance((Player) event.getWhoClicked(), 0.1f);
+                            break;
+                    }
+                });
+    }
+
+    private InventoryButton decreaseChanceButton() {
+        ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("Chance: " + formatChance(getChance()));
+        List<String> lore = List.of("Chance for the drop to happen");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (processingClickEvent()) {
+                        return;
+                    }
+
+                    ClickType clickType = event.getClick();
+
+                    switch (clickType) {
+                        case SHIFT_RIGHT:
+                            decreaseChance((Player) event.getWhoClicked(), 0.0001f);
+                            break;
+                        case RIGHT:
+                            decreaseChance((Player) event.getWhoClicked(), 0.001f);
+                            break;
+                        case LEFT:
+                            decreaseChance((Player) event.getWhoClicked(), 0.01f);
+                            break;
+                        case SHIFT_LEFT:
+                            decreaseChance((Player) event.getWhoClicked(), 0.1f);
+                            break;
+                    }
+                });
+    }
+
+    private void decreaseChance(Player player, float amount) {
+        float newChance = getChance() - amount;
+
+        if (newChance < 0) {
+            newChance = 0;
+        }
+
+        chance = newChance;
+
+        reloadGui();
+    }
+
+    private static String formatChance(float chance) {
+        return String.format("%.2f", chance * 100) + "%";
+    }
+
+    private void increaseChance(Player player, float amount) {
+        float newChance = getChance() + amount;
+
+        if (newChance > 1) {
+            newChance = 1;
+        }
+
+        chance = newChance;
+
+        reloadGui();
     }
 
     private InventoryButton minAmountButton() {

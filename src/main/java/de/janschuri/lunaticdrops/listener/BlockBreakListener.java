@@ -9,6 +9,7 @@ import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
@@ -56,6 +57,12 @@ public class BlockBreakListener implements Listener {
         if (getFortuneLevel(event.getPlayer().getInventory().getItemInMainHand()) > 0) {
             flags.add(LootFlag.APPLY_FORTUNE);
             bonusRolls = getFortuneLevel(event.getPlayer().getInventory().getItemInMainHand());
+        }
+
+        if (event.getBlockState().getBlockData() instanceof Ageable ageable) {
+            if (ageable.getAge() < ageable.getMaximumAge()) {
+                flags.add(LootFlag.ONLY_FULL_GROWN);
+            }
         }
 
         List<Item> drops = new ArrayList<>();
