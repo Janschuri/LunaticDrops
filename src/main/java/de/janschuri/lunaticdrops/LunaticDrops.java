@@ -1,6 +1,5 @@
 package de.janschuri.lunaticdrops;
 
-import de.janschuri.lunaticdrops.commands.LunaticDropCommand;
 import de.janschuri.lunaticdrops.config.AbstractDropConfig;
 import de.janschuri.lunaticdrops.config.LanguageConfig;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
@@ -42,14 +41,12 @@ public final class LunaticDrops extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new MobKillListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockBreakListener(), this);
 
-        try {
-            loadConfig();
+            if (!loadConfig()) {
+                Logger.errorLog("Error loading config");
+            }
             languageConfig = new LanguageConfig(dataDirectory, "en");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
-        LunaticLib.getPlatform().registerCommand(instance, new LunaticDropCommand());
+        LunaticLib.getPlatform().registerCommand(instance, new de.janschuri.lunaticdrops.commands.drops.LunaticDrops());
     }
 
     @Override
@@ -57,7 +54,9 @@ public final class LunaticDrops extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    public void loadConfig() throws IOException {
+    public static boolean loadConfig() {
+
+        boolean success = true;
 
         for (TriggerType dropType : TriggerType.values()) {
 
@@ -69,13 +68,16 @@ public final class LunaticDrops extends JavaPlugin {
             } catch (IOException e) {
                 Logger.errorLog("Error creating directory " + dropPath);
                 e.printStackTrace();
+                return false;
             }
 
             List<Path> files = new ArrayList<>();
             try {
                 files = getFiles(dropPath);
             } catch (IOException e) {
+                Logger.errorLog("Error getting files from " + dropPath);
                 e.printStackTrace();
+                return false;
             }
 
             customDrops.put(dropType.getConfigPath(), new HashMap<>());
@@ -92,6 +94,7 @@ public final class LunaticDrops extends JavaPlugin {
 
                 if (drop == null) {
                     Logger.errorLog("Error loading drop from " + path);
+                    success = false;
                     continue;
                 }
 
@@ -100,6 +103,7 @@ public final class LunaticDrops extends JavaPlugin {
 
             Logger.debugLog("Loaded " + customDrops.get(dropType.getConfigPath()).size() + " " + dropType.getConfigPath() + " drops");
         }
+        return true;
     }
 
     public static void updateDrop(TriggerType dropType, CustomDrop drop) {

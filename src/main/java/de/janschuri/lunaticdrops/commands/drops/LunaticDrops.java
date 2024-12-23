@@ -1,23 +1,20 @@
-package de.janschuri.lunaticdrops.commands;
+package de.janschuri.lunaticdrops.commands.drops;
 
-import de.janschuri.lunaticdrops.LunaticDrops;
+import de.janschuri.lunaticdrops.commands.Subcommand;
+import de.janschuri.lunaticdrops.commands.drops.blockbreak.BlockBreak;
+import de.janschuri.lunaticdrops.commands.drops.mobkill.MobKill;
+import de.janschuri.lunaticdrops.commands.drops.pandaeat.PandaEat;
 import de.janschuri.lunaticdrops.gui.MainGUI;
 import de.janschuri.lunaticlib.LunaticCommand;
-import de.janschuri.lunaticlib.LunaticLanguageConfig;
 import de.janschuri.lunaticlib.PlayerSender;
 import de.janschuri.lunaticlib.Sender;
-import de.janschuri.lunaticlib.common.command.AbstractLunaticCommand;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class LunaticDropCommand extends AbstractLunaticCommand {
-    @Override
-    public LunaticLanguageConfig getLanguageConfig() {
-        return LunaticDrops.getLanguageConfig();
-    }
+public class LunaticDrops extends Subcommand {
 
     @Override
     public String getPermission() {
@@ -32,7 +29,10 @@ public class LunaticDropCommand extends AbstractLunaticCommand {
     @Override
     public List<LunaticCommand> getSubcommands() {
         return List.of(
-                new BlockBreakCommand()
+                new LunaticDropsReload(),
+                new BlockBreak(),
+                new MobKill(),
+                new PandaEat()
         );
     }
 

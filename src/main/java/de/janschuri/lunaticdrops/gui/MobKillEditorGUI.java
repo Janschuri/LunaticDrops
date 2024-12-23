@@ -2,7 +2,6 @@ package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.MobKill;
-import de.janschuri.lunaticdrops.drops.PandaEat;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
@@ -13,29 +12,31 @@ import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MobKillEditorGUI extends EditorGUI {
 
-    private static final Map<Integer, EntityType> mobTypes = new HashMap<>();
+    private EntityType entityType;
 
     public MobKillEditorGUI() {
         super();
     }
 
-    public MobKillEditorGUI(MobKill mobKill) {
-        super(mobKill);
-        mobTypes.put(getId(), mobKill.getMobType());
+    public MobKillEditorGUI(EntityType entityType) {
+        super();
+        this.entityType = entityType;
     }
 
-    private EntityType getMobType() {
-        return mobTypes.get(getId());
+    public MobKillEditorGUI(MobKill mobKill) {
+        super(mobKill);
+        this.entityType = mobKill.getMobType();
+    }
+
+    private EntityType getEntityType() {
+        return entityType;
     }
 
     @Override
@@ -58,7 +59,7 @@ public class MobKillEditorGUI extends EditorGUI {
         itemStack.setItemMeta(meta);
 
         ItemStack item =
-                getMobType() != null ? ItemStackUtils.getSpawnEgg(getMobType()) :
+                getEntityType() != null ? ItemStackUtils.getSpawnEgg(getEntityType()) :
                 itemStack;
 
         return new InventoryButton()
@@ -72,7 +73,7 @@ public class MobKillEditorGUI extends EditorGUI {
 
                     SelectMobGUI selectMobGUI = new SelectMobGUI()
                             .consumer(entityType -> {
-                                mobTypes.put(getId(), entityType);
+                                this.entityType = entityType;
 
                                 if (LunaticDrops.dropExists(TriggerType.MOB_KILL, entityType.name())) {
                                     Logger.debugLog("Mob kill drop already exists for " + entityType.name());
@@ -94,7 +95,7 @@ public class MobKillEditorGUI extends EditorGUI {
         MobKill mobKill = new MobKill(
                 getItems(),
                 isActive(),
-                getMobType()
+                getEntityType()
         );
 
         if (mobKill.save()) {

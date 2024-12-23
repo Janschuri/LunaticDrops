@@ -18,21 +18,24 @@ import java.util.Map;
 
 public class PandaEatEditorGUI extends EditorGUI {
 
-    private final Inventory inventory;
-    private static final Map<Inventory, ItemStack> eatItems = new HashMap<>();
-    private static final Map<Inventory, Boolean> matchNBT = new HashMap<>();
+    private String name;
+    private ItemStack eatenItem;
+    private boolean matchNBT = false;
 
     public PandaEatEditorGUI() {
         super();
-        this.inventory = getInventory();
-        matchNBT.putIfAbsent(inventory, false);
+    }
+
+    public PandaEatEditorGUI(String name) {
+        super();
+        this.name = name;
     }
 
     public PandaEatEditorGUI(PandaEat pandaEat) {
         super(pandaEat);
-        this.inventory = getInventory();
-        matchNBT.put(inventory, pandaEat.isMatchNBT());
-        eatItems.put(inventory, pandaEat.getEatenItem());
+        this.name = pandaEat.getName();
+        this.eatenItem = pandaEat.getEatenItem();
+        this.matchNBT = pandaEat.isMatchNBT();
     }
 
     @Override
@@ -43,20 +46,21 @@ public class PandaEatEditorGUI extends EditorGUI {
     }
 
     public String getName() {
-        return "bamboo";
+        return name;
     }
 
     public ItemStack getEatenItem() {
-        return eatItems.get(inventory);
+        return eatenItem;
     }
 
     public Boolean isMatchNBT() {
-        return matchNBT.get(inventory);
+        return matchNBT;
     }
 
     @Override
     protected boolean allowSave() {
-        return getEatenItem() != null
+        return getName() != null
+                && getEatenItem() != null
                 && isMatchNBT() != null;
     }
 
@@ -81,7 +85,7 @@ public class PandaEatEditorGUI extends EditorGUI {
                     ItemStack newItem = cursorItem.clone();
                     newItem.setAmount(1);
 
-                    eatItems.put(inventory, newItem);
+                    eatenItem = newItem;
 
                     reloadGui();
                 });
