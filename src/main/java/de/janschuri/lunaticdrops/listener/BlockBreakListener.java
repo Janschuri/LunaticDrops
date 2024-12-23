@@ -4,6 +4,7 @@ import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.BlockBreak;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.loot.Loot;
+import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
@@ -50,14 +51,24 @@ public class BlockBreakListener implements Listener {
             return;
         }
 
+        List<LootFlag> flags = new ArrayList<>();
+        int bonusRolls = 0;
+
+        if (isSilk(event.getPlayer().getInventory().getItemInMainHand())) {
+            flags.add(LootFlag.DROP_WITH_SILK_TOUCH);
+        }
+
+        if (getFortuneLevel(event.getPlayer().getInventory().getItemInMainHand()) > 0) {
+            flags.add(LootFlag.APPLY_FORTUNE);
+            bonusRolls = getFortuneLevel(event.getPlayer().getInventory().getItemInMainHand());
+        }
+
         List<Item> drops = new ArrayList<>();
         boolean eraseVanillaDrops = false;
 
-        Logger.debugLog("BlockBreak: " + blockBreak.getName());
-
         for (Loot loot : blockBreak.getLoot()) {
             if (Utils.isLucky(loot.getChance())) {
-                List<ItemStack> items = loot.getDrops();
+                List<ItemStack> items = loot.getDrops(flags, bonusRolls);
 
                 if (items == null) {
                     continue;
@@ -103,6 +114,26 @@ public class BlockBreakListener implements Listener {
     }
 
     public boolean isSilk(ItemStack item) {
+        if (item == null) {
+            return false;
+        }
+
+        if (!item.hasItemMeta()) {
+            return false;
+        }
+
         return item.getEnchantments().containsKey(Enchantment.SILK_TOUCH);
+    }
+
+    public int getFortuneLevel(ItemStack item) {
+        if (item == null) {
+            return 0;
+        }
+
+        if (!item.hasItemMeta()) {
+            return 0;
+        }
+
+        return item.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS);
     }
 }

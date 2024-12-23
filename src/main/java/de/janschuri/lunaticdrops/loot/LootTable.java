@@ -24,7 +24,7 @@ public class LootTable implements Loot {
     }
 
     @Override
-    public List<ItemStack> getDrops() {
+    public List<ItemStack> getDrops(List<LootFlag> flags, int bonusRolls) {
         eraseVanillaDrops = false;
 
         if (cumulative) {
@@ -40,7 +40,7 @@ public class LootTable implements Loot {
                 return new ArrayList<>();
             }
 
-            return lootList.get(luckyIndex).getDrops();
+            return lootList.get(luckyIndex).getDrops(flags, bonusRolls);
         }
 
 
@@ -48,7 +48,7 @@ public class LootTable implements Loot {
 
         for (Loot loot : lootList) {
             if (Utils.isLucky(loot.getChance())) {
-                drops.addAll(loot.getDrops());
+                drops.addAll(loot.getDrops(flags, bonusRolls));
 
                 if (loot.isEraseVanillaDrops()) {
                     eraseVanillaDrops = true;

@@ -4,6 +4,7 @@ import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,11 +15,7 @@ public class SingleLoot implements Loot {
     private final boolean active;
     private final int minAmount;
     private final int maxAmount;
-    private final boolean applyFortune;
-    private final boolean dropWithSilkTouch;
-
-    // if true, vanilla drops will be erased, when this loot is dropped
-    private final boolean eraseVanillaDrops;
+    private List<LootFlag> flags;
 
     public SingleLoot(
             ItemStack drop,
@@ -26,18 +23,14 @@ public class SingleLoot implements Loot {
             boolean active,
             int minAmount,
             int maxAmount,
-            boolean applyFortune,
-            boolean dropWithSilkTouch,
-            boolean eraseVanillaDrops
+            List<LootFlag> flags
     ) {
         this.drop = drop;
         this.chance = chance;
         this.active = active;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
-        this.applyFortune = applyFortune;
-        this.dropWithSilkTouch = dropWithSilkTouch;
-        this.eraseVanillaDrops = eraseVanillaDrops;
+        this.flags = flags;
     }
 
     @Override
@@ -46,13 +39,38 @@ public class SingleLoot implements Loot {
     }
 
     @Override
-    public boolean isEraseVanillaDrops() {
-        return false;
-    }
+    public List<ItemStack> getDrops(List<LootFlag> flags, int bonusRolls) {
 
-    @Override
-    public List<ItemStack> getDrops() {
-        return List.of(drop);
+        if (!this.active) {
+            return new ArrayList<>();
+        }
+
+        if (!isDropOnlyToPlayer() && flags.contains(LootFlag.DROP_ONLY_TO_PLAYER)) {
+            return new ArrayList<>();
+        }
+
+        if (!isDropWithSilkTouch() && flags.contains(LootFlag.DROP_WITH_SILK_TOUCH)) {
+            return new ArrayList<>();
+        }
+
+        int amount = minAmount + (int) (Math.random() * (maxAmount - minAmount + 1));
+
+        if (isApplyFortune() && flags.contains(LootFlag.APPLY_FORTUNE)) {
+            for (int i = 0; i < bonusRolls; i++) {
+                amount += minAmount + (int) (Math.random() * (maxAmount - minAmount + 1));
+            }
+        }
+
+        if (isApplyLooting() && flags.contains(LootFlag.APPLY_LOOTING)) {
+            for (int i = 0; i < bonusRolls; i++) {
+                amount += minAmount + (int) (Math.random() * (maxAmount - minAmount + 1));
+            }
+        }
+
+        ItemStack item = drop.clone();
+        item.setAmount(amount);
+
+        return List.of(item);
     }
 
     public float getChance() {
@@ -68,9 +86,7 @@ public class SingleLoot implements Loot {
                 "active", active,
                 "minAmount", minAmount,
                 "maxAmount", maxAmount,
-                "applyFortune", applyFortune,
-                "dropWithSilkTouch", dropWithSilkTouch,
-                "eraseVanillaDrops", eraseVanillaDrops
+                "flags", flags
         );
     }
 
@@ -86,16 +102,29 @@ public class SingleLoot implements Loot {
         return maxAmount;
     }
 
-    public boolean getApplyFortune() {
-        return applyFortune;
+    public boolean isApplyFortune() {
+        return flags.contains(LootFlag.APPLY_FORTUNE);
     }
 
-    public boolean getDropWithSilkTouch() {
-        return dropWithSilkTouch;
+    public boolean isApplyLooting() {
+        return flags.contains(LootFlag.APPLY_LOOTING);
     }
 
-    public boolean getEraseVanillaDrops() {
-        return eraseVanillaDrops;
+    public boolean isDropWithSilkTouch() {
+        return flags.contains(LootFlag.DROP_WITH_SILK_TOUCH);
+    }
+
+    @Override
+    public boolean isEraseVanillaDrops() {
+        return flags.contains(LootFlag.ERASE_VANILLA_DROPS);
+    }
+
+    public List<LootFlag> getFlags() {
+        return flags;
+    }
+
+    public boolean isDropOnlyToPlayer() {
+        return flags.contains(LootFlag.ERASE_VANILLA_DROPS);
     }
 
     public static SingleLoot fromMap(Map<String, Object> map) {
@@ -108,9 +137,24 @@ public class SingleLoot implements Loot {
             boolean active = Boolean.parseBoolean(map.get("active").toString());
             int minAmount = Integer.parseInt(map.get("minAmount").toString());
             int maxAmount = Integer.parseInt(map.get("maxAmount").toString());
-            boolean applyFortune = Boolean.parseBoolean(map.get("applyFortune").toString());
-            boolean dropWithSilkTouch = Boolean.parseBoolean(map.get("dropWithSilkTouch").toString());
-            boolean eraseVanillaDrops = Boolean.parseBoolean(map.get("eraseVanillaDrops").toString());
+
+            List<LootFlag> flags = new ArrayList<>();
+
+            try {
+                List<String> flagStrings = (List<String>) map.get("flags");
+                for (String flagString : flagStrings) {
+
+                    try {
+                        LootFlag flag = LootFlag.valueOf(flagString);
+                        flags.add(flag);
+                    } catch (IllegalArgumentException e) {
+                        Logger.errorLog("Unknown flag: " + flagString);
+                    }
+
+                }
+            } catch (Exception e) {
+                Logger.errorLog("No flags found");
+            }
 
             return new SingleLoot(
                     drop,
@@ -118,9 +162,7 @@ public class SingleLoot implements Loot {
                     active,
                     minAmount,
                     maxAmount,
-                    applyFortune,
-                    dropWithSilkTouch,
-                    eraseVanillaDrops
+                    flags
             );
         } catch (Exception e) {
             e.printStackTrace();

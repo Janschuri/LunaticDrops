@@ -1,5 +1,6 @@
 package de.janschuri.lunaticdrops.gui;
 
+import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
@@ -10,6 +11,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -36,8 +38,8 @@ public class LootGUI extends InventoryGUI {
         this.active = singleLoot.isActive();
         this.minAmount = singleLoot.getMinAmount();
         this.maxAmount = singleLoot.getMaxAmount();
-        this.applyFortune = singleLoot.getApplyFortune();
-        this.dropWithSilkTouch = singleLoot.getDropWithSilkTouch();
+        this.applyFortune = singleLoot.isApplyFortune();
+        this.dropWithSilkTouch = singleLoot.isDropWithSilkTouch();
         this.eraseVanilla = singleLoot.isEraseVanillaDrops();
     }
 
@@ -139,15 +141,27 @@ public class LootGUI extends InventoryGUI {
     }
 
     public void save() {
+        List<LootFlag> flags = new ArrayList<>();
+
+        if (applyFortune) {
+            flags.add(LootFlag.APPLY_FORTUNE);
+        }
+
+        if (dropWithSilkTouch) {
+            flags.add(LootFlag.DROP_WITH_SILK_TOUCH);
+        }
+
+        if (eraseVanilla) {
+            flags.add(LootFlag.ERASE_VANILLA_DROPS);
+        }
+
         SingleLoot singleLoot = new SingleLoot(
                 getDropItem(),
                 getChance(),
                 isActive(),
                 getMinAmount(),
                 getMaxAmount(),
-                getApplyFortune(),
-                getDropWithSilkTouch(),
-                getEraseVanilla()
+                flags
         );
 
         getConsumer().accept(singleLoot);

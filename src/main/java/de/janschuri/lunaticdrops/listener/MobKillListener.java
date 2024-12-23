@@ -4,10 +4,12 @@ import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.drops.MobKill;
 import de.janschuri.lunaticdrops.loot.Loot;
+import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.Location;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -36,6 +38,20 @@ public class MobKillListener implements Listener {
             return;
         }
 
+        List<LootFlag> flags = new ArrayList<>();
+        int bonusRolls = 0;
+
+        if (event.getEntity().getKiller() == null) {
+            flags.add(LootFlag.DROP_ONLY_TO_PLAYER);
+        } else {
+            if (getLootingLevel(event.getEntity().getKiller().getInventory().getItemInMainHand()) > 0) {
+                flags.add(LootFlag.APPLY_LOOTING);
+                bonusRolls = getLootingLevel(event.getEntity().getKiller().getInventory().getItemInMainHand());
+            }
+        }
+
+
+
         List<ItemStack> drops = new ArrayList<>();
 
         boolean eraseVanillaDrops = false;
@@ -43,7 +59,7 @@ public class MobKillListener implements Listener {
         for (Loot loot : mobKill.getLoot()) {
 
             if (Utils.isLucky(loot.getChance())) {
-                List<ItemStack> items = loot.getDrops();
+                List<ItemStack> items = loot.getDrops(flags, bonusRolls);
 
                 if (items == null) {
                     continue;
@@ -68,5 +84,17 @@ public class MobKillListener implements Listener {
 
             event.getDrops().addAll(drops);
         }
+    }
+
+    public int getLootingLevel(ItemStack item) {
+        if (item == null) {
+            return 0;
+        }
+
+        if (!item.hasItemMeta()) {
+            return 0;
+        }
+
+        return item.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
     }
 }
