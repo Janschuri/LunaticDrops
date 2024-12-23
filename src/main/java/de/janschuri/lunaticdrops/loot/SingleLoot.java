@@ -1,6 +1,7 @@
 package de.janschuri.lunaticdrops.loot;
 
 import de.janschuri.lunaticdrops.utils.Logger;
+import de.janschuri.lunaticdrops.utils.Utils;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.inventory.ItemStack;
 
@@ -57,13 +58,25 @@ public class SingleLoot implements Loot {
 
         if (isApplyFortune() && flags.contains(LootFlag.APPLY_FORTUNE)) {
             for (int i = 0; i < bonusRolls; i++) {
+                if (!Utils.isLucky(chance)) {
+                    continue;
+                }
                 amount += minAmount + (int) (Math.random() * (maxAmount - minAmount + 1));
             }
         }
 
         if (isApplyLooting() && flags.contains(LootFlag.APPLY_LOOTING)) {
             for (int i = 0; i < bonusRolls; i++) {
+                if (!Utils.isLucky(chance)) {
+                    continue;
+                }
                 amount += minAmount + (int) (Math.random() * (maxAmount - minAmount + 1));
+            }
+        }
+
+        if (isForceMaxAmount()) {
+            if (amount > maxAmount) {
+                amount = maxAmount;
             }
         }
 
@@ -125,6 +138,10 @@ public class SingleLoot implements Loot {
 
     public boolean isDropOnlyToPlayer() {
         return flags.contains(LootFlag.ERASE_VANILLA_DROPS);
+    }
+
+    public boolean isForceMaxAmount() {
+        return flags.contains(LootFlag.FORCE_MAX_AMOUNT);
     }
 
     public static SingleLoot fromMap(Map<String, Object> map) {

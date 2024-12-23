@@ -80,6 +80,10 @@ public class LootGUI extends InventoryGUI {
             flagButtons.add(eraseVanillaButton());
         }
 
+        if (flags.contains(LootFlag.FORCE_MAX_AMOUNT)) {
+            flagButtons.add(forceMaxAmountButton());
+        }
+
         for (int i = 0; i < flagButtons.size(); i++) {
             addButton(45 + i, flagButtons.get(i));
         }
@@ -305,13 +309,17 @@ public class LootGUI extends InventoryGUI {
         lore.add("If enabled, vanilla drops will be erased");
         lore.add("if the drop happens");
 
+        ItemMeta meta = item.getItemMeta();
+
         if (flags.contains(LootFlag.ERASE_VANILLA_DROPS)) {
+            assert meta != null;
+            meta.addEnchant(Enchantment.MENDING, 1, true);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             lore.add("§aEnabled");
         } else {
             lore.add("§cDisabled");
         }
 
-        ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(displayName);
         meta.setLore(lore);
 
@@ -339,13 +347,17 @@ public class LootGUI extends InventoryGUI {
         lore.add("If enabled, the drop will be happen");
         lore.add("even if the block was mined with silk touch");
 
+        ItemMeta meta = item.getItemMeta();
+
         if (flags.contains(LootFlag.DROP_WITH_SILK_TOUCH)) {
+            assert meta != null;
+            meta.addEnchant(Enchantment.MENDING, 1, true);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             lore.add("§aEnabled");
         } else {
             lore.add("§cDisabled");
         }
 
-        ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(displayName);
         meta.setLore(lore);
 
@@ -365,7 +377,7 @@ public class LootGUI extends InventoryGUI {
     }
 
     private InventoryButton dropOnlyToPlayerButton() {
-        ItemStack item = flags.contains(LootFlag.DROP_ONLY_TO_PLAYER) ? new ItemStack(Material.DIAMOND_SWORD) : new ItemStack(Material.WOODEN_SWORD);
+        ItemStack item = new ItemStack(Material.DIAMOND_SWORD);
 
 
         String displayName = "§bDrop only to player";
@@ -377,6 +389,9 @@ public class LootGUI extends InventoryGUI {
         ItemMeta meta = item.getItemMeta();
 
         if (flags.contains(LootFlag.DROP_ONLY_TO_PLAYER)) {
+            assert meta != null;
+            meta.addEnchant(Enchantment.MENDING, 1, true);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             lore.add("§aEnabled");
         } else {
             lore.add("§cDisabled");
@@ -409,13 +424,17 @@ public class LootGUI extends InventoryGUI {
         lore.add("If enabled, the drop will be affected");
         lore.add("by the fortune enchantment");
 
+        ItemMeta meta = item.getItemMeta();
+
         if (flags.contains(LootFlag.APPLY_FORTUNE)) {
+            assert meta != null;
+            meta.addEnchant(Enchantment.MENDING, 1, true);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             lore.add("§aEnabled");
         } else {
             lore.add("§cDisabled");
         }
 
-        ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(displayName);
         meta.setLore(lore);
 
@@ -445,13 +464,16 @@ public class LootGUI extends InventoryGUI {
         lore.add("If enabled, the drop will be affected");
         lore.add("by the looting enchantment");
 
+        ItemMeta meta = item.getItemMeta();
+
         if (flags.contains(LootFlag.APPLY_LOOTING)) {
+            assert meta != null;
+            meta.addEnchant(Enchantment.MENDING, 1, true);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             lore.add("§aEnabled");
         } else {
             lore.add("§cDisabled");
         }
-
-        ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(displayName);
         meta.setLore(lore);
 
@@ -464,6 +486,44 @@ public class LootGUI extends InventoryGUI {
                         flags.remove(LootFlag.APPLY_LOOTING);
                     } else {
                         flags.add(LootFlag.APPLY_LOOTING);
+                    }
+
+                    reloadGui();
+                });
+    }
+
+    private InventoryButton forceMaxAmountButton() {
+        ItemStack item = flags.contains(LootFlag.FORCE_MAX_AMOUNT) ? new ItemStack(Material.RED_NETHER_BRICK_WALL) : new ItemStack(Material.OAK_FENCE);
+
+        String displayName = "§bForce max amount";
+
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add("If enabled, the drop will be capped,");
+        lore.add("even if fortune or looting would increase it");
+
+        ItemMeta meta = item.getItemMeta();
+
+        if (flags.contains(LootFlag.FORCE_MAX_AMOUNT)) {
+            assert meta != null;
+            meta.addEnchant(Enchantment.MENDING, 1, true);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            lore.add("§aEnabled");
+        } else {
+            lore.add("§cDisabled");
+        }
+
+        meta.setDisplayName(displayName);
+        meta.setLore(lore);
+
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (flags.contains(LootFlag.FORCE_MAX_AMOUNT)) {
+                        flags.remove(LootFlag.FORCE_MAX_AMOUNT);
+                    } else {
+                        flags.add(LootFlag.FORCE_MAX_AMOUNT);
                     }
 
                     reloadGui();
