@@ -36,6 +36,7 @@ public class LootGUI extends InventoryGUI {
     private int maxAmount = 1;
     private List<LootFlag> flags = new ArrayList<>();
     private TriggerType triggerType;
+    private SingleLoot singleLoot = null;
 
     public LootGUI(TriggerType triggerType, boolean editMode) {
         super();
@@ -44,18 +45,20 @@ public class LootGUI extends InventoryGUI {
 
     public LootGUI(TriggerType triggerType, SingleLoot singleLoot) {
         super();
+        this.singleLoot = singleLoot;
         this.triggerType = triggerType;
-        this.dropItem = singleLoot.getItem();
+        this.dropItem = singleLoot.getItem().clone();
         this.chance = singleLoot.getChance();
         this.active = singleLoot.isActive();
         this.minAmount = singleLoot.getMinAmount();
         this.maxAmount = singleLoot.getMaxAmount();
-        this.flags = singleLoot.getFlags();
+        this.flags = new ArrayList<>(singleLoot.getFlags());
     }
 
     @Override
     public void init(Player player) {
         addButton(0, returnButton());
+        addButton(8, deleteButton());
         addButton(11, addDropItemButton());
 
         addButton(15, increaseChanceButton());
@@ -137,6 +140,20 @@ public class LootGUI extends InventoryGUI {
 
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName("§cReturn");
+        itemStack.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> itemStack)
+                .consumer(event -> {
+                    getConsumer().accept(singleLoot);
+                });
+    }
+
+    private InventoryButton deleteButton() {
+        ItemStack itemStack = new ItemStack(Material.FLINT_AND_STEEL);
+
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setDisplayName("§cDelete");
         itemStack.setItemMeta(meta);
 
         return new InventoryButton()

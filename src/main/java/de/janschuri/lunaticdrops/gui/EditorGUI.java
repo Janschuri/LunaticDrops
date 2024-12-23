@@ -3,6 +3,7 @@ package de.janschuri.lunaticdrops.gui;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
+import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
@@ -35,7 +36,7 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
         super();
         editMode = false;
         active = customDrop.isActive();
-        loot = customDrop.getLoot();
+        loot.addAll(customDrop.getLoot());
     }
 
     @Override
@@ -113,6 +114,8 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
 
     @Override
     public void init(Player player) {
+        addButton(0, returnButton());
+
         if (!isEditMode()) {
             addButton(17, editButton());
         }
@@ -139,6 +142,21 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
                 .creator((player) -> new ItemStack(Material.LIME_STAINED_GLASS_PANE))
                 .consumer(event -> {
                     save((Player) event.getWhoClicked());
+                });
+    }
+
+    private InventoryButton returnButton() {
+        ItemStack itemStack = new ItemStack(Material.ARROW);
+
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setDisplayName("§cReturn");
+        itemStack.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> itemStack)
+                .consumer(event -> {
+                    Player player = (Player) event.getWhoClicked();
+                    GUIManager.openGUI(new ListDropGUI(getTriggerType()), player);
                 });
     }
 
