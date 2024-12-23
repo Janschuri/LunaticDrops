@@ -38,6 +38,12 @@ public enum LootFlag {
                         FORCE_MAX_AMOUNT
                 );
                 break;
+            case HARVEST:
+                flags = List.of(
+                        ERASE_VANILLA_DROPS,
+                        FORCE_MAX_AMOUNT
+                );
+                break;
         }
         return flags;
     }

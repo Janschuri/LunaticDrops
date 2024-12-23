@@ -2,8 +2,7 @@ package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.BlockBreak;
-import de.janschuri.lunaticdrops.drops.MobKill;
-import de.janschuri.lunaticdrops.loot.Loot;
+import de.janschuri.lunaticdrops.drops.Harvest;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
@@ -15,26 +14,25 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class BlockBreakEditorGUI extends EditorGUI {
+public class HarvestEditorGUI extends EditorGUI {
 
     private static final Map<Integer, Material> blockTypes = new HashMap<>();
     private static final Map<Integer, ItemStack> drops = new HashMap<>();
 
-    public BlockBreakEditorGUI() {
+    public HarvestEditorGUI() {
         super();
     }
 
-    public BlockBreakEditorGUI(Material block) {
+    public HarvestEditorGUI(Material block) {
         super();
         blockTypes.put(getId(), block);
     }
 
-    public BlockBreakEditorGUI(BlockBreak blockBreak) {
-        super(blockBreak);
-        blockTypes.put(getId(), blockBreak.getBlock());
+    public HarvestEditorGUI(Harvest harvest) {
+        super(harvest);
+        blockTypes.put(getId(), harvest.getBlock());
     }
 
     private Material getBlockType() {
@@ -55,13 +53,27 @@ public class BlockBreakEditorGUI extends EditorGUI {
 
     private InventoryButton selectBlockButton() {
 
-        ItemStack itemStack = new ItemStack(Material.STONE);
+        ItemStack itemStack = new ItemStack(Material.DEAD_BUSH);
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName("§dNo block selected");
         itemStack.setItemMeta(meta);
 
+        Material blockMaterial = null;
+
+        if (getBlockType() != null) {
+            switch (getBlockType()) {
+                case SWEET_BERRY_BUSH:
+                    blockMaterial = Material.SWEET_BERRIES;
+                    break;
+                case CAVE_VINES_PLANT:
+                    blockMaterial = Material.GLOW_BERRIES;
+                    break;
+                default:
+            }
+        }
+
         ItemStack item =
-                getBlockType() != null ? new ItemStack(getBlockType()) :
+                blockMaterial != null ? new ItemStack(blockMaterial) :
                         itemStack;
 
         return new InventoryButton()
@@ -73,39 +85,32 @@ public class BlockBreakEditorGUI extends EditorGUI {
 
                     Player player = (Player) event.getWhoClicked();
 
-                    SelectBlockGUI selectBlockGUI = new SelectBlockGUI()
+                    SelectHarvestGUI selectHarvestGUI = new SelectHarvestGUI()
                             .consumer(block -> {
                                 blockTypes.put(getId(), block);
-
-                                if (LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, block.name())) {
-                                    Logger.debugLog("Mob kill drop already exists for " + block.name());
-                                    GUIManager.openGUI(new BlockBreakEditorGUI((BlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, block.name())), player);
-                                    return;
-                                }
-
                                 GUIManager.openGUI(this, player);
                                 reloadGui();
                             });
 
-                    GUIManager.openGUI(selectBlockGUI, player);
+                    GUIManager.openGUI(selectHarvestGUI, player);
                 });
     }
 
     protected void save(Player player) {
-        BlockBreak blockBreak = new BlockBreak(
+        Harvest harvest = new Harvest(
                 getItems(),
                 isActive(),
                 getBlockType()
         );
 
-        if (blockBreak.save()) {
-            BlockBreak newBlockBreak = (BlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, blockBreak.getBlock().name());
-            GUIManager.openGUI(new BlockBreakEditorGUI(newBlockBreak), player);
+        if (harvest.save()) {
+            Harvest newHarvest = (Harvest) LunaticDrops.getDrop(TriggerType.HARVEST, harvest.getBlock().name());
+            GUIManager.openGUI(new HarvestEditorGUI(harvest), player);
         }
     }
 
     @Override
     public TriggerType getTriggerType() {
-        return TriggerType.BLOCK_BREAK;
+        return TriggerType.HARVEST;
     }
 }

@@ -1,11 +1,8 @@
-package de.janschuri.lunaticdrops.commands.drops;
+package de.janschuri.lunaticdrops.commands.drops.harvest;
 
 import de.janschuri.lunaticdrops.commands.Subcommand;
-import de.janschuri.lunaticdrops.commands.drops.blockbreak.BlockBreak;
-import de.janschuri.lunaticdrops.commands.drops.harvest.Harvest;
-import de.janschuri.lunaticdrops.commands.drops.mobkill.MobKill;
-import de.janschuri.lunaticdrops.commands.drops.pandaeat.PandaEat;
-import de.janschuri.lunaticdrops.gui.MainGUI;
+import de.janschuri.lunaticdrops.gui.ListDropGUI;
+import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.LunaticCommand;
 import de.janschuri.lunaticlib.PlayerSender;
 import de.janschuri.lunaticlib.Sender;
@@ -15,31 +12,37 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class LunaticDrops extends Subcommand {
+public class Harvest extends Subcommand {
 
     @Override
     public String getPermission() {
-        return "lunaticdrops.command.drop";
+        return "lunaticdrops.admin.harvest";
     }
 
     @Override
     public String getName() {
-        return "lunaticdrops";
+        return "harvest";
     }
 
     @Override
     public List<LunaticCommand> getSubcommands() {
         return List.of(
-                new LunaticDropsReload(),
-                new BlockBreak(),
-                new MobKill(),
-                new PandaEat(),
-                new Harvest()
+                new HarvestCreate(),
+                new HarvestEdit()
         );
     }
 
     @Override
     public boolean execute(Sender sender, String[] args) {
+        if (!sender.hasPermission(getPermission())) {
+            sender.sendMessage("§cYou don't have permission to do that.");
+            return true;
+        }
+
+        if (!(sender instanceof PlayerSender player)) {
+            sender.sendMessage("§cYou must be a player to do that.");
+            return true;
+        }
 
         if (args.length != 0) {
             final String subcommand = args[0];
@@ -53,12 +56,9 @@ public class LunaticDrops extends Subcommand {
             }
         }
 
-        PlayerSender player = (PlayerSender) sender;
-
         Player p = Bukkit.getPlayer(player.getUniqueId());
 
-        GUIManager.openGUI(new MainGUI(), p);
+        GUIManager.openGUI(new ListDropGUI(TriggerType.HARVEST), p);
         return true;
-
     }
 }

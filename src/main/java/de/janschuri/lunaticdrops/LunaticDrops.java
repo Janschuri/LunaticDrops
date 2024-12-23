@@ -5,6 +5,7 @@ import de.janschuri.lunaticdrops.config.LanguageConfig;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.events.PandaEatTask;
 import de.janschuri.lunaticdrops.listener.BlockBreakListener;
+import de.janschuri.lunaticdrops.listener.HarvestListener;
 import de.janschuri.lunaticdrops.listener.MobKillListener;
 import de.janschuri.lunaticdrops.listener.PandaEatDropItemListener;
 import de.janschuri.lunaticdrops.utils.TriggerType;
@@ -40,6 +41,7 @@ public final class LunaticDrops extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PandaEatDropItemListener(), this);
         Bukkit.getPluginManager().registerEvents(new MobKillListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockBreakListener(), this);
+        Bukkit.getPluginManager().registerEvents(new HarvestListener(), this);
 
             if (!loadConfig()) {
                 Logger.errorLog("Error loading config");

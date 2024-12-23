@@ -1,17 +1,8 @@
 package de.janschuri.lunaticdrops.utils;
 
-import de.janschuri.lunaticdrops.config.AbstractDropConfig;
-import de.janschuri.lunaticdrops.config.BlockBreakConfig;
-import de.janschuri.lunaticdrops.config.MobKillConfig;
-import de.janschuri.lunaticdrops.config.PandaEatConfig;
-import de.janschuri.lunaticdrops.drops.BlockBreak;
-import de.janschuri.lunaticdrops.drops.CustomDrop;
-import de.janschuri.lunaticdrops.drops.MobKill;
-import de.janschuri.lunaticdrops.drops.PandaEat;
-import de.janschuri.lunaticdrops.gui.BlockBreakEditorGUI;
-import de.janschuri.lunaticdrops.gui.EditorGUI;
-import de.janschuri.lunaticdrops.gui.MobKillEditorGUI;
-import de.janschuri.lunaticdrops.gui.PandaEatEditorGUI;
+import de.janschuri.lunaticdrops.config.*;
+import de.janschuri.lunaticdrops.drops.*;
+import de.janschuri.lunaticdrops.gui.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -76,6 +67,36 @@ public enum TriggerType {
         @Override
         public MobKillEditorGUI getEditorGUI() {
             return new MobKillEditorGUI();
+        }
+    },
+    HARVEST {
+        @Override
+        public String getDisplayName() {
+            return "Harvest";
+        }
+        @Override
+        public ItemStack getDisplayItem() {
+            return new ItemStack(Material.SWEET_BERRIES);
+        }
+        @Override
+        public String getConfigPath() {
+            return "/harvest";
+        }
+        @Override
+        public HarvestConfig getConfig(Path path) {
+            return new HarvestConfig(path);
+        }
+        @Override
+        public HarvestEditorGUI getEditorGUI(CustomDrop drop) {
+            if (drop instanceof Harvest) {
+                return new HarvestEditorGUI((Harvest) drop);
+            }
+            Logger.errorLog("Drop is not an instance of Harvest");
+            return null;
+        }
+        @Override
+        public HarvestEditorGUI getEditorGUI() {
+            return new HarvestEditorGUI();
         }
     },
     BLOCK_BREAK {
