@@ -3,6 +3,7 @@ package de.janschuri.lunaticdrops.drops;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
+import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -42,19 +43,7 @@ public class Harvest extends CustomDrop {
 
     @Override
     public ItemStack getDisplayItem() {
-        if (block == null) {
-            return new ItemStack(Material.DEAD_BUSH);
-        }
-
-        if (block == Material.CAVE_VINES_PLANT) {
-            return new ItemStack(Material.GLOW_BERRIES);
-        }
-
-        if (block == Material.SWEET_BERRY_BUSH) {
-            return new ItemStack(Material.SWEET_BERRIES);
-        }
-
-        return new ItemStack(Material.DEAD_BUSH);
+        return ItemStackUtils.getItemStack(getBlock());
     }
 
     public Material getBlock() {

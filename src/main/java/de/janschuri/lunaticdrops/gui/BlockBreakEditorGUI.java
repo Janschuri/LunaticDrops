@@ -9,6 +9,7 @@ import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectBlockGUI;
+import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -62,21 +63,7 @@ public class BlockBreakEditorGUI extends EditorGUI {
         meta.setDisplayName("§dNo block selected");
         itemStack.setItemMeta(meta);
 
-        if (getBlockType() != null) {
-            Material block = getBlockType();
-            if (!block.isItem()) {
-                itemStack = new ItemStack(Material.BARRIER);
-                ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setDisplayName("§r" + block.name());
-                itemMeta.addEnchant(Enchantment.MENDING, 1, true);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                itemStack.setItemMeta(itemMeta);
-            } else {
-                itemStack = new ItemStack(block);
-            }
-        }
-
-        ItemStack item = itemStack;
+        ItemStack item = getBlockType() != null ? ItemStackUtils.getItemStack(getBlockType()) : itemStack;
 
         return new InventoryButton()
                 .creator((player) -> item)

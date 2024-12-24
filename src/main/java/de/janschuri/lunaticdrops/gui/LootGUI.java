@@ -214,8 +214,13 @@ public class LootGUI extends InventoryGUI {
     }
 
     private InventoryButton saveButton() {
+        ItemStack item = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("§aSave");
+        item.setItemMeta(meta);
+
         return new InventoryButton()
-                .creator((player) -> new ItemStack(Material.LIME_STAINED_GLASS_PANE))
+                .creator((player) -> item)
                 .consumer(event -> {
                     save();
                 });
