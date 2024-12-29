@@ -19,10 +19,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.janschuri.lunaticdrops.utils.Utils.formatChance;
+
 public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<Loot> {
 
     private boolean editMode = false;
-    private float chance = 0.5f;
     private boolean active = true;
     private List<Loot> loot = new ArrayList<>();
     private int page = 0;
@@ -62,6 +63,26 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
     @Override
     public InventoryButton listItemButton(Loot loot) {
         ItemStack item = loot.getItem();
+        ItemMeta meta = item.getItemMeta();
+        List<String> lore = new ArrayList<>();
+        lore.add("Chance: " + loot.getChance());
+
+        if (loot instanceof SingleLoot) {
+            SingleLoot singleLoot = (SingleLoot) loot;
+            lore.add("active: " + (singleLoot.isActive() ? "§aYes" : "§cNo"));
+            lore.add("min. Amount: " + singleLoot.getMinAmount());
+            lore.add("max. Amount: " + singleLoot.getMaxAmount());
+            lore.add("Chance: " + formatChance(singleLoot.getChance()));
+            lore.add("");
+            if (!singleLoot.getFlags().isEmpty()) {
+                lore.add("Flags:");
+                singleLoot.getFlags().forEach(flag -> lore.add(" - " + flag.getDisplayName()));
+            }
+        }
+
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
@@ -90,10 +111,6 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
     @Override
     public List<Loot> getItems() {
         return loot;
-    }
-
-    protected Float getChance() {
-        return chance;
     }
 
     protected boolean isActive() {
@@ -167,6 +184,9 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
 
     private InventoryButton editButton() {
         ItemStack item = new ItemStack(Material.WRITABLE_BOOK);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("§eEdit");
+        item.setItemMeta(meta);
 
         return new InventoryButton()
                 .creator((player) -> item)

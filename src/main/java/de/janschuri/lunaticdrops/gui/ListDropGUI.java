@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListDropGUI extends ListGUI<CustomDrop> {
@@ -32,8 +33,17 @@ public class ListDropGUI extends ListGUI<CustomDrop> {
 
     @Override
     public InventoryButton listItemButton(CustomDrop drop) {
+
+        ItemStack itemStack = drop.getDisplayItem();
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setDisplayName(drop.getName());
+        List<String> lore = new ArrayList<>();
+        lore.add("Loot: " + drop.getLoot().size());
+        meta.setLore(lore);
+        itemStack.setItemMeta(meta);
+
         return new InventoryButton()
-                .creator((player) -> drop.getDisplayItem())
+                .creator((player) -> itemStack)
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
                     GUIManager.openGUI(dropType.getEditorGUI(drop), player);

@@ -12,7 +12,8 @@ import java.util.Map;
 public class SingleLoot implements Loot {
 
     private final ItemStack drop;
-    private final float chance;
+    private final double chance;
+    private final String chanceString;
     private final boolean active;
     private final int minAmount;
     private final int maxAmount;
@@ -20,7 +21,8 @@ public class SingleLoot implements Loot {
 
     public SingleLoot(
             ItemStack drop,
-            float chance,
+            double chance,
+            String chanceString,
             boolean active,
             int minAmount,
             int maxAmount,
@@ -28,6 +30,7 @@ public class SingleLoot implements Loot {
     ) {
         this.drop = drop;
         this.chance = chance;
+        this.chanceString = chanceString;
         this.active = active;
         this.minAmount = minAmount;
         this.maxAmount = maxAmount;
@@ -92,8 +95,13 @@ public class SingleLoot implements Loot {
         return List.of(item);
     }
 
-    public float getChance() {
+    public double getChance() {
         return chance;
+    }
+
+    @Override
+    public String getChanceString() {
+        return chanceString;
     }
 
     @Override
@@ -166,6 +174,7 @@ public class SingleLoot implements Loot {
         try {
             ItemStack drop = ItemStackUtils.mapToItemStack((Map<String, Object>) map.get("drop"));
             float chance = Float.parseFloat(map.get("chance").toString());
+            String chanceString = map.get("chance").toString();
             boolean active = Boolean.parseBoolean(map.get("active").toString());
             int minAmount = Integer.parseInt(map.get("minAmount").toString());
             int maxAmount = Integer.parseInt(map.get("maxAmount").toString());
@@ -191,6 +200,7 @@ public class SingleLoot implements Loot {
             return new SingleLoot(
                     drop,
                     chance,
+                    chanceString,
                     active,
                     minAmount,
                     maxAmount,

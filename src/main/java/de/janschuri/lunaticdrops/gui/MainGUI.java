@@ -1,5 +1,6 @@
 package de.janschuri.lunaticdrops.gui;
 
+import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
@@ -9,6 +10,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
 
 public class MainGUI extends InventoryGUI {
 
@@ -37,10 +41,23 @@ public class MainGUI extends InventoryGUI {
         super.init(player);
     }
 
+    @Override
+    public String getDefaultTitle() {
+        return "All Drops";
+    }
+
     private InventoryButton dropButton(TriggerType dropType) {
 
+        ItemStack itemStack = dropType.getDisplayItem();
+
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName(dropType.getDisplayName());
+        int amount = LunaticDrops.getDrops(dropType).size();
+        itemMeta.setLore(List.of("Drops: §e" + amount));
+        itemStack.setItemMeta(itemMeta);
+
         return new InventoryButton()
-                .creator((player) -> dropType.getDisplayItem())
+                .creator((player) -> itemStack)
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
                     GUIManager.openGUI(new ListDropGUI(dropType), player);

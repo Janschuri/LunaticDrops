@@ -26,16 +26,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static de.janschuri.lunaticdrops.utils.Utils.formatChance;
+import static de.janschuri.lunaticdrops.utils.Utils.parseEquation;
+
 public class LootGUI extends InventoryGUI {
 
-    private float chance = 0.5f;
+    private double chance = 0.5f;
+    private String chanceString = "0.5";
     private Consumer<SingleLoot> consumer;
     private ItemStack dropItem;
     private boolean active = true;
     private int minAmount = 1;
     private int maxAmount = 1;
     private List<LootFlag> flags = new ArrayList<>();
-    private TriggerType triggerType;
+    private final TriggerType triggerType;
     private SingleLoot singleLoot = null;
 
     public LootGUI(TriggerType triggerType, boolean editMode) {
@@ -49,6 +53,7 @@ public class LootGUI extends InventoryGUI {
         this.triggerType = triggerType;
         this.dropItem = singleLoot.getItem().clone();
         this.chance = singleLoot.getChance();
+        this.chanceString = singleLoot.getChanceString();
         this.active = singleLoot.isActive();
         this.minAmount = singleLoot.getMinAmount();
         this.maxAmount = singleLoot.getMaxAmount();
@@ -119,8 +124,12 @@ public class LootGUI extends InventoryGUI {
         return dropItem;
     }
 
-    public float getChance() {
+    public double getChance() {
         return chance;
+    }
+
+    public String getChanceString() {
+        return chanceString;
     }
 
     public boolean isActive() {
@@ -204,6 +213,7 @@ public class LootGUI extends InventoryGUI {
         SingleLoot singleLoot = new SingleLoot(
                 getDropItem(),
                 getChance(),
+                getChanceString(),
                 isActive(),
                 getMinAmount(),
                 getMaxAmount(),
@@ -494,15 +504,21 @@ public class LootGUI extends InventoryGUI {
                 });
     }
 
-    private void setChance(float chance) {
+    private void setChance(double chance) {
         this.chance = chance;
+    }
+
+    private void setChanceString(String chanceString) {
+        this.chanceString = chanceString;
     }
 
     private InventoryButton chanceButton() {
         ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("Chance: " + formatChance(getChance()));
-        List<String> lore = List.of("Chance for the drop to happen");
+        List<String> lore = new ArrayList<>();
+        lore.add(getChanceString());
+        lore.add("Chance for the drop to happen");
         meta.setLore(lore);
         item.setItemMeta(meta);
 
@@ -528,21 +544,33 @@ public class LootGUI extends InventoryGUI {
                                             SignGUIAction.run(() ->{
                                                 Bukkit.getScheduler().runTask(BukkitLunaticLib.getInstance(), () -> {
                                                     Logger.debugLog("New chance: " + newChance);
-                                                    float parsedChance;
 
-                                                    try {
-                                                        parsedChance = Float.parseFloat(newChance.toString());
-                                                        Logger.debugLog("Parsed chance: " + parsedChance);
+                                                    String newChanceString = newChance.toString();
 
+                                                    boolean percent = newChanceString.contains("%");
+
+                                                    if (percent) {
+                                                        newChanceString = newChanceString.replace("%", "");
+                                                    }
+
+                                                    Double parsedChance = parseEquation(newChanceString);
+
+
+                                                    if (parsedChance == null) {
+                                                            player.sendMessage("Invalid number");
+                                                    } else {
                                                         if (parsedChance < 0) {
                                                             player.sendMessage("Chance must be greater than 0");
                                                         } else if (parsedChance > 100) {
                                                             player.sendMessage("Chance must be less than 100");
                                                         } else {
-                                                            setChance(parsedChance/100);
+                                                            if (percent) {
+                                                                parsedChance /= 100;
+                                                            }
+
+                                                            setChanceString(newChance.toString());
+                                                            setChance(parsedChance);
                                                         }
-                                                    } catch (NumberFormatException e) {
-                                                        player.sendMessage("Invalid number");
                                                     }
 
                                                     GUIManager.openGUI(this, player);
@@ -563,7 +591,9 @@ public class LootGUI extends InventoryGUI {
         ItemStack item = new ItemStack(Material.GREEN_STAINED_GLASS_PANE);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("Chance: " + formatChance(getChance()));
-        List<String> lore = List.of("Chance for the drop to happen");
+        List<String> lore = new  ArrayList<>();
+        lore.add(getChanceString());
+        lore.add("Chance for the drop to happen");
         meta.setLore(lore);
         item.setItemMeta(meta);
 
@@ -597,7 +627,9 @@ public class LootGUI extends InventoryGUI {
         ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("Chance: " + formatChance(getChance()));
-        List<String> lore = List.of("Chance for the drop to happen");
+        List<String> lore = new  ArrayList<>();
+        lore.add(getChanceString());
+        lore.add("Chance for the drop to happen");
         meta.setLore(lore);
         item.setItemMeta(meta);
 
@@ -627,8 +659,8 @@ public class LootGUI extends InventoryGUI {
                 });
     }
 
-    private void decreaseChance(Player player, float amount) {
-        float newChance = getChance() - amount;
+    private void decreaseChance(Player player, double amount) {
+        double newChance = getChance() - amount;
 
         if (newChance < 0) {
             newChance = 0;
@@ -639,22 +671,8 @@ public class LootGUI extends InventoryGUI {
         reloadGui();
     }
 
-    private static String formatChance(float chance) {
-        // format to last existing decimal place
-        String chanceString = String.valueOf(chance*100);
-
-        //cut off trailing zeros
-
-        if (chanceString.contains(".")) {
-            chanceString = chanceString.replaceAll("0*$", "");
-            chanceString = chanceString.replaceAll("\\.$", "");
-        }
-
-        return chanceString + " %";
-    }
-
-    private void increaseChance(Player player, float amount) {
-        float newChance = getChance() + amount;
+    private void increaseChance(Player player, double amount) {
+        double newChance = getChance() + amount;
 
         if (newChance > 1) {
             newChance = 1;

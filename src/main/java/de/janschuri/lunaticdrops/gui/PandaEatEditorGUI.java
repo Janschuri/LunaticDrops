@@ -4,13 +4,20 @@ import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.BlockBreak;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.drops.PandaEat;
+import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
+import de.janschuri.lunaticlib.platform.bukkit.BukkitLunaticLib;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
+import de.rapha149.signgui.SignGUI;
+import de.rapha149.signgui.SignGUIAction;
+import de.rapha149.signgui.exception.SignGUIVersionException;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +48,7 @@ public class PandaEatEditorGUI extends EditorGUI {
     @Override
     public void init(Player player) {
         addButton(11, createAddEatItemButton());
+        addButton(15, nameButton());
 
         super.init(player);
     }
@@ -75,8 +83,6 @@ public class PandaEatEditorGUI extends EditorGUI {
                         return;
                     }
 
-                    Player player = (Player) event.getWhoClicked();
-
                     ItemStack cursorItem = event.getCursor();
                     if (cursorItem == null || cursorItem.getType() == Material.AIR) {
                         return;
@@ -110,5 +116,50 @@ public class PandaEatEditorGUI extends EditorGUI {
     @Override
     public TriggerType getTriggerType() {
         return TriggerType.PANDA_EAT;
+    }
+
+    private InventoryButton nameButton() {
+        ItemStack item = new ItemStack(Material.DARK_OAK_SIGN);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(getName() == null ? "No name set" : getName());
+        item.setItemMeta(meta);
+
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    Player player = (Player) event.getWhoClicked();
+
+                    player.closeInventory();
+
+                    SignGUI gui = null;
+                    try {
+                        gui = SignGUI.builder()
+                                .setType(Material.DARK_OAK_SIGN)
+                                .setHandler((p, result) -> {
+                                    StringBuilder newName = new StringBuilder();
+                                    for (int i = 0; i < 4; i++) {
+                                        newName.append(result.getLine(i));
+                                    }
+
+                                    return List.of(
+                                            SignGUIAction.run(() ->{
+                                                Bukkit.getScheduler().runTask(LunaticDrops.getInstance(), () -> {
+                                                    Logger.debugLog("New chance: " + newName);
+
+                                                    name = newName.toString();
+
+                                                    GUIManager.openGUI(this, player);
+                                                });
+                                            })
+                                    );
+                                })
+                                .build();
+                    } catch (SignGUIVersionException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    gui.open(player);
+                });
     }
 }

@@ -28,7 +28,7 @@ public class LootTable implements Loot {
         eraseVanillaDrops = false;
 
         if (cumulative) {
-            float[] chances = new float[lootList.size()];
+            double[] chances = new double[lootList.size()];
 
             for (int i = 0; i < lootList.size(); i++) {
                 chances[i] = lootList.get(i).getChance();
@@ -60,8 +60,13 @@ public class LootTable implements Loot {
     }
 
     @Override
-    public float getChance() {
+    public double getChance() {
         return 0;
+    }
+
+    @Override
+    public String getChanceString() {
+        return "";
     }
 
     @Override

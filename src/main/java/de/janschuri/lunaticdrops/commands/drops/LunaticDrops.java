@@ -19,7 +19,7 @@ public class LunaticDrops extends Subcommand {
 
     @Override
     public String getPermission() {
-        return "lunaticdrops.command.drop";
+        return "lunaticdrops.admin";
     }
 
     @Override
