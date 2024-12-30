@@ -16,13 +16,21 @@ import java.util.Map;
 
 public abstract class AbstractDropConfig extends LunaticConfigImpl  {
 
+    private final String fileName;
+
     public AbstractDropConfig(Path path) {
         super(path);
+
+        fileName = path.getFileName().toString().replace(".yml", "");
     }
 
     @Override
     public void load() {
         super.load();
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public abstract CustomDrop getDrop();

@@ -20,6 +20,7 @@ import java.util.List;
 public class MobKillEditorGUI extends EditorGUI {
 
     private EntityType entityType;
+    private String oldName = null;
 
     public MobKillEditorGUI() {
         super();
@@ -33,6 +34,7 @@ public class MobKillEditorGUI extends EditorGUI {
     public MobKillEditorGUI(MobKill mobKill) {
         super(mobKill);
         this.entityType = mobKill.getMobType();
+        this.oldName = mobKill.getName();
     }
 
     private EntityType getEntityType() {
@@ -98,7 +100,7 @@ public class MobKillEditorGUI extends EditorGUI {
                 getEntityType()
         );
 
-        if (mobKill.save()) {
+        if (mobKill.save(oldName)) {
             MobKill newMobKill = (MobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, mobKill.getMobType().name());
             GUIManager.openGUI(new MobKillEditorGUI(newMobKill), player);
         }

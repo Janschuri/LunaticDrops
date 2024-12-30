@@ -35,7 +35,7 @@ public abstract class CustomDrop {
         return loot;
     }
 
-    public final boolean save() {
+    public final boolean save(String oldName) {
         Map<String, Object> data = toMap();
 
         String name = getName();
@@ -60,6 +60,12 @@ public abstract class CustomDrop {
             e.printStackTrace();
             return false;
         }
+
+        if (oldName != null && !oldName.equals(name)) {
+            File oldFile = new File( LunaticDrops.getDataDirectory() + "/" + LunaticDrops.getCustomDropPath() + getTriggerType().getConfigPath() + "/" + oldName + ".yml");
+            oldFile.delete();
+        }
+
             LunaticDrops.updateDrop(getTriggerType(), this);
             return true;
     }

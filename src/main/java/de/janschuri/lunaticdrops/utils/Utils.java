@@ -52,6 +52,9 @@ public class Utils extends de.janschuri.lunaticlib.common.utils.Utils {
     public static String formatChance(double chance) {
         // format to last existing decimal place
         String chanceString = String.valueOf(chance*100);
+        if (chanceString.length() > 12) {
+            chanceString = chanceString.substring(0, 5);
+        }
 
         //cut off trailing zeros
 

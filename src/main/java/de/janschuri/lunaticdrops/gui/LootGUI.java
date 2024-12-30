@@ -608,16 +608,16 @@ public class LootGUI extends InventoryGUI {
 
                     switch (clickType) {
                         case SHIFT_RIGHT:
-                            increaseChance((Player) event.getWhoClicked(), 0.0001f);
+                            increaseChance((Player) event.getWhoClicked(), 0.0001d);
                             break;
                         case RIGHT:
-                            increaseChance((Player) event.getWhoClicked(), 0.001f);
+                            increaseChance((Player) event.getWhoClicked(), 0.001d);
                             break;
                         case LEFT:
-                            increaseChance((Player) event.getWhoClicked(), 0.01f);
+                            increaseChance((Player) event.getWhoClicked(), 0.01d);
                             break;
                         case SHIFT_LEFT:
-                            increaseChance((Player) event.getWhoClicked(), 0.1f);
+                            increaseChance((Player) event.getWhoClicked(), 0.1d);
                             break;
                     }
                 });

@@ -23,8 +23,8 @@ import java.util.Map;
 
 public class BlockBreakEditorGUI extends EditorGUI {
 
-    private static final Map<Integer, Material> blockTypes = new HashMap<>();
-    private static final Map<Integer, ItemStack> drops = new HashMap<>();
+    private Material block = null;
+    private String oldName = null;
 
     public BlockBreakEditorGUI() {
         super();
@@ -32,16 +32,17 @@ public class BlockBreakEditorGUI extends EditorGUI {
 
     public BlockBreakEditorGUI(Material block) {
         super();
-        blockTypes.put(getId(), block);
+        this.block = block;
     }
 
     public BlockBreakEditorGUI(BlockBreak blockBreak) {
         super(blockBreak);
-        blockTypes.put(getId(), blockBreak.getBlock());
+        this.oldName = blockBreak.getName();
+        this.block = blockBreak.getBlock();
     }
 
     private Material getBlockType() {
-        return blockTypes.get(getId());
+        return block;
     }
 
     @Override
@@ -76,7 +77,7 @@ public class BlockBreakEditorGUI extends EditorGUI {
 
                     SelectBlockGUI selectBlockGUI = new SelectBlockGUI()
                             .consumer(block -> {
-                                blockTypes.put(getId(), block);
+                                this.block = block;
 
                                 if (LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, block.name())) {
                                     Logger.debugLog("Mob kill drop already exists for " + block.name());
@@ -99,7 +100,7 @@ public class BlockBreakEditorGUI extends EditorGUI {
                 getBlockType()
         );
 
-        if (blockBreak.save()) {
+        if (blockBreak.save(oldName)) {
             BlockBreak newBlockBreak = (BlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, blockBreak.getBlock().name());
             GUIManager.openGUI(new BlockBreakEditorGUI(newBlockBreak), player);
         }

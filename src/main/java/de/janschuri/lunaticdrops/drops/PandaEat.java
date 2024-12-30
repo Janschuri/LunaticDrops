@@ -36,6 +36,7 @@ public class PandaEat extends CustomDrop {
 
     @Override
     public String getName() {
+        Logger.debugLog("Returning name: " + name);
         return name;
     }
 

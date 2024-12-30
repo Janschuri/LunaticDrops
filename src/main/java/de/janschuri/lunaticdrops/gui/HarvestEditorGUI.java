@@ -1,25 +1,19 @@
 package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.drops.BlockBreak;
 import de.janschuri.lunaticdrops.drops.Harvest;
-import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectBlockGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class HarvestEditorGUI extends EditorGUI {
 
-    private static final Map<Integer, Material> blockTypes = new HashMap<>();
-    private static final Map<Integer, ItemStack> drops = new HashMap<>();
+    private String oldName = null;
+    private Material block;
 
     public HarvestEditorGUI() {
         super();
@@ -27,16 +21,17 @@ public class HarvestEditorGUI extends EditorGUI {
 
     public HarvestEditorGUI(Material block) {
         super();
-        blockTypes.put(getId(), block);
+        this.block = block;
     }
 
     public HarvestEditorGUI(Harvest harvest) {
         super(harvest);
-        blockTypes.put(getId(), harvest.getBlock());
+        this.oldName = harvest.getName();
+        this.block = harvest.getBlock();
     }
 
     private Material getBlockType() {
-        return blockTypes.get(getId());
+        return block;
     }
 
     @Override
@@ -87,7 +82,7 @@ public class HarvestEditorGUI extends EditorGUI {
 
                     SelectHarvestGUI selectHarvestGUI = new SelectHarvestGUI()
                             .consumer(block -> {
-                                blockTypes.put(getId(), block);
+                                this.block = block;
                                 GUIManager.openGUI(this, player);
                                 reloadGui();
                             });
@@ -103,7 +98,7 @@ public class HarvestEditorGUI extends EditorGUI {
                 getBlockType()
         );
 
-        if (harvest.save()) {
+        if (harvest.save(oldName)) {
             Harvest newHarvest = (Harvest) LunaticDrops.getDrop(TriggerType.HARVEST, harvest.getBlock().name());
             GUIManager.openGUI(new HarvestEditorGUI(harvest), player);
         }

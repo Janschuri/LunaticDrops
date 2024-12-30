@@ -114,7 +114,7 @@ public class SingleLoot implements Loot {
         return Map.of(
                 "type", "single",
                 "drop", ItemStackUtils.itemStackToMap(drop),
-                "chance", chance,
+                "chance", chanceString,
                 "active", active,
                 "minAmount", minAmount,
                 "maxAmount", maxAmount,
@@ -173,8 +173,8 @@ public class SingleLoot implements Loot {
 
         try {
             ItemStack drop = ItemStackUtils.mapToItemStack((Map<String, Object>) map.get("drop"));
-            float chance = Float.parseFloat(map.get("chance").toString());
             String chanceString = map.get("chance").toString();
+            double chance = Utils.parseEquation(chanceString);
             boolean active = Boolean.parseBoolean(map.get("active").toString());
             int minAmount = Integer.parseInt(map.get("minAmount").toString());
             int maxAmount = Integer.parseInt(map.get("maxAmount").toString());
@@ -207,7 +207,7 @@ public class SingleLoot implements Loot {
                     flags
             );
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.errorLog("Error loading SingleLoot from map: " + e.getMessage());
             return null;
         }
     }
