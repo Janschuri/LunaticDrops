@@ -121,7 +121,7 @@ public class LootGUI extends InventoryGUI {
     }
 
     public ItemStack getDropItem() {
-        return dropItem;
+        return dropItem.clone();
     }
 
     public double getChance() {
@@ -184,6 +184,8 @@ public class LootGUI extends InventoryGUI {
 
                     ItemStack cursorItem = event.getCursor();
                     if (cursorItem == null || cursorItem.getType() == Material.AIR) {
+
+                        player.setItemOnCursor(getDropItem());
                         return;
                     }
 
