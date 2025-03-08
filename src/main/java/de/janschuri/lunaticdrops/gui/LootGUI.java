@@ -121,7 +121,7 @@ public class LootGUI extends InventoryGUI {
     }
 
     public ItemStack getDropItem() {
-        return dropItem.clone();
+        return dropItem == null ? null : dropItem.clone();
     }
 
     public double getChance() {
