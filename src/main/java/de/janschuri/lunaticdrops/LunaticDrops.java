@@ -115,6 +115,10 @@ public final class LunaticDrops extends JavaPlugin {
     }
 
     public static boolean dropExists(TriggerType dropType, String name) {
+        if (!customDrops.containsKey(dropType.getConfigPath())) {
+            return false;
+        }
+
         return customDrops.get(dropType.getConfigPath()).containsKey(name);
     }
 

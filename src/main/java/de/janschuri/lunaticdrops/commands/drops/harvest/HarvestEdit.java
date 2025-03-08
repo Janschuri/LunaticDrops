@@ -29,12 +29,7 @@ public class HarvestEdit extends Subcommand implements HasParams, HasParentComma
             .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Edit the harvest drop."))
             .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Bearbeite den Ernte-Drop."));
 
-    static List<Material> blocks = Arrays.asList(
-            Material.SWEET_BERRY_BUSH,
-            Material.CAVE_VINES_PLANT
-    ).stream().filter(
-            material -> LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, material.name())
-    ).toList();
+    static List<Material> blocks;
 
     @Override
     public String getPermission() {
@@ -103,7 +98,7 @@ public class HarvestEdit extends Subcommand implements HasParams, HasParentComma
 
         Map<String, String> blockParams = new HashMap<>();
 
-        for (Material block : blocks) {
+        for (Material block : getBlocks()) {
             blockParams.put(block.name(), getPermission());
         }
 
@@ -113,5 +108,17 @@ public class HarvestEdit extends Subcommand implements HasParams, HasParentComma
     @Override
     public Command getParentCommand() {
         return new de.janschuri.lunaticdrops.commands.drops.harvest.Harvest();
+    }
+
+    private List<Material> getBlocks() {
+        if (blocks == null) {
+            blocks  = Arrays.asList(
+                    Material.SWEET_BERRY_BUSH,
+                    Material.CAVE_VINES_PLANT
+            ).stream().filter(
+                    material -> LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, material.name())
+            ).toList();
+        }
+        return blocks;
     }
 }

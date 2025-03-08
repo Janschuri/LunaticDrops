@@ -27,10 +27,7 @@ public class BlockBreakEdit extends Subcommand implements HasParams, HasParentCo
             .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Edit the block break drop."))
             .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Bearbeite den Blockbruch-Drop."));
 
-    static List<Material> blocks = Arrays.stream(Material.values())
-            .filter(Material::isBlock)
-            .filter((block) -> LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, block.name()))
-            .toList();
+    static List<Material> blocks;
 
     @Override
     public String getPermission() {
@@ -99,7 +96,7 @@ public class BlockBreakEdit extends Subcommand implements HasParams, HasParentCo
 
         Map<String, String> blockParams = new HashMap<>();
 
-        for (Material block : blocks) {
+        for (Material block : getBlocks()) {
             blockParams.put(block.name(), getPermission());
         }
 
@@ -109,5 +106,15 @@ public class BlockBreakEdit extends Subcommand implements HasParams, HasParentCo
     @Override
     public Command getParentCommand() {
         return new de.janschuri.lunaticdrops.commands.drops.blockbreak.BlockBreak();
+    }
+
+    private List<Material> getBlocks() {
+        if (blocks == null) {
+            blocks = Arrays.stream(Material.values())
+                    .filter(Material::isBlock)
+                    .filter((block) -> LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, block.name()))
+                    .toList();
+        }
+        return blocks;
     }
 }

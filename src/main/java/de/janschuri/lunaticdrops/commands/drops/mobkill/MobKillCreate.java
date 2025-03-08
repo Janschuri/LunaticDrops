@@ -28,9 +28,7 @@ public class MobKillCreate extends Subcommand implements HasParentCommand, HasPa
             .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Create a mob kill drop."))
             .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Erstelle einen Mob-Kill-Drop."));
 
-    static List<EntityType> entities = Arrays.stream(EntityType.values())
-            .filter((entity) -> !LunaticDrops.dropExists(TriggerType.MOB_KILL, entity.name()))
-            .toList();
+    static List<EntityType> entities;
 
     @Override
     public String getPermission() {
@@ -98,7 +96,7 @@ public class MobKillCreate extends Subcommand implements HasParentCommand, HasPa
 
         Map<String, String> entityParams = new HashMap<>();
 
-        for (EntityType entity : entities) {
+        for (EntityType entity : getEntities()) {
             entityParams.put(entity.name(), getPermission());
         }
 
@@ -108,5 +106,14 @@ public class MobKillCreate extends Subcommand implements HasParentCommand, HasPa
     @Override
     public Command getParentCommand() {
         return new MobKill();
+    }
+
+    private List<EntityType> getEntities() {
+        if (entities == null) {
+            entities = Arrays.stream(EntityType.values())
+                    .filter((entity) -> !LunaticDrops.dropExists(TriggerType.MOB_KILL, entity.name()))
+                    .toList();
+        }
+        return entities;
     }
 }

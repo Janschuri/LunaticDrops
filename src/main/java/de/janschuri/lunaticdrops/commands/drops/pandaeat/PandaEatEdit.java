@@ -25,9 +25,7 @@ public class PandaEatEdit extends Subcommand implements HasParams, HasParentComm
             .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Edit the panda eat drop."))
             .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Bearbeite den Panda-Eat-Drop."));
 
-    static List<String> pandaEatDrops = LunaticDrops.getDrops(TriggerType.PANDA_EAT).stream()
-            .map(CustomDrop::getName)
-            .toList();
+    static List<String> pandaEatDrops;
 
     @Override
     public String getPermission() {
@@ -88,7 +86,7 @@ public class PandaEatEdit extends Subcommand implements HasParams, HasParentComm
     public List<Map<String, String>> getParams() {
         Map<String, String> params = new HashMap<>();
 
-        for (String drop : pandaEatDrops) {
+        for (String drop : getPandaEatDrops()) {
             params.put(drop, getPermission());
         }
 
@@ -98,5 +96,14 @@ public class PandaEatEdit extends Subcommand implements HasParams, HasParentComm
     @Override
     public Command getParentCommand() {
         return new de.janschuri.lunaticdrops.commands.drops.pandaeat.PandaEat();
+    }
+
+    private List<String> getPandaEatDrops() {
+        if (pandaEatDrops == null) {
+            pandaEatDrops = LunaticDrops.getDrops(TriggerType.PANDA_EAT).stream()
+                    .map(CustomDrop::getName)
+                    .toList();
+        }
+        return pandaEatDrops;
     }
 }

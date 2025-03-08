@@ -14,10 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MobKillEdit extends Subcommand implements HasParentCommand, HasParams {
 
@@ -26,9 +23,7 @@ public class MobKillEdit extends Subcommand implements HasParentCommand, HasPara
             .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Edit the mob kill drop."))
             .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Bearbeite den Mob-Kill-Drop."));
 
-    static List<EntityType> entities = Arrays.stream(EntityType.values())
-            .filter((entity) -> !LunaticDrops.dropExists(TriggerType.MOB_KILL, entity.name()))
-            .toList();
+    private static List<EntityType> entities;
 
     @Override
     public String getPermission() {
@@ -95,7 +90,7 @@ public class MobKillEdit extends Subcommand implements HasParentCommand, HasPara
 
         Map<String, String> entityParams = new HashMap<>();
 
-        for (EntityType entity : entities) {
+        for (EntityType entity : getEntities()) {
             entityParams.put(entity.name(), getPermission());
         }
 
@@ -105,5 +100,14 @@ public class MobKillEdit extends Subcommand implements HasParentCommand, HasPara
     @Override
     public Command getParentCommand() {
         return new de.janschuri.lunaticdrops.commands.drops.mobkill.MobKill();
+    }
+
+    private List<EntityType> getEntities() {
+        if (entities == null) {
+            entities = Arrays.stream(EntityType.values())
+                    .filter((entity) -> !LunaticDrops.dropExists(TriggerType.MOB_KILL, entity.name()))
+                    .toList();
+        }
+        return entities;
     }
 }

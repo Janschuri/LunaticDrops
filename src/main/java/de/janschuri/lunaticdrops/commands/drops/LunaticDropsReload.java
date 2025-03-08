@@ -15,6 +15,10 @@ public class LunaticDropsReload extends Subcommand implements HasParentCommand {
 
     private static final LunaticDropsReload INSTANCE = new LunaticDropsReload();
 
+    private static final CommandMessageKey HELP_MK = new LunaticCommandMessageKey(INSTANCE, "help")
+            .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Reload the config."))
+            .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Lade die Konfiguration neu."));
+
     private static final CommandMessageKey RELOADED_MK = new LunaticCommandMessageKey(INSTANCE, "reloaded")
             .defaultMessage("en", "Config reloaded.")
             .defaultMessage("de", "Konfiguration neu geladen.");
@@ -44,7 +48,7 @@ public class LunaticDropsReload extends Subcommand implements HasParentCommand {
     @Override
     public Map<CommandMessageKey, String> getHelpMessages() {
         return Map.of(
-                RELOADED_MK, getPermission()
+                HELP_MK, getPermission()
         );
     }
 

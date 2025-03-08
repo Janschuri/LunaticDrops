@@ -28,10 +28,7 @@ public class BlockBreakCreate extends Subcommand implements HasParentCommand, Ha
             .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Erstelle einen BlockBreak-Drop."));
 
 
-    static List<Material> blocks = Arrays.stream(Material.values())
-            .filter(Material::isBlock)
-            .filter((block) -> !LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, block.name()))
-            .toList();
+    static List<Material> blocks;
 
     @Override
     public String getPermission() {
@@ -99,7 +96,7 @@ public class BlockBreakCreate extends Subcommand implements HasParentCommand, Ha
 
         Map<String, String> blockParams = new HashMap<>();
 
-        for (Material block : blocks) {
+        for (Material block : getBlocks()) {
             blockParams.put(block.name(), getPermission());
         }
 
@@ -109,5 +106,15 @@ public class BlockBreakCreate extends Subcommand implements HasParentCommand, Ha
     @Override
     public Command getParentCommand() {
         return new BlockBreak();
+    }
+
+    private List<Material> getBlocks() {
+        if (blocks == null) {
+            blocks = Arrays.stream(Material.values())
+                    .filter(Material::isBlock)
+                    .filter((block) -> !LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, block.name()))
+                    .toList();
+        }
+        return blocks;
     }
 }

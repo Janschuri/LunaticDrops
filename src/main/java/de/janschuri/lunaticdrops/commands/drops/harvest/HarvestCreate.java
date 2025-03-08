@@ -13,6 +13,7 @@ import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -26,6 +27,8 @@ public class HarvestCreate extends Subcommand implements HasParentCommand, HasPa
     private static final CommandMessageKey HELP_MK = new LunaticCommandMessageKey(INSTANCE, "help")
             .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Create a harvest drop."))
             .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Erstelle einen Ernte-Drop."));
+
+    private static List<Material> blocks;
 
     @Override
     public String getPermission() {
@@ -111,11 +114,15 @@ public class HarvestCreate extends Subcommand implements HasParentCommand, HasPa
     }
 
     private List<Material> getBlocks() {
-        return Arrays.asList(
-                Material.SWEET_BERRY_BUSH,
-                Material.CAVE_VINES_PLANT
-        ).stream().filter(
-                material -> !LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, material.name())
-        ).toList();
+        if (blocks == null) {
+            blocks = Arrays.asList(
+                    Material.SWEET_BERRY_BUSH,
+                    Material.CAVE_VINES_PLANT
+            ).stream().filter(
+                    material -> !LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, material.name())
+            ).toList();
+        }
+
+        return blocks;
     }
 }
