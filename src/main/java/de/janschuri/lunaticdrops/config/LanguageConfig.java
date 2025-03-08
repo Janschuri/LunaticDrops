@@ -16,6 +16,6 @@ public class LanguageConfig extends LunaticLanguageConfig {
 
     @Override
     protected String getDefaultPrefix() {
-        return "LunaticDrops";
+        return "&9[LunaticDrops] &f";
     }
 }
