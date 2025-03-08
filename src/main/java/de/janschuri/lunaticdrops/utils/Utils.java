@@ -3,9 +3,6 @@ package de.janschuri.lunaticdrops.utils;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.Random;
 
 public class Utils extends de.janschuri.lunaticlib.common.utils.Utils {

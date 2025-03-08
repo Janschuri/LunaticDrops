@@ -5,11 +5,12 @@ import de.janschuri.lunaticdrops.commands.Subcommand;
 import de.janschuri.lunaticdrops.drops.BlockBreak;
 import de.janschuri.lunaticdrops.gui.BlockBreakEditorGUI;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.LunaticLanguageConfig;
-import de.janschuri.lunaticlib.PlayerSender;
-import de.janschuri.lunaticlib.Sender;
-import de.janschuri.lunaticlib.common.command.AbstractLunaticCommand;
+import de.janschuri.lunaticlib.*;
+import de.janschuri.lunaticlib.common.command.HasParams;
+import de.janschuri.lunaticlib.common.command.HasParentCommand;
+import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,7 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BlockBreakEdit extends Subcommand {
+public class BlockBreakEdit extends Subcommand implements HasParams, HasParentCommand {
+
+    private static final BlockBreakEdit INSTANCE = new BlockBreakEdit();
+    private static final CommandMessageKey HELP_MK = new LunaticCommandMessageKey(INSTANCE, "help")
+            .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Edit the block break drop."))
+            .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Bearbeite den Blockbruch-Drop."));
 
     static List<Material> blocks = Arrays.stream(Material.values())
             .filter(Material::isBlock)
@@ -67,11 +73,25 @@ public class BlockBreakEdit extends Subcommand {
             return true;
         }
 
-        BlockBreak blockBreak = (de.janschuri.lunaticdrops.drops.BlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, blockName);
+        BlockBreak blockBreak = (BlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, blockName);
 
         Player p = Bukkit.getPlayer(player.getUniqueId());
         GUIManager.openGUI(new BlockBreakEditorGUI(blockBreak), p);
         return true;
+    }
+
+    @Override
+    public Map<CommandMessageKey, String> getHelpMessages() {
+        return Map.of(
+                HELP_MK, getPermission()
+        );
+    }
+
+    @Override
+    public List<MessageKey> getParamsNames() {
+        return List.of(
+                BLOCK_MK
+        );
     }
 
     @Override
@@ -84,5 +104,10 @@ public class BlockBreakEdit extends Subcommand {
         }
 
         return List.of(blockParams);
+    }
+
+    @Override
+    public Command getParentCommand() {
+        return new de.janschuri.lunaticdrops.commands.drops.blockbreak.BlockBreak();
     }
 }

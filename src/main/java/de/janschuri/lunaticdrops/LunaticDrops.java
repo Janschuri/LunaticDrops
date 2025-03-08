@@ -43,10 +43,10 @@ public final class LunaticDrops extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BlockBreakListener(), this);
         Bukkit.getPluginManager().registerEvents(new HarvestListener(), this);
 
+        languageConfig = new LanguageConfig(dataDirectory, "en");
             if (!loadConfig()) {
                 Logger.errorLog("Error loading config");
             }
-            languageConfig = new LanguageConfig(dataDirectory, "en");
 
         LunaticLib.getPlatform().registerCommand(instance, new de.janschuri.lunaticdrops.commands.drops.LunaticDrops());
     }
@@ -59,6 +59,8 @@ public final class LunaticDrops extends JavaPlugin {
     public static boolean loadConfig() {
 
         boolean success = true;
+
+        languageConfig.load();
 
         for (TriggerType dropType : TriggerType.values()) {
 

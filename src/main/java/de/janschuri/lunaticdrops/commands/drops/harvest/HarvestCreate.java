@@ -5,9 +5,12 @@ import de.janschuri.lunaticdrops.commands.Subcommand;
 import de.janschuri.lunaticdrops.gui.BlockBreakEditorGUI;
 import de.janschuri.lunaticdrops.gui.HarvestEditorGUI;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.PlayerSender;
-import de.janschuri.lunaticlib.Sender;
+import de.janschuri.lunaticlib.*;
+import de.janschuri.lunaticlib.common.command.HasParams;
+import de.janschuri.lunaticlib.common.command.HasParentCommand;
+import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,14 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HarvestCreate extends Subcommand {
+public class HarvestCreate extends Subcommand implements HasParentCommand, HasParams {
 
-    static List<Material> blocks = Arrays.asList(
-            Material.SWEET_BERRY_BUSH,
-            Material.CAVE_VINES_PLANT
-    ).stream().filter(
-            material -> !LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, material.name())
-    ).toList();
+    private static final HarvestCreate INSTANCE = new HarvestCreate();
+    private static final CommandMessageKey HELP_MK = new LunaticCommandMessageKey(INSTANCE, "help")
+            .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Create a harvest drop."))
+            .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Erstelle einen Ernte-Drop."));
 
     @Override
     public String getPermission() {
@@ -62,7 +63,7 @@ public class HarvestCreate extends Subcommand {
             return true;
         }
 
-        if (!blocks.contains(block)) {
+        if (!getBlocks().contains(block)) {
             sender.sendMessage("Block not allowed");
             return true;
         }
@@ -79,14 +80,42 @@ public class HarvestCreate extends Subcommand {
     }
 
     @Override
+    public Map<CommandMessageKey, String> getHelpMessages() {
+        return Map.of(
+                HELP_MK, getPermission()
+        );
+    }
+
+    @Override
+    public List<MessageKey> getParamsNames() {
+        return List.of(
+                BLOCK_MK
+        );
+    }
+
+    @Override
     public List<Map<String, String>> getParams() {
 
         Map<String, String> blockParams = new HashMap<>();
 
-        for (Material block : blocks) {
+        for (Material block : getBlocks()) {
             blockParams.put(block.name(), getPermission());
         }
 
         return List.of(blockParams);
+    }
+
+    @Override
+    public Command getParentCommand() {
+        return new Harvest();
+    }
+
+    private List<Material> getBlocks() {
+        return Arrays.asList(
+                Material.SWEET_BERRY_BUSH,
+                Material.CAVE_VINES_PLANT
+        ).stream().filter(
+                material -> !LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, material.name())
+        ).toList();
     }
 }

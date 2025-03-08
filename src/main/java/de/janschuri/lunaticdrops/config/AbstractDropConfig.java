@@ -1,11 +1,12 @@
 package de.janschuri.lunaticdrops.config;
 
+import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.LootTable;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
 import de.janschuri.lunaticdrops.utils.Logger;
-import de.janschuri.lunaticlib.common.config.LunaticConfigImpl;
+import de.janschuri.lunaticlib.common.config.LunaticConfig;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.inventory.ItemStack;
 
@@ -14,23 +15,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractDropConfig extends LunaticConfigImpl  {
+public abstract class AbstractDropConfig extends LunaticConfig {
 
     private final String fileName;
 
     public AbstractDropConfig(Path path) {
-        super(path);
+        super(path, path.getFileName().toString());
 
         fileName = path.getFileName().toString().replace(".yml", "");
     }
 
-    @Override
-    public void load() {
-        super.load();
-    }
-
     public String getFileName() {
         return fileName;
+    }
+
+    public void load() {
+        super.load(null);
     }
 
     public abstract CustomDrop getDrop();

@@ -7,9 +7,12 @@ import de.janschuri.lunaticdrops.drops.Harvest;
 import de.janschuri.lunaticdrops.gui.BlockBreakEditorGUI;
 import de.janschuri.lunaticdrops.gui.HarvestEditorGUI;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.PlayerSender;
-import de.janschuri.lunaticlib.Sender;
+import de.janschuri.lunaticlib.*;
+import de.janschuri.lunaticlib.common.command.HasParams;
+import de.janschuri.lunaticlib.common.command.HasParentCommand;
+import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,7 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HarvestEdit extends Subcommand {
+public class HarvestEdit extends Subcommand implements HasParams, HasParentCommand {
+
+    private static final HarvestEdit INSTANCE = new HarvestEdit();
+    private static final CommandMessageKey HELP_MK = new LunaticCommandMessageKey(INSTANCE, "help")
+            .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Edit the harvest drop."))
+            .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Bearbeite den Ernte-Drop."));
 
     static List<Material> blocks = Arrays.asList(
             Material.SWEET_BERRY_BUSH,
@@ -77,6 +85,20 @@ public class HarvestEdit extends Subcommand {
     }
 
     @Override
+    public Map<CommandMessageKey, String> getHelpMessages() {
+        return Map.of(
+                HELP_MK, getPermission()
+        );
+    }
+
+    @Override
+    public List<MessageKey> getParamsNames() {
+        return List.of(
+                BLOCK_MK
+        );
+    }
+
+    @Override
     public List<Map<String, String>> getParams() {
 
         Map<String, String> blockParams = new HashMap<>();
@@ -86,5 +108,10 @@ public class HarvestEdit extends Subcommand {
         }
 
         return List.of(blockParams);
+    }
+
+    @Override
+    public Command getParentCommand() {
+        return new de.janschuri.lunaticdrops.commands.drops.harvest.Harvest();
     }
 }

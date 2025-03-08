@@ -2,16 +2,15 @@ package de.janschuri.lunaticdrops.commands.drops.mobkill;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.commands.Subcommand;
-import de.janschuri.lunaticdrops.drops.BlockBreak;
 import de.janschuri.lunaticdrops.drops.MobKill;
-import de.janschuri.lunaticdrops.gui.BlockBreakEditorGUI;
 import de.janschuri.lunaticdrops.gui.MobKillEditorGUI;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.PlayerSender;
-import de.janschuri.lunaticlib.Sender;
+import de.janschuri.lunaticlib.*;
+import de.janschuri.lunaticlib.common.command.HasParams;
+import de.janschuri.lunaticlib.common.command.HasParentCommand;
+import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -20,7 +19,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MobKillEdit extends Subcommand {
+public class MobKillEdit extends Subcommand implements HasParentCommand, HasParams {
+
+    private static final MobKillEdit INSTANCE = new MobKillEdit();
+    private static final CommandMessageKey HELP_MK = new LunaticCommandMessageKey(INSTANCE, "help")
+            .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Edit the mob kill drop."))
+            .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Bearbeite den Mob-Kill-Drop."));
 
     static List<EntityType> entities = Arrays.stream(EntityType.values())
             .filter((entity) -> !LunaticDrops.dropExists(TriggerType.MOB_KILL, entity.name()))
@@ -75,6 +79,18 @@ public class MobKillEdit extends Subcommand {
     }
 
     @Override
+    public Map<CommandMessageKey, String> getHelpMessages() {
+        return Map.of();
+    }
+
+    @Override
+    public List<MessageKey> getParamsNames() {
+        return List.of(
+                    PAGE_MK
+        );
+    }
+
+    @Override
     public List<Map<String, String>> getParams() {
 
         Map<String, String> entityParams = new HashMap<>();
@@ -84,5 +100,10 @@ public class MobKillEdit extends Subcommand {
         }
 
         return List.of(entityParams);
+    }
+
+    @Override
+    public Command getParentCommand() {
+        return new de.janschuri.lunaticdrops.commands.drops.mobkill.MobKill();
     }
 }

@@ -5,9 +5,12 @@ import de.janschuri.lunaticdrops.commands.Subcommand;
 import de.janschuri.lunaticdrops.gui.BlockBreakEditorGUI;
 import de.janschuri.lunaticdrops.gui.MobKillEditorGUI;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.PlayerSender;
-import de.janschuri.lunaticlib.Sender;
+import de.janschuri.lunaticlib.*;
+import de.janschuri.lunaticlib.common.command.HasParams;
+import de.janschuri.lunaticlib.common.command.HasParentCommand;
+import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -18,7 +21,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MobKillCreate extends Subcommand {
+public class MobKillCreate extends Subcommand implements HasParentCommand, HasParams {
+
+    private static final MobKillCreate INSTANCE = new MobKillCreate();
+    private static final CommandMessageKey HELP_MK = new LunaticCommandMessageKey(INSTANCE, "help")
+            .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Create a mob kill drop."))
+            .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Erstelle einen Mob-Kill-Drop."));
 
     static List<EntityType> entities = Arrays.stream(EntityType.values())
             .filter((entity) -> !LunaticDrops.dropExists(TriggerType.MOB_KILL, entity.name()))
@@ -72,6 +80,20 @@ public class MobKillCreate extends Subcommand {
     }
 
     @Override
+    public Map<CommandMessageKey, String> getHelpMessages() {
+        return Map.of(
+                HELP_MK, getPermission()
+        );
+    }
+
+    @Override
+    public List<MessageKey> getParamsNames() {
+        return List.of(
+               MOB_MK
+        );
+    }
+
+    @Override
     public List<Map<String, String>> getParams() {
 
         Map<String, String> entityParams = new HashMap<>();
@@ -81,5 +103,10 @@ public class MobKillCreate extends Subcommand {
         }
 
         return List.of(entityParams);
+    }
+
+    @Override
+    public Command getParentCommand() {
+        return new MobKill();
     }
 }

@@ -6,8 +6,10 @@ import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.drops.PandaEat;
 import de.janschuri.lunaticdrops.gui.PandaEatEditorGUI;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.PlayerSender;
-import de.janschuri.lunaticlib.Sender;
+import de.janschuri.lunaticlib.*;
+import de.janschuri.lunaticlib.common.command.HasParams;
+import de.janschuri.lunaticlib.common.command.HasParentCommand;
+import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,7 +18,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PandaEatEdit extends Subcommand {
+public class PandaEatEdit extends Subcommand implements HasParams, HasParentCommand {
+
+    private static final PandaEatEdit INSTANCE = new PandaEatEdit();
+    private static final CommandMessageKey HELP_MK = new LunaticCommandMessageKey(INSTANCE, "help")
+            .defaultMessage("en", INSTANCE.getDefaultHelpMessage("Edit the panda eat drop."))
+            .defaultMessage("de", INSTANCE.getDefaultHelpMessage("Bearbeite den Panda-Eat-Drop."));
 
     static List<String> pandaEatDrops = LunaticDrops.getDrops(TriggerType.PANDA_EAT).stream()
             .map(CustomDrop::getName)
@@ -64,6 +71,20 @@ public class PandaEatEdit extends Subcommand {
     }
 
     @Override
+    public Map<CommandMessageKey, String> getHelpMessages() {
+        return Map.of(
+                HELP_MK, getPermission()
+        );
+    }
+
+    @Override
+    public List<MessageKey> getParamsNames() {
+        return List.of(
+                NAME_MK
+        );
+    }
+
+    @Override
     public List<Map<String, String>> getParams() {
         Map<String, String> params = new HashMap<>();
 
@@ -72,5 +93,10 @@ public class PandaEatEdit extends Subcommand {
         }
 
         return List.of(params);
+    }
+
+    @Override
+    public Command getParentCommand() {
+        return new de.janschuri.lunaticdrops.commands.drops.pandaeat.PandaEat();
     }
 }
