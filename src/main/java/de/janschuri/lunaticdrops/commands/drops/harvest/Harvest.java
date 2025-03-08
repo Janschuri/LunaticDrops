@@ -47,7 +47,8 @@ public class Harvest extends Subcommand implements HasSubcommands, HasHelpComman
     public List<Command> getSubcommands() {
         return List.of(
                 new HarvestCreate(),
-                new HarvestEdit()
+                new HarvestEdit(),
+                getHelpCommand()
         );
     }
 

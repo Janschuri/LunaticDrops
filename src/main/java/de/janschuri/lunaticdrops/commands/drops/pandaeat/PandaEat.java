@@ -46,7 +46,8 @@ public class PandaEat extends Subcommand implements HasHelpCommand, HasParentCom
     public List<Command> getSubcommands() {
         return List.of(
                 new PandaEatCreate(),
-                new PandaEatEdit()
+                new PandaEatEdit(),
+                getHelpCommand()
         );
     }
 

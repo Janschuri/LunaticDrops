@@ -47,7 +47,8 @@ public class BlockBreak extends Subcommand implements HasHelpCommand, HasSubcomm
     public List<Command> getSubcommands() {
         return List.of(
                 new BlockBreakCreate(),
-                new BlockBreakEdit()
+                new BlockBreakEdit(),
+                getHelpCommand()
         );
     }
 

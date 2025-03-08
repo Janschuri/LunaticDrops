@@ -47,7 +47,8 @@ public class MobKill extends Subcommand implements HasSubcommands, HasHelpComman
     public List<Command> getSubcommands() {
         return List.of(
                 new MobKillCreate(),
-                new MobKillEdit()
+                new MobKillEdit(),
+                getHelpCommand()
         );
     }
 
