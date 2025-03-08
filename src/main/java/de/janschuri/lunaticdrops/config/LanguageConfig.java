@@ -13,4 +13,9 @@ public class LanguageConfig extends LunaticLanguageConfig {
     protected String getPackage() {
         return "de.janschuri.lunaticdrops";
     }
+
+    @Override
+    protected String getDefaultPrefix() {
+        return "LunaticDrops";
+    }
 }
