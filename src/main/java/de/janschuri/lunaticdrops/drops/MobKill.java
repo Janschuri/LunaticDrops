@@ -16,7 +16,7 @@ public class MobKill extends CustomDrop {
 
     private final EntityType mobType;
 
-    public MobKill(@NotNull List<Loot> loot, @NotNull Boolean active, @NotNull EntityType mobType) {
+    public MobKill(@NotNull List<Loot> loot, boolean active, @NotNull EntityType mobType) {
         super(loot, active);
         this.mobType = mobType;
     }
@@ -38,7 +38,7 @@ public class MobKill extends CustomDrop {
     }
 
     @Override
-    protected TriggerType getTriggerType() {
+    public TriggerType getTriggerType() {
         return TriggerType.MOB_KILL;
     }
 

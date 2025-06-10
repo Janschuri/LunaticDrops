@@ -17,7 +17,7 @@ public class PandaEat extends CustomDrop {
     private final boolean matchNBT;
     private final String name;
 
-    public PandaEat(@NotNull String name, @NotNull List<Loot> loot, @NotNull Boolean active, @NotNull ItemStack eatenItem, @NotNull Boolean matchNBT) {
+    public PandaEat(@NotNull String name, @NotNull List<Loot> loot, boolean active, @NotNull ItemStack eatenItem, boolean matchNBT) {
         super(loot, active);
         this.name = name;
         this.eatenItem = eatenItem;
@@ -53,7 +53,7 @@ public class PandaEat extends CustomDrop {
     }
 
     @Override
-    protected TriggerType getTriggerType() {
+    public TriggerType getTriggerType() {
         return TriggerType.PANDA_EAT;
     }
 

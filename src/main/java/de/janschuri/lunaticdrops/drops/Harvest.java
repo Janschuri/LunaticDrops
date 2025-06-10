@@ -15,7 +15,7 @@ public class Harvest extends CustomDrop {
 
     private final Material block;
 
-    public Harvest(@NotNull List<Loot> loot, @NotNull Boolean active, Material block) {
+    public Harvest(@NotNull List<Loot> loot, boolean active, Material block) {
         super(loot, active);
         this.block = block;
     }
@@ -37,7 +37,7 @@ public class Harvest extends CustomDrop {
     }
 
     @Override
-    protected TriggerType getTriggerType() {
+    public TriggerType getTriggerType() {
         return TriggerType.HARVEST;
     }
 

@@ -17,7 +17,7 @@ public class BlockBreak extends CustomDrop {
 
     private final Material block;
 
-    public BlockBreak(@NotNull List<Loot> loot, @NotNull Boolean active, Material block) {
+    public BlockBreak(@NotNull List<Loot> loot, boolean active, Material block) {
         super(loot, active);
         this.block = block;
     }
@@ -39,7 +39,7 @@ public class BlockBreak extends CustomDrop {
     }
 
     @Override
-    protected TriggerType getTriggerType() {
+    public TriggerType getTriggerType() {
         return TriggerType.BLOCK_BREAK;
     }
 

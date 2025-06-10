@@ -20,7 +20,7 @@ public abstract class CustomDrop {
     protected final List<Loot> loot;
     protected final boolean active;
 
-    public CustomDrop(@NotNull List<Loot> loot, @NotNull Boolean active) {
+    public CustomDrop(@NotNull List<Loot> loot, boolean active) {
         this.loot = loot;
         this.active = active;
     }
@@ -71,8 +71,7 @@ public abstract class CustomDrop {
     }
 
     public abstract Map<String, Object> toMap();
-
-    protected abstract TriggerType getTriggerType();
+    public abstract TriggerType getTriggerType();
 
     public abstract ItemStack getDisplayItem();
 }

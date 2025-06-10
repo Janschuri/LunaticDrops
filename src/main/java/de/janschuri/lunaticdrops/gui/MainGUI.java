@@ -38,6 +38,7 @@ public class MainGUI extends InventoryGUI {
             addButton(10 + i, button);
         }
 
+        addButton(53, listLootButton());
         super.init(player);
     }
 
@@ -61,6 +62,20 @@ public class MainGUI extends InventoryGUI {
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
                     GUIManager.openGUI(new ListDropGUI(dropType), player);
+                });
+    }
+
+    private InventoryButton listLootButton() {
+        ItemStack itemStack = new ItemStack(Material.CHEST);
+        ItemMeta meta = itemStack.getItemMeta();
+        meta.setDisplayName("§aList Loot");
+        itemStack.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> itemStack)
+                .consumer(event -> {
+                    Player player = (Player) event.getWhoClicked();
+                    GUIManager.openGUI(new ListLootGUI(), player);
                 });
     }
 }
