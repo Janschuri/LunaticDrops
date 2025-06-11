@@ -16,11 +16,13 @@ import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static de.janschuri.lunaticdrops.utils.Utils.formatChance;
 
@@ -30,6 +32,11 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
     private boolean active = true;
     private List<Loot> loot = new ArrayList<>();
     private int page = 0;
+
+    private Consumer<InventoryClickEvent> returnConsumer = event -> {
+        Player player = (Player) event.getWhoClicked();
+        GUIManager.openGUI(new ListDropGUI(getTriggerType()), player);
+    };
 
     public EditorGUI() {
         super();
@@ -116,6 +123,11 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
         return loot;
     }
 
+    public EditorGUI consumer(Consumer<InventoryClickEvent> returnConsumer) {
+        this.returnConsumer = returnConsumer;
+        return this;
+    }
+
     protected boolean isActive() {
         return active;
     }
@@ -179,10 +191,7 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
 
         return new InventoryButton()
                 .creator((player) -> itemStack)
-                .consumer(event -> {
-                    Player player = (Player) event.getWhoClicked();
-                    GUIManager.openGUI(new ListDropGUI(getTriggerType()), player);
-                });
+                .consumer(event -> returnConsumer.accept(event));
     }
 
     private InventoryButton editButton() {

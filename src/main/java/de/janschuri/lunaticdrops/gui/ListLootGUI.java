@@ -11,12 +11,14 @@ import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.PaginatedList;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.SearchableList;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements PaginatedList<ListLootGUI.ListLootItem>, SearchableList<ListLootGUI.ListLootItem> {
@@ -48,8 +50,17 @@ public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements Pa
                 .creator((player) -> item)
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
+
+                    Consumer<InventoryClickEvent> returnConsumer = e -> {
+                        GUIManager.openGUI(this, player);
+                    };
+
                     if (drop != null) {
-                        GUIManager.openGUI(drop.getTriggerType().getEditorGUI(drop), player);
+                        GUIManager.openGUI(
+                                drop.getTriggerType().getEditorGUI(drop)
+                                        .consumer(returnConsumer),
+                                player
+                        );
                     } else {
                         player.sendMessage("§cThis loot does not belong to a custom drop.");
                     }
