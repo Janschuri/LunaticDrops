@@ -3,6 +3,7 @@ package de.janschuri.lunaticdrops.gui;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
+import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
@@ -20,13 +21,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static de.janschuri.lunaticdrops.utils.Utils.formatChance;
 
 public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<Loot>, Reopenable {
 
-    private boolean editMode = false;
+    private boolean editMode;
     private boolean active = true;
     private List<Loot> loot = new ArrayList<>();
     private int page = 0;
@@ -94,22 +96,11 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
-                    if (!isEditMode()) {
-                        return;
-                    }
-
                     if (loot instanceof SingleLoot) {
-                        LootGUI gui = new LootGUI(getTriggerType(), (SingleLoot) loot)
-                                .consumer(newLoot -> {
-                                    if (newLoot != null) {
-                                        int index = this.loot.indexOf(loot);
-                                        this.loot.set(index, newLoot);
-                                    } else {
-                                        this.loot.remove(loot);
-                                    }
 
-                                    GUIManager.openGUI(this, (Player) event.getWhoClicked());
-                                });
+                        LootGUI gui = new LootGUI(getTriggerType(), (SingleLoot) loot)
+                                .editMode(editMode)
+                                .consumer(getLootReturnConsumer(event, loot));
 
                         GUIManager.openGUI(gui, (Player) event.getWhoClicked());
                     }
@@ -244,17 +235,36 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
                 .consumer(event -> {
                     Player player = (Player) event.getWhoClicked();
 
-                    InventoryGUI gui = new LootGUI(getTriggerType(), isEditMode())
-                            .consumer(loot -> {
-                                if (loot != null) {
-                                    addLoot(loot);
-                                }
-
-                                GUIManager.openGUI(this, player);
-                            });
+                    InventoryGUI gui = new LootGUI(getTriggerType()).editMode(editMode)
+                            .consumer(getLootReturnConsumer(event, null));
 
                     GUIManager.openGUI(gui, player);
                 });
+    }
+
+    private BiConsumer<SingleLoot, Boolean> getLootReturnConsumer(InventoryClickEvent event, Loot oldLoot) {
+        return (newLoot, editMode) -> {
+            this.editMode = editMode;
+            Logger.debugLog(String.format("Loot: %s", newLoot));
+
+            if (newLoot != null) {
+                int index = this.loot.indexOf(oldLoot);
+
+                Logger.debugLog(String.format("Index of loot: %d", index));
+
+                if (index < 0) {
+                    this.loot.add(newLoot);
+                } else {
+                    this.loot.set(index, newLoot);
+                }
+            } else {
+                this.loot.remove(oldLoot);
+            }
+
+            Logger.debugLog(String.format("this.loot: %s", this.loot));
+
+            GUIManager.openGUI(this, (Player) event.getWhoClicked());
+        };
     }
 
     public abstract TriggerType getTriggerType();

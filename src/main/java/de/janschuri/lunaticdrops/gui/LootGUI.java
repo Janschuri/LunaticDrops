@@ -24,16 +24,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import static de.janschuri.lunaticdrops.utils.Utils.formatChance;
 import static de.janschuri.lunaticdrops.utils.Utils.parseEquation;
 
 public class LootGUI extends InventoryGUI implements Reopenable {
 
+    private boolean editMode = false;
     private double chance = 0.5f;
     private String chanceString = "0.5";
-    private Consumer<SingleLoot> consumer;
+    private BiConsumer<SingleLoot, Boolean> consumer;
     private ItemStack dropItem;
     private boolean active = true;
     private int minAmount = 1;
@@ -42,7 +43,7 @@ public class LootGUI extends InventoryGUI implements Reopenable {
     private final TriggerType triggerType;
     private SingleLoot singleLoot = null;
 
-    public LootGUI(TriggerType triggerType, boolean editMode) {
+    public LootGUI(TriggerType triggerType) {
         super();
         this.triggerType = triggerType;
     }
@@ -60,25 +61,39 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         this.flags = new ArrayList<>(singleLoot.getFlags());
     }
 
+    public LootGUI editMode(boolean editMode) {
+        this.editMode = editMode;
+        return this;
+    }
+
     @Override
     public void init(Player player) {
         addButton(0, returnButton());
-        addButton(8, deleteButton());
         addButton(11, addDropItemButton());
 
-        addButton(15, increaseChanceButton());
         addButton(14, chanceButton());
-        addButton(13, decreaseChanceButton());
 
-        addButton(17, saveButton());
-
-        addButton(28, decreaseMinAmountButton());
         addButton(29, minAmountButton());
-        addButton(30, increaseMinAmountButton());
 
-        addButton(32, decreaseMaxAmountButton());
         addButton(33, maxAmountButton());
-        addButton(34, increaseMaxAmountButton());
+
+        if (editMode) {
+            addButton(17, saveButton());
+
+            addButton(8, deleteButton());
+            addButton(15, increaseChanceButton());
+            addButton(13, decreaseChanceButton());
+
+            addButton(17, saveButton());
+
+            addButton(28, decreaseMinAmountButton());
+            addButton(30, increaseMinAmountButton());
+
+            addButton(32, decreaseMaxAmountButton());
+            addButton(34, increaseMaxAmountButton());
+        } else {
+            addButton(17, editButton());
+        }
 
         List<LootFlag> flags = LootFlag.getFlags(triggerType);
 
@@ -159,7 +174,7 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> itemStack)
                 .consumer(event -> {
-                    getConsumer().accept(singleLoot);
+                    getConsumer().accept(singleLoot, editMode);
                 });
     }
 
@@ -173,7 +188,7 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> itemStack)
                 .consumer(event -> {
-                    getConsumer().accept(null);
+                    getConsumer().accept(null, editMode);
                 });
     }
 
@@ -194,6 +209,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
                         return;
                     }
 
+                    if (!editMode) {
+                        return;
+                    }
+
                     ItemStack newItem = cursorItem.clone();
                     newItem.setAmount(1);
 
@@ -206,12 +225,12 @@ public class LootGUI extends InventoryGUI implements Reopenable {
                 });
     }
 
-    public LootGUI consumer(Consumer<SingleLoot> consumer) {
+    public LootGUI consumer(BiConsumer<SingleLoot, Boolean> consumer) {
         this.consumer = consumer;
         return this;
     }
 
-    public Consumer<SingleLoot> getConsumer() {
+    public BiConsumer<SingleLoot, Boolean> getConsumer() {
         return consumer;
     }
 
@@ -227,7 +246,7 @@ public class LootGUI extends InventoryGUI implements Reopenable {
                 flags
         );
 
-        getConsumer().accept(singleLoot);
+        getConsumer().accept(singleLoot, editMode);
     }
 
     private InventoryButton saveButton() {
@@ -240,6 +259,20 @@ public class LootGUI extends InventoryGUI implements Reopenable {
                 .creator((player) -> item)
                 .consumer(event -> {
                     save();
+                });
+    }
+
+    private InventoryButton editButton() {
+        ItemStack item = new ItemStack(Material.WRITABLE_BOOK);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName("§eEdit");
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    editMode = true;
+                    reloadGui();
                 });
     }
 
@@ -271,6 +304,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (flags.contains(LootFlag.ERASE_VANILLA_DROPS)) {
                         flags.remove(LootFlag.ERASE_VANILLA_DROPS);
                     } else {
@@ -309,6 +346,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (flags.contains(LootFlag.DROP_WITH_SILK_TOUCH)) {
                         flags.remove(LootFlag.DROP_WITH_SILK_TOUCH);
                     } else {
@@ -348,6 +389,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (flags.contains(LootFlag.DROP_ONLY_TO_PLAYER)) {
                         flags.remove(LootFlag.DROP_ONLY_TO_PLAYER);
                     } else {
@@ -386,6 +431,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (flags.contains(LootFlag.APPLY_FORTUNE)) {
                         flags.remove(LootFlag.APPLY_FORTUNE);
                     } else {
@@ -425,6 +474,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (flags.contains(LootFlag.APPLY_LOOTING)) {
                         flags.remove(LootFlag.APPLY_LOOTING);
                     } else {
@@ -463,6 +516,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (flags.contains(LootFlag.FORCE_MAX_AMOUNT)) {
                         flags.remove(LootFlag.FORCE_MAX_AMOUNT);
                     } else {
@@ -501,6 +558,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (flags.contains(LootFlag.ONLY_FULL_GROWN)) {
                         flags.remove(LootFlag.ONLY_FULL_GROWN);
                     } else {
@@ -533,6 +594,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     Player player = (Player) event.getWhoClicked();
 
                     player.closeInventory();
@@ -607,6 +672,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (processingClickEvent()) {
                         return;
                     }
@@ -643,6 +712,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (processingClickEvent()) {
                         return;
                     }
@@ -715,6 +788,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (processingClickEvent()) {
                         return;
                     }
@@ -743,6 +820,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (processingClickEvent()) {
                         return;
                     }
@@ -809,6 +890,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (processingClickEvent()) {
                         return;
                     }
@@ -837,6 +922,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         return new InventoryButton()
                 .creator((player) -> item)
                 .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
                     if (processingClickEvent()) {
                         return;
                     }
