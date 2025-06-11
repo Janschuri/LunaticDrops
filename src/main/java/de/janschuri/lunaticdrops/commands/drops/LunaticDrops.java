@@ -60,7 +60,7 @@ public class LunaticDrops extends Subcommand implements HasSubcommands, HasHelpC
 
         Player p = Bukkit.getPlayer(player.getUniqueId());
 
-        GUIManager.openGUI(new MainGUI(), p);
+        GUIManager.reopenGUI(new MainGUI(), p);
         return true;
     }
 

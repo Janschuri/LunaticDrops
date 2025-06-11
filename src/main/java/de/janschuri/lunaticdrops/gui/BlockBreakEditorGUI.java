@@ -2,8 +2,6 @@ package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.BlockBreak;
-import de.janschuri.lunaticdrops.drops.MobKill;
-import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
@@ -11,15 +9,9 @@ import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectBlockGUI;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class BlockBreakEditorGUI extends EditorGUI {
 

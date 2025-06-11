@@ -6,10 +6,11 @@ import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.Reopenable;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.ListGUI;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.PaginatedList;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.SearchableList;
-import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -17,11 +18,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements PaginatedList<ListLootGUI.ListLootItem>, SearchableList<ListLootGUI.ListLootItem> {
+public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements PaginatedList<ListLootGUI.ListLootItem>, SearchableList<ListLootGUI.ListLootItem>, Reopenable {
 
     private int page = 0;
     private String search = "";
@@ -147,5 +147,10 @@ public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements Pa
         public CustomDrop getDrop() {
             return drop;
         }
+    }
+
+    @Override
+    public NamespacedKey uniqueKey() {
+        return MainGUI.UNIQUE_KEY;
     }
 }

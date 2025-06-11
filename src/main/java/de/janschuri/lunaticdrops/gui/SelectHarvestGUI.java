@@ -2,11 +2,13 @@ package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.Reopenable;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectBlockGUI;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.ListGUI;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.PaginatedList;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.SearchableList;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -19,7 +21,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class SelectHarvestGUI extends InventoryGUI {
+public class SelectHarvestGUI extends InventoryGUI implements Reopenable {
 
     private Consumer<Material> consumer;
     private String search = "";
@@ -84,5 +86,10 @@ public class SelectHarvestGUI extends InventoryGUI {
     public InventoryButton emptyListItemButton() {
         return new InventoryButton()
                 .creator(player -> new ItemStack(Material.AIR));
+    }
+
+    @Override
+    public NamespacedKey uniqueKey() {
+        return MainGUI.UNIQUE_KEY;
     }
 }

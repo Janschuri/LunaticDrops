@@ -3,18 +3,16 @@ package de.janschuri.lunaticdrops.gui;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
-import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.DecisionMessage;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.DecisionGUI;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.Reopenable;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.ListGUI;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.PaginatedList;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +24,7 @@ import java.util.function.Consumer;
 
 import static de.janschuri.lunaticdrops.utils.Utils.formatChance;
 
-public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<Loot> {
+public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<Loot>, Reopenable {
 
     private boolean editMode = false;
     private boolean active = true;
@@ -260,4 +258,9 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
     }
 
     public abstract TriggerType getTriggerType();
+
+    @Override
+    public NamespacedKey uniqueKey() {
+        return MainGUI.UNIQUE_KEY;
+    }
 }

@@ -72,7 +72,7 @@
       <dependency>
           <groupId>de.janschuri</groupId>
           <artifactId>LunaticLib</artifactId>
-          <version>1.4.4</version>
+          <version>1.4.5</version>
           <scope>provided</scope>
       </dependency>
       <dependency>

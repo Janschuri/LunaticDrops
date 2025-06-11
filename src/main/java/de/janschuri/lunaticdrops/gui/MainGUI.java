@@ -5,8 +5,10 @@ import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.Reopenable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -14,7 +16,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-public class MainGUI extends InventoryGUI {
+public class MainGUI extends InventoryGUI implements Reopenable {
+
+    public static final NamespacedKey UNIQUE_KEY = new NamespacedKey(LunaticDrops.getInstance(), "unique_key");
 
     public MainGUI() {
         super();
@@ -77,5 +81,10 @@ public class MainGUI extends InventoryGUI {
                     Player player = (Player) event.getWhoClicked();
                     GUIManager.openGUI(new ListLootGUI(), player);
                 });
+    }
+
+    @Override
+    public NamespacedKey uniqueKey() {
+        return UNIQUE_KEY;
     }
 }

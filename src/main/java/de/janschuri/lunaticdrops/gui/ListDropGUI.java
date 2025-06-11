@@ -5,9 +5,11 @@ import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.Reopenable;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.ListGUI;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,7 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListDropGUI extends ListGUI<CustomDrop> {
+public class ListDropGUI extends ListGUI<CustomDrop> implements Reopenable {
 
     private TriggerType dropType;
 
@@ -84,5 +86,10 @@ public class ListDropGUI extends ListGUI<CustomDrop> {
 
                     GUIManager.openGUI(dropType.getEditorGUI(), player);
                 });
+    }
+
+    @Override
+    public NamespacedKey uniqueKey() {
+        return MainGUI.UNIQUE_KEY;
     }
 }

@@ -8,13 +8,13 @@ import de.janschuri.lunaticlib.platform.bukkit.BukkitLunaticLib;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
+import de.janschuri.lunaticlib.platform.bukkit.inventorygui.Reopenable;
 import de.rapha149.signgui.SignGUI;
 import de.rapha149.signgui.SignGUIAction;
 import de.rapha149.signgui.exception.SignGUIVersionException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.data.Ageable;
-import org.bukkit.block.data.BlockData;
+import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import static de.janschuri.lunaticdrops.utils.Utils.formatChance;
 import static de.janschuri.lunaticdrops.utils.Utils.parseEquation;
 
-public class LootGUI extends InventoryGUI {
+public class LootGUI extends InventoryGUI implements Reopenable {
 
     private double chance = 0.5f;
     private String chanceString = "0.5";
@@ -118,6 +118,11 @@ public class LootGUI extends InventoryGUI {
         }
 
         super.init(player);
+    }
+
+    @Override
+    public NamespacedKey uniqueKey() {
+        return MainGUI.UNIQUE_KEY;
     }
 
     public ItemStack getDropItem() {
