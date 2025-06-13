@@ -35,8 +35,8 @@ public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements Pa
 
     @Override
     public void init(Player player) {
-        super.init(player);
         addButton(0, returnButton());
+        super.init(player);
     }
 
     @Override
