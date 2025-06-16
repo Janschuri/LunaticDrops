@@ -4,14 +4,12 @@ import de.janschuri.lunaticdrops.config.AbstractDropConfig;
 import de.janschuri.lunaticdrops.config.LanguageConfig;
 import de.janschuri.lunaticdrops.drops.CustomDrop;
 import de.janschuri.lunaticdrops.events.PandaEatTask;
-import de.janschuri.lunaticdrops.listener.BlockBreakListener;
-import de.janschuri.lunaticdrops.listener.HarvestListener;
-import de.janschuri.lunaticdrops.listener.MobKillListener;
-import de.janschuri.lunaticdrops.listener.PandaEatDropItemListener;
+import de.janschuri.lunaticdrops.listener.*;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticlib.common.LunaticLib;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -29,6 +27,7 @@ public final class LunaticDrops extends JavaPlugin {
     private static LanguageConfig languageConfig;
 
     private static Map<String, Map<String, CustomDrop>> customDrops = new HashMap<>();
+    public static final NamespacedKey PLACED_BY_PLAYER_KEY = new NamespacedKey("lunaticdrops", "placed_by_player");
 
     @Override
     public void onEnable() {
@@ -41,6 +40,7 @@ public final class LunaticDrops extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PandaEatDropItemListener(), this);
         Bukkit.getPluginManager().registerEvents(new MobKillListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockBreakListener(), this);
+        Bukkit.getPluginManager().registerEvents(new BlockPlaceListener(), this);
         Bukkit.getPluginManager().registerEvents(new HarvestListener(), this);
 
         languageConfig = new LanguageConfig(dataDirectory, "en");

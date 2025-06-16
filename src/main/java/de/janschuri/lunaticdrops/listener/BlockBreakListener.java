@@ -1,5 +1,6 @@
 package de.janschuri.lunaticdrops.listener;
 
+import com.jeff_media.customblockdata.CustomBlockData;
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.BlockBreak;
 import de.janschuri.lunaticdrops.loot.Loot;
@@ -9,6 +10,7 @@ import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
@@ -17,6 +19,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,13 +30,18 @@ public class BlockBreakListener implements Listener {
 
     private static final Map<BlockDropItemEvent, List<Item>> dropEvents = new HashMap<>();
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockDropLowest(BlockDropItemEvent event) {
-        if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+        Block block = event.getBlock();
+        PersistentDataContainer blockDataContainer = new CustomBlockData(block, LunaticDrops.getInstance());
+        if (blockDataContainer.has(LunaticDrops.PLACED_BY_PLAYER_KEY, org.bukkit.persistence.PersistentDataType.INTEGER)) {
+            blockDataContainer.remove(LunaticDrops.PLACED_BY_PLAYER_KEY);
             return;
         }
 
-        Logger.debugLog("BlockDrop: " + event.getBlock().getType().name());
+        if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
+            return;
+        }
 
         Location location = event.getBlock().getLocation();
 
