@@ -3,10 +3,13 @@ package de.janschuri.lunaticdrops.utils;
 import de.janschuri.lunaticdrops.config.*;
 import de.janschuri.lunaticdrops.drops.*;
 import de.janschuri.lunaticdrops.gui.editor.*;
+import de.janschuri.lunaticdrops.loot.Loot;
+import de.janschuri.lunaticdrops.loot.LootFlag;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.nio.file.Path;
+import java.util.List;
 
 public enum TriggerType {
     PANDA_EAT {
@@ -38,6 +41,10 @@ public enum TriggerType {
         public EditorGUI getEditorGUI() {
             return new EditorGUIPandaEat();
         }
+        @Override
+        public List<LootFlag> getFlags() {
+            return List.of(LootFlag.FORCE_MAX_AMOUNT);
+        }
     },
     MOB_KILL {
         @Override
@@ -67,6 +74,10 @@ public enum TriggerType {
         @Override
         public EditorGUIMobKill getEditorGUI() {
             return new EditorGUIMobKill();
+        }
+        @Override
+        public List<LootFlag> getFlags() {
+            return List.of(LootFlag.ERASE_VANILLA_DROPS, LootFlag.DROP_ONLY_TO_PLAYER, LootFlag.APPLY_LOOTING, LootFlag.FORCE_MAX_AMOUNT);
         }
     },
     HARVEST {
@@ -98,6 +109,10 @@ public enum TriggerType {
         public EditorGUIHarvest getEditorGUI() {
             return new EditorGUIHarvest();
         }
+        @Override
+        public List<LootFlag> getFlags() {
+            return List.of(LootFlag.ERASE_VANILLA_DROPS, LootFlag.FORCE_MAX_AMOUNT);
+        }
     },
     BLOCK_BREAK {
         @Override
@@ -127,6 +142,16 @@ public enum TriggerType {
         @Override
         public EditorGUIBlockBreak getEditorGUI() {
             return new EditorGUIBlockBreak();
+        }
+        @Override
+        public List<LootFlag> getFlags() {
+            return List.of(
+                    LootFlag.ERASE_VANILLA_DROPS,
+                    LootFlag.DROP_WITH_SILK_TOUCH,
+                    LootFlag.APPLY_FORTUNE,
+                    LootFlag.FORCE_MAX_AMOUNT,
+                    LootFlag.ONLY_FULL_GROWN
+            );
         }
     },
     LEAVES_DECAY {
@@ -158,6 +183,47 @@ public enum TriggerType {
         public EditorGUILeavesDecay getEditorGUI() {
             return new EditorGUILeavesDecay();
         }
+        @Override
+        public List<LootFlag> getFlags() {
+            return List.of(LootFlag.ERASE_VANILLA_DROPS, LootFlag.FORCE_MAX_AMOUNT);
+        }
+    },
+    ENTITY_BREED {
+        @Override
+        public String getDisplayName() {
+            return "Entity Breed";
+        }
+        @Override
+        public ItemStack getDisplayItem() {
+            return new ItemStack(Material.LEAD);
+        }
+        @Override
+        public String getConfigPath() {
+            return "/entity_breed";
+        }
+        @Override
+        public DropConfigEntityBreed getConfig(Path path) {
+            return new DropConfigEntityBreed(path);
+        }
+        @Override
+        public EditorGUIEntityBreed getEditorGUI(Drop drop) {
+            if (drop instanceof DropEntityBreed) {
+                return new EditorGUIEntityBreed((DropEntityBreed) drop);
+            }
+            Logger.errorLog("Drop is not an instance of LeavesDecay");
+            return null;
+        }
+        @Override
+        public EditorGUIEntityBreed getEditorGUI() {
+            return new EditorGUIEntityBreed();
+        }
+        @Override
+        public List<LootFlag> getFlags() {
+            return List.of(
+                    LootFlag.FORCE_MAX_AMOUNT,
+                    LootFlag.DROP_ONLY_TO_PLAYER
+            );
+        }
     };
 
     public abstract String getDisplayName();
@@ -166,6 +232,7 @@ public enum TriggerType {
     public abstract DropConfig getConfig(Path path);
     public abstract EditorGUI getEditorGUI(Drop drop);
     public abstract EditorGUI getEditorGUI();
+    public abstract List<LootFlag> getFlags();
 
     public static TriggerType fromString(String string) {
         for (TriggerType dropType : TriggerType.values()) {
@@ -175,4 +242,5 @@ public enum TriggerType {
         }
         return null;
     }
+
 }

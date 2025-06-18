@@ -43,6 +43,7 @@ public final class LunaticDrops extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new BlockPlaceListener(), this);
         Bukkit.getPluginManager().registerEvents(new HarvestListener(), this);
         Bukkit.getPluginManager().registerEvents(new LeavesDecayListener(), this);
+        Bukkit.getPluginManager().registerEvents(new EntityBreedListener(), this);
 
         languageConfig = new LanguageConfig(dataDirectory, "en");
             if (!loadConfig()) {
