@@ -2,6 +2,7 @@ package de.janschuri.lunaticdrops.loot;
 
 import de.janschuri.lunaticdrops.utils.Utils;
 import de.janschuri.lunaticlib.platform.bukkit.BukkitLunaticLib;
+import jdk.jshell.execution.Util;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -114,7 +115,7 @@ public class Loot {
         try {
             this.active = Boolean.parseBoolean(map.get("active").toString());
             this.chanceEquation = (String) map.getOrDefault("chance", "0.0");
-            this.chance = Double.parseDouble(chanceEquation);
+            this.chance = Utils.parseEquation((String) map.get("chance"));
 
             List<String> flagStrings = (List<String>) map.getOrDefault("flags", new ArrayList<>());
             this.flags = new ArrayList<>();
