@@ -1,7 +1,7 @@
 package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.drops.CustomDrop;
+import de.janschuri.lunaticdrops.drops.Drop;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
@@ -17,7 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListDropGUI extends ListGUI<CustomDrop> implements Reopenable {
+public class ListDropGUI extends ListGUI<Drop> implements Reopenable {
 
     private TriggerType dropType;
 
@@ -34,7 +34,7 @@ public class ListDropGUI extends ListGUI<CustomDrop> implements Reopenable {
     }
 
     @Override
-    public InventoryButton listItemButton(CustomDrop drop) {
+    public InventoryButton listItemButton(Drop drop) {
 
         ItemStack itemStack = drop.getDisplayItem();
         ItemMeta meta = itemStack.getItemMeta();
@@ -53,7 +53,7 @@ public class ListDropGUI extends ListGUI<CustomDrop> implements Reopenable {
     }
 
     @Override
-    public List<CustomDrop> getItems() {
+    public List<Drop> getItems() {
         return LunaticDrops.getDrops(dropType);
     }
 

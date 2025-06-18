@@ -2,7 +2,7 @@ package de.janschuri.lunaticdrops.utils;
 
 import de.janschuri.lunaticdrops.config.*;
 import de.janschuri.lunaticdrops.drops.*;
-import de.janschuri.lunaticdrops.gui.*;
+import de.janschuri.lunaticdrops.gui.editor.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,20 +23,20 @@ public enum TriggerType {
             return "/panda_eat";
         }
         @Override
-        public PandaEatConfig getConfig(Path path) {
-            return new PandaEatConfig(path);
+        public DropConfigPandaEat getConfig(Path path) {
+            return new DropConfigPandaEat(path);
         }
         @Override
-        public EditorGUI getEditorGUI(CustomDrop drop) {
-            if (drop instanceof PandaEat) {
-                return new PandaEatEditorGUI((PandaEat) drop);
+        public EditorGUI getEditorGUI(Drop drop) {
+            if (drop instanceof DropPandaEat) {
+                return new EditorGUIPandaEat((DropPandaEat) drop);
             }
             Logger.errorLog("Drop is not an instance of PandaEat");
             return null;
         }
         @Override
         public EditorGUI getEditorGUI() {
-            return new PandaEatEditorGUI();
+            return new EditorGUIPandaEat();
         }
     },
     MOB_KILL {
@@ -53,20 +53,20 @@ public enum TriggerType {
             return "/mob_kill";
         }
         @Override
-        public MobKillConfig getConfig(Path path) {
-            return new MobKillConfig(path);
+        public DropConfigMobKill getConfig(Path path) {
+            return new DropConfigMobKill(path);
         }
         @Override
-        public MobKillEditorGUI getEditorGUI(CustomDrop drop) {
-            if (drop instanceof MobKill) {
-                return new MobKillEditorGUI((MobKill) drop);
+        public EditorGUIMobKill getEditorGUI(Drop drop) {
+            if (drop instanceof DropMobKill) {
+                return new EditorGUIMobKill((DropMobKill) drop);
             }
             Logger.errorLog("Drop is not an instance of MobKill");
             return null;
         }
         @Override
-        public MobKillEditorGUI getEditorGUI() {
-            return new MobKillEditorGUI();
+        public EditorGUIMobKill getEditorGUI() {
+            return new EditorGUIMobKill();
         }
     },
     HARVEST {
@@ -83,20 +83,20 @@ public enum TriggerType {
             return "/harvest";
         }
         @Override
-        public HarvestConfig getConfig(Path path) {
-            return new HarvestConfig(path);
+        public DropConfigHarvest getConfig(Path path) {
+            return new DropConfigHarvest(path);
         }
         @Override
-        public HarvestEditorGUI getEditorGUI(CustomDrop drop) {
-            if (drop instanceof Harvest) {
-                return new HarvestEditorGUI((Harvest) drop);
+        public EditorGUIHarvest getEditorGUI(Drop drop) {
+            if (drop instanceof DropHarvest) {
+                return new EditorGUIHarvest((DropHarvest) drop);
             }
             Logger.errorLog("Drop is not an instance of Harvest");
             return null;
         }
         @Override
-        public HarvestEditorGUI getEditorGUI() {
-            return new HarvestEditorGUI();
+        public EditorGUIHarvest getEditorGUI() {
+            return new EditorGUIHarvest();
         }
     },
     BLOCK_BREAK {
@@ -113,28 +113,28 @@ public enum TriggerType {
             return "/block_break";
         }
         @Override
-        public BlockBreakConfig getConfig(Path path) {
-            return new BlockBreakConfig(path);
+        public DropConfigBlockBreak getConfig(Path path) {
+            return new DropConfigBlockBreak(path);
         }
         @Override
-        public BlockBreakEditorGUI getEditorGUI(CustomDrop drop) {
-            if (drop instanceof BlockBreak) {
-                return new BlockBreakEditorGUI((BlockBreak) drop);
+        public EditorGUIBlockBreak getEditorGUI(Drop drop) {
+            if (drop instanceof DropBlockBreak) {
+                return new EditorGUIBlockBreak((DropBlockBreak) drop);
             }
             Logger.errorLog("Drop is not an instance of BlockBreak");
             return null;
         }
         @Override
-        public BlockBreakEditorGUI getEditorGUI() {
-            return new BlockBreakEditorGUI();
+        public EditorGUIBlockBreak getEditorGUI() {
+            return new EditorGUIBlockBreak();
         }
     };
 
     public abstract String getDisplayName();
     public abstract ItemStack getDisplayItem();
     public abstract String getConfigPath();
-    public abstract AbstractDropConfig getConfig(Path path);
-    public abstract EditorGUI getEditorGUI(CustomDrop drop);
+    public abstract DropConfig getConfig(Path path);
+    public abstract EditorGUI getEditorGUI(Drop drop);
     public abstract EditorGUI getEditorGUI();
 
     public static TriggerType fromString(String string) {

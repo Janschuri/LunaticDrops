@@ -11,14 +11,21 @@ import java.util.Map;
 
 import static de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils.itemStackToMap;
 
-public class PandaEat extends CustomDrop {
+public class DropPandaEat extends Drop {
 
     private final ItemStack eatenItem;
     private final boolean matchNBT;
     private final String name;
 
-    public PandaEat(@NotNull String name, @NotNull List<Loot> loot, boolean active, @NotNull ItemStack eatenItem, boolean matchNBT) {
+    public DropPandaEat(@NotNull String name, @NotNull List<Loot> loot, boolean active, @NotNull ItemStack eatenItem, boolean matchNBT) {
         super(loot, active);
+        this.name = name;
+        this.eatenItem = eatenItem;
+        this.matchNBT = matchNBT;
+    }
+
+    public DropPandaEat(Drop drop, @NotNull String name, @NotNull ItemStack eatenItem, boolean matchNBT) {
+        super(drop);
         this.name = name;
         this.eatenItem = eatenItem;
         this.matchNBT = matchNBT;
@@ -42,14 +49,10 @@ public class PandaEat extends CustomDrop {
 
     @Override
     public Map<String, Object> toMap() {
-        List<Map<String, Object>> lootMaps = getLoot().stream().map(Loot::toMap).toList();
-
-        return Map.of(
-                "loot", lootMaps,
-                "active", active,
-                "eatenItem", itemStackToMap(eatenItem),
-                "matchNBT", matchNBT
-        );
+        Map<String, Object> map = super.toMap();
+        map.put("eatenItem", itemStackToMap(eatenItem));
+        map.put("matchNBT", matchNBT);
+        return map;
     }
 
     @Override

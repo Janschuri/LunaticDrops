@@ -2,17 +2,15 @@ package de.janschuri.lunaticdrops.listener;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.events.PandaEatDropItemEvent;
-import de.janschuri.lunaticdrops.drops.CustomDrop;
-import de.janschuri.lunaticdrops.drops.PandaEat;
+import de.janschuri.lunaticdrops.drops.Drop;
+import de.janschuri.lunaticdrops.drops.DropPandaEat;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
-import jdk.jshell.execution.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
@@ -63,14 +61,14 @@ public class PandaEatDropItemListener implements Listener {
 
         ItemStack consumedItem = event.getConsumedItem();
 
-        List<CustomDrop> customDrops = LunaticDrops.getDrops(TriggerType.PANDA_EAT);
+        List<Drop> customDrops = LunaticDrops.getDrops(TriggerType.PANDA_EAT);
 
         Logger.debugLog("Drops: " + customDrops.size());
 
         List<ItemStack> drops = new ArrayList<>();
 
-        for (CustomDrop customDrop : customDrops) {
-            PandaEat pandaDrop = (PandaEat) customDrop;
+        for (Drop customDrop : customDrops) {
+            DropPandaEat pandaDrop = (DropPandaEat) customDrop;
 
             Logger.debugLog("Checking drop: " + pandaDrop.getName());
 
@@ -84,7 +82,7 @@ public class PandaEatDropItemListener implements Listener {
 
                     for (Loot loot : lootList) {
                         if (Utils.isLucky(loot.getChance())) {
-                            Logger.debugLog("Loot is lucky");
+                            loot.runCommands();
                             drops.addAll(loot.getDrops());
                         }
                     }

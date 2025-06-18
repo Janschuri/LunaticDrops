@@ -1,7 +1,8 @@
-package de.janschuri.lunaticdrops.gui;
+package de.janschuri.lunaticdrops.gui.editor;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.drops.Harvest;
+import de.janschuri.lunaticdrops.drops.DropHarvest;
+import de.janschuri.lunaticdrops.gui.SelectHarvestGUI;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
@@ -10,21 +11,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class HarvestEditorGUI extends EditorGUI {
+public class EditorGUIHarvest extends EditorGUI {
 
     private String oldName = null;
     private Material block;
 
-    public HarvestEditorGUI() {
+    public EditorGUIHarvest() {
         super();
     }
 
-    public HarvestEditorGUI(Material block) {
+    public EditorGUIHarvest(Material block) {
         super();
         this.block = block;
     }
 
-    public HarvestEditorGUI(Harvest harvest) {
+    public EditorGUIHarvest(DropHarvest harvest) {
         super(harvest);
         this.oldName = harvest.getName();
         this.block = harvest.getBlock();
@@ -92,15 +93,15 @@ public class HarvestEditorGUI extends EditorGUI {
     }
 
     protected void save(Player player) {
-        Harvest harvest = new Harvest(
+        DropHarvest harvest = new DropHarvest(
                 getItems(),
                 isActive(),
                 getBlockType()
         );
 
         if (harvest.save(oldName)) {
-            Harvest newHarvest = (Harvest) LunaticDrops.getDrop(TriggerType.HARVEST, harvest.getBlock().name());
-            GUIManager.openGUI(new HarvestEditorGUI(harvest), player);
+            DropHarvest newHarvest = (DropHarvest) LunaticDrops.getDrop(TriggerType.HARVEST, harvest.getBlock().name());
+            GUIManager.openGUI(new EditorGUIHarvest(harvest), player);
         }
     }
 

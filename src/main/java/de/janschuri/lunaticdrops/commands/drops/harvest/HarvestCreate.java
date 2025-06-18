@@ -2,18 +2,15 @@ package de.janschuri.lunaticdrops.commands.drops.harvest;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.commands.Subcommand;
-import de.janschuri.lunaticdrops.gui.BlockBreakEditorGUI;
-import de.janschuri.lunaticdrops.gui.HarvestEditorGUI;
+import de.janschuri.lunaticdrops.gui.editor.EditorGUIHarvest;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.*;
 import de.janschuri.lunaticlib.common.command.HasParams;
 import de.janschuri.lunaticlib.common.command.HasParentCommand;
 import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -78,7 +75,7 @@ public class HarvestCreate extends Subcommand implements HasParentCommand, HasPa
 
         Player p = Bukkit.getPlayer(player.getUniqueId());
 
-        GUIManager.openGUI(new HarvestEditorGUI(block), p);
+        GUIManager.openGUI(new EditorGUIHarvest(block), p);
         return true;
     }
 

@@ -1,21 +1,18 @@
 package de.janschuri.lunaticdrops.config;
 
-import de.janschuri.lunaticdrops.drops.BlockBreak;
-import de.janschuri.lunaticdrops.drops.MobKill;
-import de.janschuri.lunaticdrops.drops.PandaEat;
+import de.janschuri.lunaticdrops.drops.Drop;
+import de.janschuri.lunaticdrops.drops.DropBlockBreak;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class BlockBreakConfig extends AbstractDropConfig {
+public class DropConfigBlockBreak extends DropConfig {
 
-    public BlockBreakConfig(Path path) {
+    public DropConfigBlockBreak(Path path) {
         super(path);
     }
 
@@ -25,19 +22,13 @@ public class BlockBreakConfig extends AbstractDropConfig {
     }
 
     @Override
-    public BlockBreak getDrop() {
+    public DropBlockBreak getDrop() {
         try {
-            List<Loot> lootList = getLoot("loot");
-            boolean active = getBoolean("active");
+            Drop drop = super.getDrop();
             Material block = getMaterial("block");
 
-            if (lootList == null) {
-                lootList = new ArrayList<>();
-            }
-
-            return new BlockBreak(
-                    lootList,
-                    active,
+            return new DropBlockBreak(
+                    drop,
                     block
             );
         } catch (Exception e) {

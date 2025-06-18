@@ -52,9 +52,9 @@ public class LootGUI extends InventoryGUI implements Reopenable {
         super();
         this.singleLoot = singleLoot;
         this.triggerType = triggerType;
-        this.dropItem = singleLoot.getItem().clone();
+        this.dropItem = singleLoot.getDisplayItem().clone();
         this.chance = singleLoot.getChance();
-        this.chanceString = singleLoot.getChanceString();
+        this.chanceString = singleLoot.getChanceEquation();
         this.active = singleLoot.isActive();
         this.minAmount = singleLoot.getMinAmount();
         this.maxAmount = singleLoot.getMaxAmount();
@@ -238,7 +238,6 @@ public class LootGUI extends InventoryGUI implements Reopenable {
 
         SingleLoot singleLoot = new SingleLoot(
                 getDropItem(),
-                getChance(),
                 getChanceString(),
                 isActive(),
                 getMinAmount(),
@@ -574,10 +573,12 @@ public class LootGUI extends InventoryGUI implements Reopenable {
 
     private void setChance(double chance) {
         this.chance = chance;
+        this.chanceString = String.valueOf(chance);
     }
 
-    private void setChanceString(String chanceString) {
+    private void setChanceString(String chanceString, double chance) {
         this.chanceString = chanceString;
+        setChance(chance);
     }
 
     private InventoryButton chanceButton() {
@@ -640,8 +641,7 @@ public class LootGUI extends InventoryGUI implements Reopenable {
                                                                 parsedChance /= 100;
                                                             }
 
-                                                            setChanceString(newChance.toString());
-                                                            setChance(parsedChance);
+                                                            setChanceString(newChance.toString(), parsedChance);
                                                         }
                                                     }
 
@@ -746,7 +746,7 @@ public class LootGUI extends InventoryGUI implements Reopenable {
             newChance = 0;
         }
 
-        chance = newChance;
+        setChance(newChance);
 
         reloadGui();
     }
@@ -758,7 +758,7 @@ public class LootGUI extends InventoryGUI implements Reopenable {
             newChance = 1;
         }
 
-        chance = newChance;
+        setChance(newChance);
 
         reloadGui();
     }

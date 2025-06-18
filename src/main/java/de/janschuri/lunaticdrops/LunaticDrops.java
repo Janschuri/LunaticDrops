@@ -1,8 +1,8 @@
 package de.janschuri.lunaticdrops;
 
-import de.janschuri.lunaticdrops.config.AbstractDropConfig;
+import de.janschuri.lunaticdrops.config.DropConfig;
 import de.janschuri.lunaticdrops.config.LanguageConfig;
-import de.janschuri.lunaticdrops.drops.CustomDrop;
+import de.janschuri.lunaticdrops.drops.Drop;
 import de.janschuri.lunaticdrops.events.PandaEatTask;
 import de.janschuri.lunaticdrops.listener.*;
 import de.janschuri.lunaticdrops.utils.TriggerType;
@@ -26,7 +26,7 @@ public final class LunaticDrops extends JavaPlugin {
     private static Path dataDirectory;
     private static LanguageConfig languageConfig;
 
-    private static Map<String, Map<String, CustomDrop>> customDrops = new HashMap<>();
+    private static Map<String, Map<String, Drop>> customDrops = new HashMap<>();
     public static final NamespacedKey PLACED_BY_PLAYER_KEY = new NamespacedKey("lunaticdrops", "placed_by_player");
 
     @Override
@@ -57,8 +57,6 @@ public final class LunaticDrops extends JavaPlugin {
     }
 
     public static boolean loadConfig() {
-
-        boolean success = true;
 
         languageConfig.load();
 
@@ -91,14 +89,13 @@ public final class LunaticDrops extends JavaPlugin {
                     continue;
                 }
 
-                AbstractDropConfig config = dropType.getConfig(path);
+                DropConfig config = dropType.getConfig(path);
                 config.load();
 
-                CustomDrop drop = config.getDrop();
+                Drop drop = config.getDrop();
 
                 if (drop == null) {
                     Logger.errorLog("Error loading drop from " + path);
-                    success = false;
                     continue;
                 }
 
@@ -110,7 +107,7 @@ public final class LunaticDrops extends JavaPlugin {
         return true;
     }
 
-    public static void updateDrop(TriggerType dropType, CustomDrop drop) {
+    public static void updateDrop(TriggerType dropType, Drop drop) {
         customDrops.get(dropType.getConfigPath()).put(drop.getName(), drop);
     }
 
@@ -126,7 +123,7 @@ public final class LunaticDrops extends JavaPlugin {
         customDrops.get(dropType.getConfigPath()).remove(name);
     }
 
-    public static CustomDrop getDrop(TriggerType dropType, String name) {
+    public static Drop getDrop(TriggerType dropType, String name) {
         return customDrops.get(dropType.getConfigPath()).get(name);
     }
 
@@ -149,7 +146,7 @@ public final class LunaticDrops extends JavaPlugin {
         return debug;
     }
 
-    public static List<CustomDrop> getDrops(TriggerType dropType) {
+    public static List<Drop> getDrops(TriggerType dropType) {
         return new ArrayList<>(customDrops.getOrDefault(dropType.getConfigPath(), new HashMap<>(0)).values());
     }
 

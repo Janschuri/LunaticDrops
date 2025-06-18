@@ -10,22 +10,28 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+public class Drop {
 
-public abstract class CustomDrop {
-
-    protected final Random random = new Random();
     protected final List<Loot> loot;
     protected final boolean active;
 
-    public CustomDrop(@NotNull List<Loot> loot, boolean active) {
+    public Drop(@NotNull List<Loot> loot, boolean active) {
         this.loot = loot;
         this.active = active;
     }
 
-    public abstract String getName();
+    public Drop(Drop drop) {
+        this.loot = new ArrayList<>(drop.loot);
+        this.active = drop.active;
+    }
+
+    public String getName() {
+        throw new UnsupportedOperationException("getName() must be implemented in subclasses");
+    }
 
     public boolean isActive() {
         return active;
@@ -70,8 +76,19 @@ public abstract class CustomDrop {
             return true;
     }
 
-    public abstract Map<String, Object> toMap();
-    public abstract TriggerType getTriggerType();
+    public Map<String, Object> toMap() {
+        List<Map<String, Object>> lootMaps = getLoot().stream().map(Loot::toMap).toList();
 
-    public abstract ItemStack getDisplayItem();
+        return new HashMap<>(Map.of(
+                "loot", lootMaps,
+                "active", active
+        ));
+    }
+
+    public TriggerType getTriggerType() {
+        return null;
+    }
+    public ItemStack getDisplayItem() {
+        return null;
+    }
 }

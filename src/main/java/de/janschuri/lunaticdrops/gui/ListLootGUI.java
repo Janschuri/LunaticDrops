@@ -1,9 +1,8 @@
 package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.drops.CustomDrop;
+import de.janschuri.lunaticdrops.drops.Drop;
 import de.janschuri.lunaticdrops.loot.Loot;
-import de.janschuri.lunaticdrops.loot.SingleLoot;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
@@ -20,7 +19,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -42,10 +40,10 @@ public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements Pa
     @Override
     public InventoryButton listItemButton(ListLootGUI.ListLootItem lootItem) {
         Loot loot = lootItem.getLoot();
-        CustomDrop drop = lootItem.getDrop();
-        ItemStack item = loot.getItem();
+        Drop drop = lootItem.getDrop();
+        ItemStack item = loot.getDisplayItem();
 
-        String chanceString = loot.getChanceString();
+        String chanceString = loot.getChanceEquation();
         String typeString = drop.getTriggerType().getDisplayName();
         String displayName = drop.getName();
 
@@ -86,14 +84,14 @@ public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements Pa
 
         TriggerType[] triggerTypes = TriggerType.values();
 
-        List<CustomDrop> customDrops = new ArrayList<>();
+        List<Drop> customDrops = new ArrayList<>();
 
         for (TriggerType triggerType : triggerTypes) {
-            List<CustomDrop> drops = LunaticDrops.getDrops(triggerType);
+            List<Drop> drops = LunaticDrops.getDrops(triggerType);
             customDrops.addAll(drops);
         }
 
-        for (CustomDrop drop : customDrops) {
+        for (Drop drop : customDrops) {
             List<Loot> dropLoots = drop.getLoot();
 
             for (Loot loot : dropLoots) {
@@ -118,7 +116,7 @@ public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements Pa
     @Override
     public Predicate<ListLootGUI.ListLootItem> getSearchFilter(Player player) {
         return lootItem -> {
-            ItemMeta meta = lootItem.getLoot().getItem().getItemMeta();
+            ItemMeta meta = lootItem.getLoot().getDisplayItem().getItemMeta();
             if (meta != null) {
                 String displayName = meta.getDisplayName();
 
@@ -127,7 +125,7 @@ public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements Pa
                 }
             }
 
-            if (lootItem.getLoot().getItem().getType().toString().toLowerCase().contains(this.search.toLowerCase())) {
+            if (lootItem.getLoot().getDisplayItem().getType().toString().toLowerCase().contains(this.search.toLowerCase())) {
                 return true;
             }
             return false;
@@ -146,9 +144,9 @@ public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements Pa
 
     public class ListLootItem {
         private Loot loot;
-        private CustomDrop drop;
+        private Drop drop;
 
-        private ListLootItem(CustomDrop drop, Loot loot) {
+        private ListLootItem(Drop drop, Loot loot) {
             this.drop = drop;
             this.loot = loot;
         }
@@ -157,7 +155,7 @@ public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements Pa
             return loot;
         }
 
-        public CustomDrop getDrop() {
+        public Drop getDrop() {
             return drop;
         }
     }

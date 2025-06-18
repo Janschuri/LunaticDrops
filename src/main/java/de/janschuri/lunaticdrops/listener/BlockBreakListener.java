@@ -2,11 +2,10 @@ package de.janschuri.lunaticdrops.listener;
 
 import com.jeff_media.customblockdata.CustomBlockData;
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.drops.BlockBreak;
+import de.janschuri.lunaticdrops.drops.DropBlockBreak;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -45,7 +44,7 @@ public class BlockBreakListener implements Listener {
 
         Location location = event.getBlock().getLocation();
 
-        BlockBreak blockBreak = (BlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, event.getBlockState().getType().name());
+        DropBlockBreak blockBreak = (DropBlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, event.getBlockState().getType().name());
 
         if (blockBreak == null) {
             return;
@@ -78,7 +77,8 @@ public class BlockBreakListener implements Listener {
 
         for (Loot loot : blockBreak.getLoot()) {
             if (Utils.isLucky(loot.getChance())) {
-                List<ItemStack> items = loot.getDrops(flags, bonusRolls);
+                loot.runCommands();
+                List<ItemStack> items = loot.getDrops(bonusRolls, flags);
 
                 if (items == null) {
                     continue;

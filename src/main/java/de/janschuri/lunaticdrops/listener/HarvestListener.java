@@ -1,15 +1,13 @@
 package de.janschuri.lunaticdrops.listener;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.drops.BlockBreak;
-import de.janschuri.lunaticdrops.drops.Harvest;
+import de.janschuri.lunaticdrops.drops.DropHarvest;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.Location;
-import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
@@ -26,10 +24,10 @@ public class HarvestListener implements Listener {
 
         Location location = event.getHarvestedBlock().getLocation();
 
-        Harvest harvest = (Harvest) LunaticDrops.getDrop(TriggerType.HARVEST, event.getHarvestedBlock().getType().name());
+        DropHarvest harvest = (DropHarvest) LunaticDrops.getDrop(TriggerType.HARVEST, event.getHarvestedBlock().getType().name());
 
         if (harvest == null) {
-            harvest = (Harvest) LunaticDrops.getDrop(TriggerType.HARVEST, event.getHarvestedBlock().getType().name()+"_PLANT");
+            harvest = (DropHarvest) LunaticDrops.getDrop(TriggerType.HARVEST, event.getHarvestedBlock().getType().name()+"_PLANT");
         }
 
         if (harvest == null) {
@@ -49,7 +47,8 @@ public class HarvestListener implements Listener {
 
         for (Loot loot : harvest.getLoot()) {
             if (Utils.isLucky(loot.getChance())) {
-                List<ItemStack> items = loot.getDrops(flags, bonusRolls);
+                loot.runCommands();
+                List<ItemStack> items = loot.getDrops(bonusRolls, flags);
 
                 if (items == null) {
                     continue;

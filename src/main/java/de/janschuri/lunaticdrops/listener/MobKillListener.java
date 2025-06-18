@@ -1,16 +1,12 @@
 package de.janschuri.lunaticdrops.listener;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.drops.CustomDrop;
-import de.janschuri.lunaticdrops.drops.MobKill;
+import de.janschuri.lunaticdrops.drops.DropMobKill;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
-import org.bukkit.Location;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,7 +24,7 @@ public class MobKillListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onMobKillLowest(EntityDeathEvent event) {
-        MobKill mobKill = (MobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, event.getEntityType().name());
+        DropMobKill mobKill = (DropMobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, event.getEntityType().name());
 
         if (mobKill == null) {
             return;
@@ -59,7 +55,8 @@ public class MobKillListener implements Listener {
         for (Loot loot : mobKill.getLoot()) {
 
             if (Utils.isLucky(loot.getChance())) {
-                List<ItemStack> items = loot.getDrops(flags, bonusRolls);
+                loot.runCommands();
+                List<ItemStack> items = loot.getDrops(bonusRolls, flags);
 
                 if (items == null) {
                     continue;

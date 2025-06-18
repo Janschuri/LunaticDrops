@@ -2,9 +2,9 @@ package de.janschuri.lunaticdrops.commands.drops.pandaeat;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.commands.Subcommand;
-import de.janschuri.lunaticdrops.drops.CustomDrop;
-import de.janschuri.lunaticdrops.drops.PandaEat;
-import de.janschuri.lunaticdrops.gui.PandaEatEditorGUI;
+import de.janschuri.lunaticdrops.drops.Drop;
+import de.janschuri.lunaticdrops.drops.DropPandaEat;
+import de.janschuri.lunaticdrops.gui.editor.EditorGUIPandaEat;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.*;
 import de.janschuri.lunaticlib.common.command.HasParams;
@@ -56,7 +56,7 @@ public class PandaEatEdit extends Subcommand implements HasParams, HasParentComm
 
         String name = args[0];
 
-        PandaEat pandaEat = (PandaEat) LunaticDrops.getDrop(TriggerType.PANDA_EAT, name);
+        DropPandaEat pandaEat = (DropPandaEat) LunaticDrops.getDrop(TriggerType.PANDA_EAT, name);
 
         if (pandaEat == null) {
             sender.sendMessage("Panda eat drop not found: " + name);
@@ -64,7 +64,7 @@ public class PandaEatEdit extends Subcommand implements HasParams, HasParentComm
         }
 
         Player p = Bukkit.getPlayer(player.getUniqueId());
-        GUIManager.openGUI(new PandaEatEditorGUI(pandaEat), p);
+        GUIManager.openGUI(new EditorGUIPandaEat(pandaEat), p);
         return true;
     }
 
@@ -101,7 +101,7 @@ public class PandaEatEdit extends Subcommand implements HasParams, HasParentComm
     private List<String> getPandaEatDrops() {
         if (pandaEatDrops == null) {
             pandaEatDrops = LunaticDrops.getDrops(TriggerType.PANDA_EAT).stream()
-                    .map(CustomDrop::getName)
+                    .map(Drop::getName)
                     .toList();
         }
         return pandaEatDrops;

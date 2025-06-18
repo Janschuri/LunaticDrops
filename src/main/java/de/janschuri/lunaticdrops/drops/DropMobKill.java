@@ -10,14 +10,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Map;
 
-import static de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils.itemStackToMap;
-
-public class MobKill extends CustomDrop {
+public class DropMobKill extends Drop {
 
     private final EntityType mobType;
 
-    public MobKill(@NotNull List<Loot> loot, boolean active, @NotNull EntityType mobType) {
+    public DropMobKill(@NotNull List<Loot> loot, boolean active, @NotNull EntityType mobType) {
         super(loot, active);
+        this.mobType = mobType;
+    }
+
+    public DropMobKill(Drop drop, @NotNull EntityType mobType) {
+        super(drop);
         this.mobType = mobType;
     }
 
@@ -28,13 +31,9 @@ public class MobKill extends CustomDrop {
 
     @Override
     public Map<String, Object> toMap() {
-        List<Map<String, Object>> lootMaps = getLoot().stream().map(Loot::toMap).toList();
-
-        return Map.of(
-                "loot", lootMaps,
-                "active", active,
-                "mob", mobType.name()
-        );
+        Map<String, Object> map = super.toMap();
+        map.put("mob", mobType.name());
+        return map;
     }
 
     @Override

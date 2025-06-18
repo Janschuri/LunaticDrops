@@ -46,6 +46,14 @@ public class Utils extends de.janschuri.lunaticlib.common.utils.Utils {
         return normalized;
     }
 
+    public static String formatChance(String chanceEquation) {
+        Double chance = parseEquation(chanceEquation);
+        if (chance == null) {
+            return formatChance(0);
+        }
+        return formatChance(chance);
+    }
+
     public static String formatChance(double chance) {
         // format to last existing decimal place
         String chanceString = String.valueOf(chance*100);

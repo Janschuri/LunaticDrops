@@ -1,7 +1,7 @@
-package de.janschuri.lunaticdrops.gui;
+package de.janschuri.lunaticdrops.gui.editor;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.drops.MobKill;
+import de.janschuri.lunaticdrops.drops.DropMobKill;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
@@ -17,21 +17,21 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-public class MobKillEditorGUI extends EditorGUI {
+public class EditorGUIMobKill extends EditorGUI {
 
     private EntityType entityType;
     private String oldName = null;
 
-    public MobKillEditorGUI() {
+    public EditorGUIMobKill() {
         super();
     }
 
-    public MobKillEditorGUI(EntityType entityType) {
+    public EditorGUIMobKill(EntityType entityType) {
         super();
         this.entityType = entityType;
     }
 
-    public MobKillEditorGUI(MobKill mobKill) {
+    public EditorGUIMobKill(DropMobKill mobKill) {
         super(mobKill);
         this.entityType = mobKill.getMobType();
         this.oldName = mobKill.getName();
@@ -79,7 +79,7 @@ public class MobKillEditorGUI extends EditorGUI {
 
                                 if (LunaticDrops.dropExists(TriggerType.MOB_KILL, entityType.name())) {
                                     Logger.debugLog("Mob kill drop already exists for " + entityType.name());
-                                    GUIManager.openGUI(new MobKillEditorGUI((MobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, entityType.name())), player);
+                                    GUIManager.openGUI(new EditorGUIMobKill((DropMobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, entityType.name())), player);
                                     return;
                                 }
 
@@ -94,15 +94,15 @@ public class MobKillEditorGUI extends EditorGUI {
     protected void save(Player player) {
         List<Loot> lootList = getItems();
 
-        MobKill mobKill = new MobKill(
+        DropMobKill mobKill = new DropMobKill(
                 getItems(),
                 isActive(),
                 getEntityType()
         );
 
         if (mobKill.save(oldName)) {
-            MobKill newMobKill = (MobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, mobKill.getMobType().name());
-            GUIManager.openGUI(new MobKillEditorGUI(newMobKill), player);
+            DropMobKill newMobKill = (DropMobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, mobKill.getMobType().name());
+            GUIManager.openGUI(new EditorGUIMobKill(newMobKill), player);
         }
     }
 

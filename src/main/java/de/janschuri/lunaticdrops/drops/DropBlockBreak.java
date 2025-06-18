@@ -4,21 +4,23 @@ import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.Material;
-import org.bukkit.block.BlockState;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 
-import static de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils.itemStackToMap;
-
-public class BlockBreak extends CustomDrop {
+public class DropBlockBreak extends Drop {
 
     private final Material block;
 
-    public BlockBreak(@NotNull List<Loot> loot, boolean active, Material block) {
+    public DropBlockBreak(@NotNull List<Loot> loot, boolean active, Material block) {
         super(loot, active);
+        this.block = block;
+    }
+
+    public DropBlockBreak(Drop drop, Material block) {
+        super(drop);
         this.block = block;
     }
 
@@ -29,13 +31,9 @@ public class BlockBreak extends CustomDrop {
 
     @Override
     public Map<String, Object> toMap() {
-        List<Map<String, Object>> lootMaps = getLoot().stream().map(Loot::toMap).toList();
-
-        return Map.of(
-                "loot", lootMaps,
-                "active", active,
-                "block", block.name()
-        );
+        Map<String, Object> map = super.toMap();
+        map.put("block", getBlock().name());
+        return map;
     }
 
     @Override

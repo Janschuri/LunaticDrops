@@ -1,6 +1,9 @@
-package de.janschuri.lunaticdrops.gui;
+package de.janschuri.lunaticdrops.gui.editor;
 
-import de.janschuri.lunaticdrops.drops.CustomDrop;
+import de.janschuri.lunaticdrops.drops.Drop;
+import de.janschuri.lunaticdrops.gui.ListDropGUI;
+import de.janschuri.lunaticdrops.gui.LootGUI;
+import de.janschuri.lunaticdrops.gui.MainGUI;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
 import de.janschuri.lunaticdrops.utils.Logger;
@@ -43,7 +46,7 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
         editMode = true;
     }
 
-    public EditorGUI(CustomDrop customDrop) {
+    public EditorGUI(Drop customDrop) {
         super();
         editMode = false;
         active = customDrop.isActive();
@@ -72,7 +75,7 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
 
     @Override
     public InventoryButton listItemButton(Loot loot) {
-        ItemStack item = loot.getItem();
+        ItemStack item = loot.getDisplayItem();
         ItemMeta meta = item.getItemMeta();
         List<String> lore = new ArrayList<>();
         lore.add("Chance: " + loot.getChance());

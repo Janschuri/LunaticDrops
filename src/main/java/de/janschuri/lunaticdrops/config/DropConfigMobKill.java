@@ -1,6 +1,7 @@
 package de.janschuri.lunaticdrops.config;
 
-import de.janschuri.lunaticdrops.drops.MobKill;
+import de.janschuri.lunaticdrops.drops.Drop;
+import de.janschuri.lunaticdrops.drops.DropMobKill;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.entity.EntityType;
@@ -9,9 +10,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MobKillConfig extends AbstractDropConfig {
+public class DropConfigMobKill extends DropConfig {
 
-    public MobKillConfig(Path path) {
+    public DropConfigMobKill(Path path) {
         super(path);
     }
 
@@ -21,19 +22,13 @@ public class MobKillConfig extends AbstractDropConfig {
     }
 
     @Override
-    public MobKill getDrop() {
+    public DropMobKill getDrop() {
         try {
-            List<Loot> lootList = getLoot("loot");
-            boolean active = getBoolean("active");
+            Drop drop = super.getDrop();
             EntityType mob = getMobType("mob");
 
-            if (lootList == null) {
-                lootList = new ArrayList<>();
-            }
-
-            return new MobKill(
-                    lootList,
-                    active,
+            return new DropMobKill(
+                    drop,
                     mob
             );
         } catch (Exception e) {

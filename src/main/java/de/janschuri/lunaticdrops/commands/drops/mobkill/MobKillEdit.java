@@ -2,8 +2,8 @@ package de.janschuri.lunaticdrops.commands.drops.mobkill;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.commands.Subcommand;
-import de.janschuri.lunaticdrops.drops.MobKill;
-import de.janschuri.lunaticdrops.gui.MobKillEditorGUI;
+import de.janschuri.lunaticdrops.drops.DropMobKill;
+import de.janschuri.lunaticdrops.gui.editor.EditorGUIMobKill;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.*;
 import de.janschuri.lunaticlib.common.command.HasParams;
@@ -66,10 +66,10 @@ public class MobKillEdit extends Subcommand implements HasParentCommand, HasPara
             return true;
         }
 
-        MobKill mobKill = (MobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, entityName);
+        DropMobKill mobKill = (DropMobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, entityName);
 
         Player p = Bukkit.getPlayer(player.getUniqueId());
-        GUIManager.openGUI(new MobKillEditorGUI(mobKill), p);
+        GUIManager.openGUI(new EditorGUIMobKill(mobKill), p);
         return true;
     }
 

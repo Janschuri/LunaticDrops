@@ -1,7 +1,7 @@
-package de.janschuri.lunaticdrops.gui;
+package de.janschuri.lunaticdrops.gui.editor;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.drops.BlockBreak;
+import de.janschuri.lunaticdrops.drops.DropBlockBreak;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
@@ -13,21 +13,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class BlockBreakEditorGUI extends EditorGUI {
+public class EditorGUIBlockBreak extends EditorGUI {
 
     private Material block = null;
     private String oldName = null;
 
-    public BlockBreakEditorGUI() {
+    public EditorGUIBlockBreak() {
         super();
     }
 
-    public BlockBreakEditorGUI(Material block) {
+    public EditorGUIBlockBreak(Material block) {
         super();
         this.block = block;
     }
 
-    public BlockBreakEditorGUI(BlockBreak blockBreak) {
+    public EditorGUIBlockBreak(DropBlockBreak blockBreak) {
         super(blockBreak);
         this.oldName = blockBreak.getName();
         this.block = blockBreak.getBlock();
@@ -73,7 +73,7 @@ public class BlockBreakEditorGUI extends EditorGUI {
 
                                 if (LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, block.name())) {
                                     Logger.debugLog("Mob kill drop already exists for " + block.name());
-                                    GUIManager.openGUI(new BlockBreakEditorGUI((BlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, block.name())), player);
+                                    GUIManager.openGUI(new EditorGUIBlockBreak((DropBlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, block.name())), player);
                                     return;
                                 }
 
@@ -86,15 +86,15 @@ public class BlockBreakEditorGUI extends EditorGUI {
     }
 
     protected void save(Player player) {
-        BlockBreak blockBreak = new BlockBreak(
+        DropBlockBreak blockBreak = new DropBlockBreak(
                 getItems(),
                 isActive(),
                 getBlockType()
         );
 
         if (blockBreak.save(oldName)) {
-            BlockBreak newBlockBreak = (BlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, blockBreak.getBlock().name());
-            GUIManager.openGUI(new BlockBreakEditorGUI(newBlockBreak), player);
+            DropBlockBreak newBlockBreak = (DropBlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, blockBreak.getBlock().name());
+            GUIManager.openGUI(new EditorGUIBlockBreak(newBlockBreak), player);
         }
     }
 

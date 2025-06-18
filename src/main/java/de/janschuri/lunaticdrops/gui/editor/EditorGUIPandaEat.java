@@ -1,7 +1,7 @@
-package de.janschuri.lunaticdrops.gui;
+package de.janschuri.lunaticdrops.gui.editor;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.drops.PandaEat;
+import de.janschuri.lunaticdrops.drops.DropPandaEat;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
@@ -17,23 +17,23 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-public class PandaEatEditorGUI extends EditorGUI {
+public class EditorGUIPandaEat extends EditorGUI {
 
     private String name;
     private String oldName = null;
     private ItemStack eatenItem;
     private boolean matchNBT = false;
 
-    public PandaEatEditorGUI() {
+    public EditorGUIPandaEat() {
         super();
     }
 
-    public PandaEatEditorGUI(String name) {
+    public EditorGUIPandaEat(String name) {
         super();
         this.name = name;
     }
 
-    public PandaEatEditorGUI(PandaEat pandaEat) {
+    public EditorGUIPandaEat(DropPandaEat pandaEat) {
         super(pandaEat);
         this.oldName = pandaEat.getName();
         this.name = pandaEat.getName();
@@ -95,7 +95,7 @@ public class PandaEatEditorGUI extends EditorGUI {
 
     @Override
     protected void save(Player player) {
-        PandaEat pandaEat = new PandaEat(
+        DropPandaEat pandaEat = new DropPandaEat(
                 getName(),
                 getItems(),
                 isActive(),
@@ -104,8 +104,8 @@ public class PandaEatEditorGUI extends EditorGUI {
         );
 
         if (pandaEat.save(oldName)) {
-            PandaEat newPandaEat = (PandaEat) LunaticDrops.getDrop(TriggerType.PANDA_EAT, pandaEat.getName());
-            GUIManager.openGUI(new PandaEatEditorGUI(newPandaEat), player);
+            DropPandaEat newPandaEat = (DropPandaEat) LunaticDrops.getDrop(TriggerType.PANDA_EAT, pandaEat.getName());
+            GUIManager.openGUI(new EditorGUIPandaEat(newPandaEat), player);
         }
     }
 

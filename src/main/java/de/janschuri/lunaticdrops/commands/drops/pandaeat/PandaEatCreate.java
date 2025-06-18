@@ -2,7 +2,7 @@ package de.janschuri.lunaticdrops.commands.drops.pandaeat;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.commands.Subcommand;
-import de.janschuri.lunaticdrops.gui.PandaEatEditorGUI;
+import de.janschuri.lunaticdrops.gui.editor.EditorGUIPandaEat;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.*;
 import de.janschuri.lunaticlib.common.command.HasParams;
@@ -56,7 +56,7 @@ public class PandaEatCreate extends Subcommand implements HasParams, HasParentCo
 
         Player p = Bukkit.getPlayer(player.getUniqueId());
 
-        GUIManager.openGUI(new PandaEatEditorGUI(name), p);
+        GUIManager.openGUI(new EditorGUIPandaEat(name), p);
         return true;
     }
 

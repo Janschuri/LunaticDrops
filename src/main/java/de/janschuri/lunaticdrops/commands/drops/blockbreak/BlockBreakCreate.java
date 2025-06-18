@@ -2,14 +2,13 @@ package de.janschuri.lunaticdrops.commands.drops.blockbreak;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.commands.Subcommand;
-import de.janschuri.lunaticdrops.gui.BlockBreakEditorGUI;
+import de.janschuri.lunaticdrops.gui.editor.EditorGUIBlockBreak;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.*;
 import de.janschuri.lunaticlib.common.command.HasParams;
 import de.janschuri.lunaticlib.common.command.HasParentCommand;
 import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -73,7 +72,7 @@ public class BlockBreakCreate extends Subcommand implements HasParentCommand, Ha
 
         Player p = Bukkit.getPlayer(player.getUniqueId());
 
-        GUIManager.openGUI(new BlockBreakEditorGUI(block), p);
+        GUIManager.openGUI(new EditorGUIBlockBreak(block), p);
         return true;
     }
 

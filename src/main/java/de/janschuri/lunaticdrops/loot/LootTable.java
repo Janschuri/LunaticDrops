@@ -1,5 +1,6 @@
 package de.janschuri.lunaticdrops.loot;
 
+import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -8,24 +9,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class LootTable implements Loot {
+public class LootTable extends Loot {
 
-    private final List<Loot> lootList;
-    private final float chance;
-    private final boolean active;
-    private final boolean cumulative;
+    private List<Loot> lootList = new ArrayList<>();
+    private boolean cumulative = false;
+    private List<String> runCommands = new ArrayList<>();
     private boolean eraseVanillaDrops = false;
+    private List<String> runCommandsLoot = new ArrayList<>();
 
-    public LootTable(List<Loot> lootList, float chance, boolean active, boolean cumulative) {
+    public LootTable() {}
+
+    public LootTable(Loot loot,  List<Loot> lootList, boolean cumulative) {
+        super(loot);
         this.lootList = lootList;
-        this.chance = chance;
-        this.active = active;
+        this.cumulative = cumulative;
+    }
+
+    public LootTable(float chance, boolean active, List<Loot> lootList, boolean cumulative, LootFlag... flags) {
+        super(chance, active, List.of(flags));
+        this.lootList = lootList;
+        this.cumulative = cumulative;
+    }
+
+    public LootTable(String chanceString, boolean active, List<Loot> lootList, boolean cumulative, LootFlag... flags) {
+        super(chanceString, active, List.of(flags));
+        this.lootList = lootList;
         this.cumulative = cumulative;
     }
 
     @Override
-    public List<ItemStack> getDrops(List<LootFlag> flags, int bonusRolls) {
+    public List<ItemStack> getDrops(int bonusRolls, List<LootFlag> flags) {
         eraseVanillaDrops = false;
+        runCommands = new ArrayList<>();
 
         if (cumulative) {
             double[] chances = new double[lootList.size()];
@@ -40,64 +55,71 @@ public class LootTable implements Loot {
                 return new ArrayList<>();
             }
 
-            return lootList.get(luckyIndex).getDrops(flags, bonusRolls);
+            return lootList.get(luckyIndex).getDrops(bonusRolls, flags);
         }
 
 
-        List<ItemStack> drops = new ArrayList<>();
+        List<ItemStack> dropResults = new ArrayList<>();
 
         for (Loot loot : lootList) {
             if (Utils.isLucky(loot.getChance())) {
-                drops.addAll(loot.getDrops(flags, bonusRolls));
+                dropResults.addAll(loot.getDrops(bonusRolls, flags));
 
-                if (loot.isEraseVanillaDrops()) {
+                if (loot.hasFlag(LootFlag.ERASE_VANILLA_DROPS)) {
                     eraseVanillaDrops = true;
                 }
             }
         }
 
-        return drops;
+        return dropResults;
     }
 
     @Override
-    public double getChance() {
-        return 0;
+    public boolean isEraseVanillaDrops () {
+        return eraseVanillaDrops || hasFlag(LootFlag.ERASE_VANILLA_DROPS);
     }
 
     @Override
-    public String getChanceString() {
-        return "";
+    public List<String> getCommandsToRun() {
+        List<String> runCommands = runCommandsLoot;
+        runCommands.addAll(super.getCommandsToRun());
+        return runCommands;
     }
 
     @Override
     public Map<String, Object> toMap() {
-        return Map.of();
+        //TODO: Implement toMap for LootTable
+        throw new UnsupportedOperationException("toMap() is not implemented for LootTable");
     }
 
     @Override
-    public ItemStack getItem() {
+    public ItemStack getDisplayItem() {
         return new ItemStack(Material.ENDER_CHEST);
     }
 
     @Override
-    public boolean isEraseVanillaDrops() {
-        return eraseVanillaDrops;
-    }
+    public LootTable fromMap(Map<String, Object> map) {
+        try {
+            List<Map<String, Object>> lootMapList = (List<Map<String, Object>>) map.get("loot");
 
-    public static LootTable fromMap(Map<String, Object> map) {
-        List<Map<String, Object>> lootMapList = (List<Map<String, Object>>) map.get("loot");
+            List<Loot> lootList = new ArrayList<>();
 
-        List<Loot> lootList = new ArrayList<>();
+            for (Map<String, Object> lootMap : lootMapList) {
+                lootList.add(new SingleLoot().fromMap(lootMap));
+            }
 
-        for (Map<String, Object> lootMap : lootMapList) {
-            lootList.add(SingleLoot.fromMap(lootMap));
+            Loot loot = super.fromMap(map);
+            boolean cumulative = (Boolean) map.get("cumulative");
+
+
+            return new LootTable(
+                    loot,
+                    lootList,
+                    cumulative
+            );
+        } catch (Exception e) {
+            Logger.errorLog("Error loading LootTable: " + e.getMessage());
+            return new LootTable();
         }
-
-        return new LootTable(
-                lootList,
-                (float) map.get("chance"),
-                (boolean) map.get("active"),
-                (boolean) map.get("cumulative")
-        );
     }
 }

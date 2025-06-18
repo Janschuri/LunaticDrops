@@ -1,7 +1,7 @@
 package de.janschuri.lunaticdrops.config;
 
-import de.janschuri.lunaticdrops.drops.BlockBreak;
-import de.janschuri.lunaticdrops.drops.Harvest;
+import de.janschuri.lunaticdrops.drops.Drop;
+import de.janschuri.lunaticdrops.drops.DropHarvest;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.Material;
@@ -10,9 +10,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HarvestConfig extends AbstractDropConfig {
+public class DropConfigHarvest extends DropConfig {
 
-    public HarvestConfig(Path path) {
+    public DropConfigHarvest(Path path) {
         super(path);
     }
 
@@ -22,19 +22,13 @@ public class HarvestConfig extends AbstractDropConfig {
     }
 
     @Override
-    public Harvest getDrop() {
+    public DropHarvest getDrop() {
         try {
-            List<Loot> lootList = getLoot("loot");
-            boolean active = getBoolean("active");
+            Drop drop = super.getDrop();
             Material block = getMaterial("block");
 
-            if (lootList == null) {
-                lootList = new ArrayList<>();
-            }
-
-            return new Harvest(
-                    lootList,
-                    active,
+            return new DropHarvest(
+                    drop,
                     block
             );
         } catch (Exception e) {

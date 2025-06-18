@@ -2,17 +2,14 @@ package de.janschuri.lunaticdrops.commands.drops.mobkill;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.commands.Subcommand;
-import de.janschuri.lunaticdrops.gui.BlockBreakEditorGUI;
-import de.janschuri.lunaticdrops.gui.MobKillEditorGUI;
+import de.janschuri.lunaticdrops.gui.editor.EditorGUIMobKill;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticlib.*;
 import de.janschuri.lunaticlib.common.command.HasParams;
 import de.janschuri.lunaticlib.common.command.HasParentCommand;
 import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
@@ -73,7 +70,7 @@ public class MobKillCreate extends Subcommand implements HasParentCommand, HasPa
 
         Player p = Bukkit.getPlayer(player.getUniqueId());
 
-        GUIManager.openGUI(new MobKillEditorGUI(entity), p);
+        GUIManager.openGUI(new EditorGUIMobKill(entity), p);
         return true;
     }
 

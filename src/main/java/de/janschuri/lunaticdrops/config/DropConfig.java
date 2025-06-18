@@ -1,7 +1,6 @@
 package de.janschuri.lunaticdrops.config;
 
-import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.drops.CustomDrop;
+import de.janschuri.lunaticdrops.drops.Drop;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.LootTable;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
@@ -15,11 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractDropConfig extends LunaticConfig {
+public class DropConfig extends LunaticConfig {
 
     private final String fileName;
 
-    public AbstractDropConfig(Path path) {
+    public DropConfig(Path path) {
         super(path, path.getFileName().toString());
 
         fileName = path.getFileName().toString().replace(".yml", "");
@@ -33,7 +32,24 @@ public abstract class AbstractDropConfig extends LunaticConfig {
         super.load(null);
     }
 
-    public abstract CustomDrop getDrop();
+    public Drop getDrop() {
+        try {
+            List<Loot> lootList = getLoot("loot");
+            boolean active = getBoolean("active");
+
+            if (lootList == null) {
+                lootList = new ArrayList<>();
+            }
+
+            return new Drop(
+                    lootList,
+                    active
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     protected List<Loot> getLoot(String key) {
         List<Map<String, Object>> lootList = getMapList(key);
@@ -54,9 +70,9 @@ public abstract class AbstractDropConfig extends LunaticConfig {
             String type = (String) lootMap.get("type");
 
             if (type.equals("single")) {
-                loot.add(SingleLoot.fromMap(lootMap));
+                loot.add(new SingleLoot().fromMap(lootMap));
             } else if (type.equals("table")) {
-                loot.add(LootTable.fromMap(lootMap));
+                loot.add(new LootTable().fromMap(lootMap));
             } else {
                 Logger.errorLog("Unknown loot type in config");
                 return null;
