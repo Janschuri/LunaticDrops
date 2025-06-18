@@ -128,6 +128,36 @@ public enum TriggerType {
         public EditorGUIBlockBreak getEditorGUI() {
             return new EditorGUIBlockBreak();
         }
+    },
+    LEAVES_DECAY {
+        @Override
+        public String getDisplayName() {
+            return "Leaves Decay";
+        }
+        @Override
+        public ItemStack getDisplayItem() {
+            return new ItemStack(Material.OAK_LEAVES);
+        }
+        @Override
+        public String getConfigPath() {
+            return "/leaves_decay";
+        }
+        @Override
+        public DropConfigBlockDecay getConfig(Path path) {
+            return new DropConfigBlockDecay(path);
+        }
+        @Override
+        public EditorGUILeavesDecay getEditorGUI(Drop drop) {
+            if (drop instanceof DropLeavesDecay) {
+                return new EditorGUILeavesDecay((DropLeavesDecay) drop);
+            }
+            Logger.errorLog("Drop is not an instance of LeavesDecay");
+            return null;
+        }
+        @Override
+        public EditorGUILeavesDecay getEditorGUI() {
+            return new EditorGUILeavesDecay();
+        }
     };
 
     public abstract String getDisplayName();
