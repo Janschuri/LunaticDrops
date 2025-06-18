@@ -65,7 +65,6 @@ public class SingleLoot extends Loot {
 
     @Override
     public List<ItemStack> getDrops(int bonusRolls, List<LootFlag> flags) {
-        Logger.debugLog("SingleLoot.getDrops: " + flags);
 
         if (!isActive()) {
             return new ArrayList<>();

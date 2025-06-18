@@ -9,9 +9,14 @@ import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
 import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectBlockGUI;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditorGUILeavesDecay extends EditorGUI {
 
@@ -67,7 +72,19 @@ public class EditorGUILeavesDecay extends EditorGUI {
 
                     Player player = (Player) event.getWhoClicked();
 
-                    SelectBlockGUI selectBlockGUI = new SelectBlockGUI()
+                    SelectBlockGUI selectBlockGUI = new SelectBlockGUI() {
+                                @Override
+                                public List<Material> getItems() {
+                                    return super.getItems()
+                                            .stream()
+                                            .filter(material -> {
+                                                BlockData blockData = material.createBlockData();
+                                                return blockData instanceof org.bukkit.block.data.type.Leaves;
+                                            })
+                                            .toList();
+
+                                }
+                            }
                             .consumer(block -> {
                                 this.block = block;
 
