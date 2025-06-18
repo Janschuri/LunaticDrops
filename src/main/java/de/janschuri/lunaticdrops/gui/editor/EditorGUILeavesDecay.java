@@ -27,10 +27,10 @@ public class EditorGUILeavesDecay extends EditorGUI {
         this.block = block;
     }
 
-    public EditorGUILeavesDecay(DropLeavesDecay blockBreak) {
-        super(blockBreak);
-        this.oldName = blockBreak.getName();
-        this.block = blockBreak.getBlock();
+    public EditorGUILeavesDecay(DropLeavesDecay leavesDecay) {
+        super(leavesDecay);
+        this.oldName = leavesDecay.getName();
+        this.block = leavesDecay.getBlock();
     }
 
     private Material getBlockType() {
@@ -71,7 +71,7 @@ public class EditorGUILeavesDecay extends EditorGUI {
                             .consumer(block -> {
                                 this.block = block;
 
-                                if (LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, block.name())) {
+                                if (LunaticDrops.dropExists(TriggerType.LEAVES_DECAY, block.name())) {
                                     GUIManager.openGUI(new EditorGUILeavesDecay((DropLeavesDecay) LunaticDrops.getDrop(TriggerType.LEAVES_DECAY, block.name())), player);
                                     return;
                                 }
