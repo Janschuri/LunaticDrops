@@ -578,7 +578,7 @@ public class LootGUI extends InventoryGUI implements Reopenable {
 
     private void setChanceString(String chanceString, double chance) {
         this.chanceString = chanceString;
-        setChance(chance);
+        this.chance = chance;
     }
 
     private InventoryButton chanceButton() {
