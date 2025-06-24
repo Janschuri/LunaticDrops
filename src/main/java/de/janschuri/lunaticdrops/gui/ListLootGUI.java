@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static de.janschuri.lunaticdrops.utils.Utils.formatChance;
+
 public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements PaginatedList<ListLootGUI.ListLootItem>, SearchableList<ListLootGUI.ListLootItem>, Reopenable {
 
     private int page = 0;
@@ -43,14 +45,20 @@ public class ListLootGUI extends ListGUI<ListLootGUI.ListLootItem> implements Pa
         Drop drop = lootItem.getDrop();
         ItemStack item = loot.getDisplayItem();
 
-        String chanceString = loot.getChanceEquation();
         String typeString = drop.getTriggerType().getDisplayName();
         String displayName = drop.getName();
 
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             List<String> lore = new ArrayList<>();
-            lore.add("Chance: " + chanceString);
+            String chanceLore = formatChance(loot.getChance());
+
+            if (loot.getChanceEquation() != String.valueOf(loot.getChance())) {
+                chanceLore += " (" + loot.getChanceEquation() + ")";
+            }
+
+            lore.add(chanceLore);
+
             lore.add("Type: " + typeString);
             lore.add("Drop Name: " + displayName);
             meta.setLore(lore);

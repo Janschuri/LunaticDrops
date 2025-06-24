@@ -78,14 +78,19 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
         ItemStack item = loot.getDisplayItem();
         ItemMeta meta = item.getItemMeta();
         List<String> lore = new ArrayList<>();
-        lore.add("Chance: " + loot.getChance());
+        String chanceLore = formatChance(loot.getChance());
+
+        if (loot.getChanceEquation() != String.valueOf(loot.getChance())) {
+            chanceLore += " (" + loot.getChanceEquation() + ")";
+        }
+
+        lore.add("§7Chance: " + chanceLore);
 
         if (loot instanceof SingleLoot) {
             SingleLoot singleLoot = (SingleLoot) loot;
             lore.add("active: " + (singleLoot.isActive() ? "§aYes" : "§cNo"));
             lore.add("min. Amount: " + singleLoot.getMinAmount());
             lore.add("max. Amount: " + singleLoot.getMaxAmount());
-            lore.add("Chance: " + formatChance(singleLoot.getChance()));
             lore.add("");
             if (!singleLoot.getFlags().isEmpty()) {
                 lore.add("Flags:");
