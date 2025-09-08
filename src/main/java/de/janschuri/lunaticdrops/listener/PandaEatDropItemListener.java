@@ -33,7 +33,7 @@ public class PandaEatDropItemListener implements Listener {
         }
     }
 
-                                  @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPandaEatDropItem(PandaEatDropItemEvent event) {
         Location location = event.getPanda().getLocation();
 

@@ -35,11 +35,11 @@ public class EntityBreedListener implements Listener {
             return;
         }
 
-        List<LootFlag> flags = new ArrayList<>();
+        List<DropFlag> flags = new ArrayList<>();
         int bonusRolls = 0;
 
         if (!(event.getBreeder() instanceof Player)) {
-            flags.add(LootFlag.DROP_ONLY_TO_PLAYER);
+            flags.add(DropFlag.PLAYER);
         }
 
         List<ItemStack> drops = new ArrayList<>();

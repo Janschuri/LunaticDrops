@@ -123,6 +123,10 @@ public class LootGUI extends InventoryGUI implements Reopenable {
             flagButtons.add(forceMaxAmountButton());
         }
 
+        if (flags.contains(LootFlag.DROP_PLAYER_PLACED)) {
+            flagButtons.add(dropPlayerPlaced());
+        }
+
 
                 if (flags.contains(LootFlag.ONLY_FULL_GROWN)) {
                     flagButtons.add(onlyFullGrownButton());
@@ -565,6 +569,48 @@ public class LootGUI extends InventoryGUI implements Reopenable {
                         flags.remove(LootFlag.ONLY_FULL_GROWN);
                     } else {
                         flags.add(LootFlag.ONLY_FULL_GROWN);
+                    }
+
+                    reloadGui();
+                });
+    }
+
+    private InventoryButton dropPlayerPlaced() {
+        ItemStack item = flags.contains(LootFlag.DROP_PLAYER_PLACED) ? new ItemStack(Material.BRICK) : new ItemStack(Material.BRICKS);
+
+        String displayName = LootFlag.DROP_PLAYER_PLACED.getDisplayName();
+
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add("If enabled, the drop will also happen");
+        lore.add("if the block was placed by a player");
+
+        ItemMeta meta = item.getItemMeta();
+
+        if (flags.contains(LootFlag.DROP_PLAYER_PLACED)) {
+            assert meta != null;
+            meta.addEnchant(Enchantment.MENDING, 1, true);
+            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            lore.add("§aEnabled");
+        } else {
+            lore.add("§cDisabled");
+        }
+
+        meta.setDisplayName(displayName);
+        meta.setLore(lore);
+
+        item.setItemMeta(meta);
+
+        return new InventoryButton()
+                .creator((player) -> item)
+                .consumer(event -> {
+                    if (!editMode) {
+                        return;
+                    }
+
+                    if (flags.contains(LootFlag.DROP_PLAYER_PLACED)) {
+                        flags.remove(LootFlag.DROP_PLAYER_PLACED);
+                    } else {
+                        flags.add(LootFlag.DROP_PLAYER_PLACED);
                     }
 
                     reloadGui();

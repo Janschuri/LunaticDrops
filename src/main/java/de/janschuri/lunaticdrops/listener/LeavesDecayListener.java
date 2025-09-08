@@ -33,7 +33,7 @@ public class LeavesDecayListener  implements Listener {
             return;
         }
 
-        List<LootFlag> flags = new ArrayList<>();
+        List<DropFlag> flags = new ArrayList<>();
         int bonusRolls = 0;
 
         List<ItemStack> drops = new ArrayList<>();

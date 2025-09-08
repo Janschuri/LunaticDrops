@@ -32,10 +32,12 @@ public class BlockBreakListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockDropLowest(BlockDropItemEvent event) {
         Block block = event.getBlock();
+        List<DropFlag> flags = new ArrayList<>();
+
         PersistentDataContainer blockDataContainer = new CustomBlockData(block, LunaticDrops.getInstance());
         if (blockDataContainer.has(LunaticDrops.PLACED_BY_PLAYER_KEY, org.bukkit.persistence.PersistentDataType.INTEGER)) {
             blockDataContainer.remove(LunaticDrops.PLACED_BY_PLAYER_KEY);
-            return;
+            flags.add(DropFlag.PLAYER_PLACED);
         }
 
         if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
@@ -54,21 +56,20 @@ public class BlockBreakListener implements Listener {
             return;
         }
 
-        List<LootFlag> flags = new ArrayList<>();
         int bonusRolls = 0;
 
         if (isSilk(event.getPlayer().getInventory().getItemInMainHand())) {
-            flags.add(LootFlag.DROP_WITH_SILK_TOUCH);
+            flags.add(DropFlag.SILK_TOUCH);
         }
 
         if (getFortuneLevel(event.getPlayer().getInventory().getItemInMainHand()) > 0) {
-            flags.add(LootFlag.APPLY_FORTUNE);
+            flags.add(DropFlag.FORTUNE);
             bonusRolls = getFortuneLevel(event.getPlayer().getInventory().getItemInMainHand());
         }
 
         if (event.getBlockState().getBlockData() instanceof Ageable ageable) {
-            if (ageable.getAge() < ageable.getMaximumAge()) {
-                flags.add(LootFlag.ONLY_FULL_GROWN);
+            if (ageable.getAge() == ageable.getMaximumAge()) {
+                flags.add(DropFlag.IS_FULLY_GROWN);
             }
         }
 

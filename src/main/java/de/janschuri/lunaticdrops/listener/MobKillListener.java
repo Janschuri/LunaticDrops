@@ -34,14 +34,14 @@ public class MobKillListener implements Listener {
             return;
         }
 
-        List<LootFlag> flags = new ArrayList<>();
+        List<DropFlag> flags = new ArrayList<>();
         int bonusRolls = 0;
 
         if (event.getEntity().getKiller() == null) {
-            flags.add(LootFlag.DROP_ONLY_TO_PLAYER);
+            flags.add(DropFlag.PLAYER);
         } else {
             if (getLootingLevel(event.getEntity().getKiller().getInventory().getItemInMainHand()) > 0) {
-                flags.add(LootFlag.APPLY_LOOTING);
+                flags.add(DropFlag.LOOTING);
                 bonusRolls = getLootingLevel(event.getEntity().getKiller().getInventory().getItemInMainHand());
             }
         }

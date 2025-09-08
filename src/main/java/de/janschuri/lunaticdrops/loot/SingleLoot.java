@@ -1,5 +1,6 @@
 package de.janschuri.lunaticdrops.loot;
 
+import de.janschuri.lunaticdrops.listener.DropFlag;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
 import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
@@ -64,27 +65,31 @@ public class SingleLoot extends Loot {
     }
 
     @Override
-    public List<ItemStack> getDrops(int bonusRolls, List<LootFlag> flags) {
+    public List<ItemStack> getDrops(int bonusRolls, List<DropFlag> flags) {
 
         if (!isActive()) {
             return new ArrayList<>();
         }
 
-        if (!hasFlag(LootFlag.DROP_ONLY_TO_PLAYER) && flags.contains(LootFlag.DROP_ONLY_TO_PLAYER)) {
+        if (hasFlag(LootFlag.DROP_ONLY_TO_PLAYER) && !flags.contains(DropFlag.PLAYER)) {
             return new ArrayList<>();
         }
 
-        if (!hasFlag(LootFlag.DROP_WITH_SILK_TOUCH) && flags.contains(LootFlag.DROP_WITH_SILK_TOUCH)) {
+        if (!hasFlag(LootFlag.DROP_PLAYER_PLACED) && flags.contains(DropFlag.PLAYER_PLACED)) {
             return new ArrayList<>();
         }
 
-        if (hasFlag(LootFlag.ONLY_FULL_GROWN) && flags.contains(LootFlag.ONLY_FULL_GROWN)) {
+        if (!hasFlag(LootFlag.DROP_WITH_SILK_TOUCH) && flags.contains(DropFlag.SILK_TOUCH)) {
+            return new ArrayList<>();
+        }
+
+        if (hasFlag(LootFlag.ONLY_FULL_GROWN) && !flags.contains(DropFlag.IS_FULLY_GROWN)) {
             return new ArrayList<>();
         }
 
         int amount = minAmount + (int) (Math.random() * (maxAmount - minAmount + 1));
 
-        if (hasFlag(LootFlag.APPLY_FORTUNE) && flags.contains(LootFlag.APPLY_FORTUNE)) {
+        if (hasFlag(LootFlag.APPLY_FORTUNE) && flags.contains(DropFlag.FORTUNE)) {
             for (int i = 0; i < bonusRolls; i++) {
                 if (!Utils.isLucky(getChance())) {
                     continue;
@@ -93,7 +98,7 @@ public class SingleLoot extends Loot {
             }
         }
 
-        if (hasFlag(LootFlag.APPLY_LOOTING) && flags.contains(LootFlag.APPLY_LOOTING)) {
+        if (hasFlag(LootFlag.APPLY_LOOTING) && flags.contains(DropFlag.LOOTING)) {
             for (int i = 0; i < bonusRolls; i++) {
                 if (!Utils.isLucky(getChance())) {
                     continue;

@@ -1,5 +1,6 @@
 package de.janschuri.lunaticdrops.loot;
 
+import de.janschuri.lunaticdrops.listener.DropFlag;
 import de.janschuri.lunaticdrops.utils.Utils;
 import de.janschuri.lunaticlib.platform.bukkit.BukkitLunaticLib;
 import jdk.jshell.execution.Util;
@@ -51,7 +52,7 @@ public class Loot {
         return getDrops(0, List.of());
     }
 
-    public final List<ItemStack> getDrops(List<LootFlag> flags) {
+    public final List<ItemStack> getDrops(List<DropFlag> flags) {
         return getDrops(0, flags);
     }
 
@@ -59,7 +60,7 @@ public class Loot {
         return getDrops(bonusRolls, List.of());
     }
 
-    public List<ItemStack> getDrops(int bonusRolls, List<LootFlag> flags) {
+    public List<ItemStack> getDrops(int bonusRolls, List<DropFlag> flags) {
         return List.of();
     }
 

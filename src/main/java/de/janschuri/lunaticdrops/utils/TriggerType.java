@@ -150,7 +150,8 @@ public enum TriggerType {
                     LootFlag.DROP_WITH_SILK_TOUCH,
                     LootFlag.APPLY_FORTUNE,
                     LootFlag.FORCE_MAX_AMOUNT,
-                    LootFlag.ONLY_FULL_GROWN
+                    LootFlag.ONLY_FULL_GROWN,
+                    LootFlag.DROP_PLAYER_PLACED
             );
         }
     },
