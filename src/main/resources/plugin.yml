@@ -9,5 +9,3 @@ commands:
         permission: lunaticdrops.command
         aliases:
         - ld
-depend:
-  - LunaticLib

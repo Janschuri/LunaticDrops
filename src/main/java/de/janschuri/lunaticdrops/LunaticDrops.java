@@ -9,6 +9,7 @@ import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticlib.platform.paper.commands.PaperCommandAdapter;
 import de.janschuri.lunaticlib.platform.paper.commands.PaperCommandHandler;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.PaperInventoryGUIHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -53,6 +54,8 @@ public final class LunaticDrops extends JavaPlugin {
 
         PaperCommandAdapter commandAdapter = new PaperCommandAdapter();
         PaperCommandHandler.initialize(commandAdapter);
+
+        PaperInventoryGUIHandler.initialize(instance);
 
         PaperCommandHandler.getAdapter().registerCommand(instance, new de.janschuri.lunaticdrops.commands.drops.LunaticDrops());
     }

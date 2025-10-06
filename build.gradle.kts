@@ -32,7 +32,7 @@ dependencies {
 }
 
 group = "de.janschuri"
-version = "1.0.0"
+version = "1.1.0"
 description = "LunaticDrops"
 java.sourceCompatibility = JavaVersion.VERSION_16
 
@@ -53,7 +53,7 @@ tasks {
         enabled = false
     }
     shadowJar {
-        archiveBaseName.set("LunaticStorage")
+        archiveBaseName.set("LunaticDrops")
         archiveClassifier.set("")
     }
 }
@@ -68,4 +68,5 @@ tasks.withType<Javadoc>() {
 
 tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
     relocate("org.bstats", "de.janschuri.lunaticdrops.libs.bstats")
+    relocate("de.janschuri.lunaticlib", "de.janschuri.lunaticdrops.libs.lunaticlib")
 }
