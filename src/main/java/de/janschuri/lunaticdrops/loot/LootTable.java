@@ -119,7 +119,7 @@ public class LootTable extends Loot {
                     cumulative
             );
         } catch (Exception e) {
-            Logger.errorLog("Error loading LootTable: " + e.getMessage());
+            Logger.error("Error loading LootTable: " + e.getMessage());
             return new LootTable();
         }
     }

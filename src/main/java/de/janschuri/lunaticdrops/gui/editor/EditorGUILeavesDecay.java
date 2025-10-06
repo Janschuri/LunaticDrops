@@ -1,15 +1,13 @@
 package de.janschuri.lunaticdrops.gui.editor;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticdrops.drops.DropBlockBreak;
 import de.janschuri.lunaticdrops.drops.DropLeavesDecay;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectBlockGUI;
-import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.buttons.InventoryButton;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.guis.SelectBlockGUI;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.handler.GUIManager;
+import de.janschuri.lunaticlib.platform.paper.utils.ItemStackUtils;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

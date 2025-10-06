@@ -3,7 +3,6 @@ package de.janschuri.lunaticdrops.listener;
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.DropHarvest;
 import de.janschuri.lunaticdrops.loot.Loot;
-import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Utils;
@@ -20,7 +19,7 @@ public class HarvestListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(PlayerHarvestBlockEvent event) {
-        Logger.debugLog("PlayerHarvestBlock: " + event.getHarvestedBlock().getType().name());
+        Logger.debug("PlayerHarvestBlock: " + event.getHarvestedBlock().getType().name());
 
         Location location = event.getHarvestedBlock().getLocation();
 
@@ -31,7 +30,7 @@ public class HarvestListener implements Listener {
         }
 
         if (harvest == null) {
-            Logger.debugLog("No harvest found for block: " + event.getHarvestedBlock().getType().name());
+            Logger.debug("No harvest found for block: " + event.getHarvestedBlock().getType().name());
             return;
         }
 

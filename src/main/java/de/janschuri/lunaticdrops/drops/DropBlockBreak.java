@@ -2,7 +2,7 @@ package de.janschuri.lunaticdrops.drops;
 
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
+import de.janschuri.lunaticlib.platform.paper.utils.ItemStackUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;

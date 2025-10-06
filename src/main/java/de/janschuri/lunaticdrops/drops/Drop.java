@@ -48,7 +48,7 @@ public class Drop {
 
         File file = new File( LunaticDrops.getDataDirectory() + "/" + LunaticDrops.getCustomDropPath() + getTriggerType().getConfigPath() + "/" + name + ".yml");
 
-        Logger.debugLog("Saving to: " + file.getAbsolutePath());
+        Logger.debug("Saving to: " + file.getAbsolutePath());
 
         Yaml yaml = new Yaml();
 

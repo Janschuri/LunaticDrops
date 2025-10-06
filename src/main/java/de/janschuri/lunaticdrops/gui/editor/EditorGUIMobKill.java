@@ -5,10 +5,10 @@ import de.janschuri.lunaticdrops.drops.DropMobKill;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectMobGUI;
-import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.buttons.InventoryButton;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.guis.SelectMobGUI;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.handler.GUIManager;
+import de.janschuri.lunaticlib.platform.paper.utils.ItemStackUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -78,7 +78,7 @@ public class EditorGUIMobKill extends EditorGUI {
                                 this.entityType = entityType;
 
                                 if (LunaticDrops.dropExists(TriggerType.MOB_KILL, entityType.name())) {
-                                    Logger.debugLog("Mob kill drop already exists for " + entityType.name());
+                                    Logger.debug("Mob kill drop already exists for " + entityType.name());
                                     GUIManager.openGUI(new EditorGUIMobKill((DropMobKill) LunaticDrops.getDrop(TriggerType.MOB_KILL, entityType.name())), player);
                                     return;
                                 }

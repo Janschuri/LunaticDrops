@@ -1,25 +1,14 @@
 package de.janschuri.lunaticdrops.gui;
 
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.Reopenable;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectBlockGUI;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.ListGUI;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.PaginatedList;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.SearchableList;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.buttons.InventoryButton;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.guis.InventoryGUI;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.interfaces.Reopenable;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class SelectHarvestGUI extends InventoryGUI implements Reopenable {
 

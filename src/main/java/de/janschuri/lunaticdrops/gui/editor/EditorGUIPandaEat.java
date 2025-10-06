@@ -4,8 +4,8 @@ import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.DropPandaEat;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.buttons.InventoryButton;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.handler.GUIManager;
 import de.rapha149.signgui.SignGUI;
 import de.rapha149.signgui.SignGUIAction;
 import de.rapha149.signgui.exception.SignGUIVersionException;
@@ -146,7 +146,7 @@ public class EditorGUIPandaEat extends EditorGUI {
                                     return List.of(
                                             SignGUIAction.run(() ->{
                                                 Bukkit.getScheduler().runTask(LunaticDrops.getInstance(), () -> {
-                                                    Logger.debugLog("New chance: " + newName);
+                                                    Logger.debug("New chance: " + newName);
 
                                                     String newNameString = newName.toString();
 

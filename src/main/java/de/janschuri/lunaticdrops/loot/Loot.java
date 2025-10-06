@@ -1,9 +1,9 @@
 package de.janschuri.lunaticdrops.loot;
 
+import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.listener.DropFlag;
 import de.janschuri.lunaticdrops.utils.Utils;
-import de.janschuri.lunaticlib.platform.bukkit.BukkitLunaticLib;
-import jdk.jshell.execution.Util;
+import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class Loot {
 
     public void runCommands() {
         for (String command : commandsToRun) {
-            BukkitLunaticLib.sendConsoleCommand(command);
+            Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command);
         }
     }
 

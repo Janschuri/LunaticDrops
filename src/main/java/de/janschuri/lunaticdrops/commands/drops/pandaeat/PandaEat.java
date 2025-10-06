@@ -4,11 +4,15 @@ import de.janschuri.lunaticdrops.commands.Subcommand;
 import de.janschuri.lunaticdrops.commands.drops.LunaticDrops;
 import de.janschuri.lunaticdrops.gui.ListDropGUI;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.*;
-import de.janschuri.lunaticlib.common.command.HasHelpCommand;
-import de.janschuri.lunaticlib.common.command.HasParentCommand;
-import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
+import de.janschuri.lunaticlib.commands.Command;
+import de.janschuri.lunaticlib.commands.HasHelpCommand;
+import de.janschuri.lunaticlib.commands.HasParentCommand;
+import de.janschuri.lunaticlib.config.CommandMessageKey;
+import de.janschuri.lunaticlib.config.LunaticCommandMessageKey;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.handler.GUIManager;
+import de.janschuri.lunaticlib.sender.PlayerSender;
+import de.janschuri.lunaticlib.sender.Sender;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -65,17 +69,22 @@ public class PandaEat extends Subcommand implements HasHelpCommand, HasParentCom
     }
 
     @Override
-    public MessageKey pageParamName() {
-        return PAGE_MK;
+    public Component getPageParam() {
+        return getMessage(PAGE_MK.noPrefix());
     }
 
     @Override
-    public MessageKey getHelpHeader() {
-        return HELP_HEADER_MK;
+    public Component getHelpHeader() {
+        return getMessage(HELP_HEADER_MK.noPrefix());
     }
 
     @Override
     public Command getParentCommand() {
         return new LunaticDrops();
+    }
+
+    @Override
+    public Component getHelpFooter(int i, int i1) {
+        return getLanguageConfig().getHelpFooter(this, i, i1);
     }
 }

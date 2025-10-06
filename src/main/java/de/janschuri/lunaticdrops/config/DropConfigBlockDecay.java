@@ -39,7 +39,7 @@ public class DropConfigBlockDecay extends DropConfig {
         try {
             return Material.valueOf(material);
         } catch (IllegalArgumentException e) {
-            Logger.errorLog("Invalid material: " + material);
+            Logger.error("Invalid material: " + material);
             return null;
         }
     }

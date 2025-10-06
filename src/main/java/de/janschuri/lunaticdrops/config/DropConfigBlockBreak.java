@@ -2,13 +2,10 @@ package de.janschuri.lunaticdrops.config;
 
 import de.janschuri.lunaticdrops.drops.Drop;
 import de.janschuri.lunaticdrops.drops.DropBlockBreak;
-import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.Material;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DropConfigBlockBreak extends DropConfig {
 
@@ -42,7 +39,7 @@ public class DropConfigBlockBreak extends DropConfig {
         try {
             return Material.valueOf(material);
         } catch (IllegalArgumentException e) {
-            Logger.errorLog("Invalid material: " + material);
+            Logger.error("Invalid material: " + material);
             return null;
         }
     }

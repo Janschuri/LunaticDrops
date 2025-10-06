@@ -1,6 +1,6 @@
 package de.janschuri.lunaticdrops.config;
 
-import de.janschuri.lunaticlib.common.config.LunaticLanguageConfig;
+import de.janschuri.lunaticlib.config.LunaticLanguageConfig;
 
 import java.nio.file.Path;
 

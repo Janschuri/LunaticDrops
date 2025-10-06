@@ -63,17 +63,17 @@ public class PandaEatDropItemListener implements Listener {
 
         List<Drop> customDrops = LunaticDrops.getDrops(TriggerType.PANDA_EAT);
 
-        Logger.debugLog("Drops: " + customDrops.size());
+        Logger.debug("Drops: " + customDrops.size());
 
         List<ItemStack> drops = new ArrayList<>();
 
         for (Drop customDrop : customDrops) {
             DropPandaEat pandaDrop = (DropPandaEat) customDrop;
 
-            Logger.debugLog("Checking drop: " + pandaDrop.getName());
+            Logger.debug("Checking drop: " + pandaDrop.getName());
 
             if (!pandaDrop.isActive()) {
-                Logger.debugLog("Drop is not active");
+                Logger.debug("Drop is not active");
                 continue;
             }
 

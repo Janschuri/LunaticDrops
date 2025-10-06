@@ -2,32 +2,32 @@ package de.janschuri.lunaticdrops.utils;
 
 
 import de.janschuri.lunaticdrops.LunaticDrops;
-import de.janschuri.lunaticlib.common.logger.AbstractLogger;
+import de.janschuri.lunaticlib.utils.LunaticLogger;
 
 public class Logger {
 
-    private static String pluginName = LunaticDrops.getInstance().getName();
+    private static LunaticLogger logger = LunaticLogger.getLogger(LunaticDrops.getInstance().getName());
 
     public static boolean isDebug() {
         return LunaticDrops.isDebug();
     }
 
-    public static void debugLog(String msg) {
+    public static void debug(String msg) {
         if (isDebug()) {
-            AbstractLogger.debug(pluginName, msg);
+            logger.debug(msg);
         }
     }
 
-    public static void infoLog(String msg) {
-        AbstractLogger.info(pluginName, msg);
+    public static void info(String msg) {
+        logger.info(msg);
     }
 
-    public static void warnLog(String msg) {
-        AbstractLogger.warn(pluginName, msg);
+    public static void warn(String msg) {
+        logger.warn(msg);
     }
 
-    public static void errorLog(String msg) {
-        AbstractLogger.error(pluginName, msg);
+    public static void error(String msg) {
+        logger.error(msg);
     }
 
 }

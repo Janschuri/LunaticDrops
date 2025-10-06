@@ -4,11 +4,15 @@ import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.commands.Subcommand;
 import de.janschuri.lunaticdrops.gui.editor.EditorGUIMobKill;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.*;
-import de.janschuri.lunaticlib.common.command.HasParams;
-import de.janschuri.lunaticlib.common.command.HasParentCommand;
-import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
+import de.janschuri.lunaticlib.commands.Command;
+import de.janschuri.lunaticlib.commands.HasParams;
+import de.janschuri.lunaticlib.commands.HasParentCommand;
+import de.janschuri.lunaticlib.config.CommandMessageKey;
+import de.janschuri.lunaticlib.config.LunaticCommandMessageKey;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.handler.GUIManager;
+import de.janschuri.lunaticlib.sender.PlayerSender;
+import de.janschuri.lunaticlib.sender.Sender;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -82,9 +86,9 @@ public class MobKillCreate extends Subcommand implements HasParentCommand, HasPa
     }
 
     @Override
-    public List<MessageKey> getParamsNames() {
+    public List<Component> getParamsNames() {
         return List.of(
-               MOB_MK
+               getMessage(MOB_MK.noPrefix())
         );
     }
 

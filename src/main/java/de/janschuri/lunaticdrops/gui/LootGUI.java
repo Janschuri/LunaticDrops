@@ -1,14 +1,14 @@
 package de.janschuri.lunaticdrops.gui;
 
+import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.platform.bukkit.BukkitLunaticLib;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.Reopenable;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.buttons.InventoryButton;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.guis.InventoryGUI;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.handler.GUIManager;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.interfaces.Reopenable;
 import de.rapha149.signgui.SignGUI;
 import de.rapha149.signgui.SignGUIAction;
 import de.rapha149.signgui.exception.SignGUIVersionException;
@@ -220,7 +220,7 @@ public class LootGUI extends InventoryGUI implements Reopenable {
                     ItemStack newItem = cursorItem.clone();
                     newItem.setAmount(1);
 
-                    Logger.debugLog("Selected drop item: " + newItem);
+                    Logger.debug("Selected drop item: " + newItem);
 
 
                     dropItem = newItem;
@@ -661,8 +661,8 @@ public class LootGUI extends InventoryGUI implements Reopenable {
 
                                     return List.of(
                                             SignGUIAction.run(() ->{
-                                                Bukkit.getScheduler().runTask(BukkitLunaticLib.getInstance(), () -> {
-                                                    Logger.debugLog("New chance: " + newChance);
+                                                Bukkit.getScheduler().runTask(LunaticDrops.getInstance(), () -> {
+                                                    Logger.debug("New chance: " + newChance);
 
                                                     String newChanceString = newChance.toString();
 

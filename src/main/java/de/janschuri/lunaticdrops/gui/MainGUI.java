@@ -2,10 +2,10 @@ package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.Reopenable;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.buttons.InventoryButton;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.guis.InventoryGUI;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.handler.GUIManager;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.interfaces.Reopenable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

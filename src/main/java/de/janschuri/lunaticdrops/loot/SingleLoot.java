@@ -3,7 +3,7 @@ package de.janschuri.lunaticdrops.loot;
 import de.janschuri.lunaticdrops.listener.DropFlag;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
-import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
+import de.janschuri.lunaticlib.platform.paper.utils.ItemStackUtils;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -146,7 +146,7 @@ public class SingleLoot extends Loot {
         try {
             Object dropObj = map.get("drop");
             if (!(dropObj instanceof Map dropMap)) {
-                Logger.errorLog("Drop is not a valid ItemStack map: " + dropObj);
+                Logger.error("Drop is not a valid ItemStack map: " + dropObj);
                 return null;
             }
 
@@ -162,7 +162,7 @@ public class SingleLoot extends Loot {
                     maxAmount > 0 ? maxAmount : 1
             );
         } catch (Exception e) {
-            Logger.errorLog("Error loading SingleLoot: " + e.getMessage());
+            Logger.error("Error loading SingleLoot: " + e.getMessage());
             return new SingleLoot();
         }
     }

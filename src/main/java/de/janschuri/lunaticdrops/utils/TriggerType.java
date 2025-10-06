@@ -3,7 +3,6 @@ package de.janschuri.lunaticdrops.utils;
 import de.janschuri.lunaticdrops.config.*;
 import de.janschuri.lunaticdrops.drops.*;
 import de.janschuri.lunaticdrops.gui.editor.*;
-import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.LootFlag;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +33,7 @@ public enum TriggerType {
             if (drop instanceof DropPandaEat) {
                 return new EditorGUIPandaEat((DropPandaEat) drop);
             }
-            Logger.errorLog("Drop is not an instance of PandaEat");
+            Logger.error("Drop is not an instance of PandaEat");
             return null;
         }
         @Override
@@ -68,7 +67,7 @@ public enum TriggerType {
             if (drop instanceof DropMobKill) {
                 return new EditorGUIMobKill((DropMobKill) drop);
             }
-            Logger.errorLog("Drop is not an instance of MobKill");
+            Logger.error("Drop is not an instance of MobKill");
             return null;
         }
         @Override
@@ -102,7 +101,7 @@ public enum TriggerType {
             if (drop instanceof DropHarvest) {
                 return new EditorGUIHarvest((DropHarvest) drop);
             }
-            Logger.errorLog("Drop is not an instance of Harvest");
+            Logger.error("Drop is not an instance of Harvest");
             return null;
         }
         @Override
@@ -136,7 +135,7 @@ public enum TriggerType {
             if (drop instanceof DropBlockBreak) {
                 return new EditorGUIBlockBreak((DropBlockBreak) drop);
             }
-            Logger.errorLog("Drop is not an instance of BlockBreak");
+            Logger.error("Drop is not an instance of BlockBreak");
             return null;
         }
         @Override
@@ -177,7 +176,7 @@ public enum TriggerType {
             if (drop instanceof DropLeavesDecay) {
                 return new EditorGUILeavesDecay((DropLeavesDecay) drop);
             }
-            Logger.errorLog("Drop is not an instance of LeavesDecay");
+            Logger.error("Drop is not an instance of LeavesDecay");
             return null;
         }
         @Override
@@ -211,7 +210,7 @@ public enum TriggerType {
             if (drop instanceof DropEntityBreed) {
                 return new EditorGUIEntityBreed((DropEntityBreed) drop);
             }
-            Logger.errorLog("Drop is not an instance of LeavesDecay");
+            Logger.error("Drop is not an instance of LeavesDecay");
             return null;
         }
         @Override
