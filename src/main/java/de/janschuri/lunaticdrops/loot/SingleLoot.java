@@ -71,7 +71,7 @@ public class SingleLoot extends Loot {
             return new ArrayList<>();
         }
 
-        if (hasFlag(LootFlag.DROP_ONLY_TO_PLAYER) && !flags.contains(DropFlag.PLAYER)) {
+        if (hasFlag(LootFlag.DROP_ONLY_TO_PLAYER) && flags.contains(DropFlag.NO_PLAYER)) {
             return new ArrayList<>();
         }
 

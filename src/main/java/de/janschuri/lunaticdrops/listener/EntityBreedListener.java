@@ -2,15 +2,10 @@ package de.janschuri.lunaticdrops.listener;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.DropEntityBreed;
-import de.janschuri.lunaticdrops.drops.DropMobKill;
 import de.janschuri.lunaticdrops.loot.Loot;
-import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,7 +34,7 @@ public class EntityBreedListener implements Listener {
         int bonusRolls = 0;
 
         if (!(event.getBreeder() instanceof Player)) {
-            flags.add(DropFlag.PLAYER);
+            flags.add(DropFlag.NO_PLAYER);
         }
 
         List<ItemStack> drops = new ArrayList<>();

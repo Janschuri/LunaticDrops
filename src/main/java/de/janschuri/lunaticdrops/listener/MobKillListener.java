@@ -3,7 +3,6 @@ package de.janschuri.lunaticdrops.listener;
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.DropMobKill;
 import de.janschuri.lunaticdrops.loot.Loot;
-import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.enchantments.Enchantment;
@@ -38,7 +37,7 @@ public class MobKillListener implements Listener {
         int bonusRolls = 0;
 
         if (event.getEntity().getKiller() == null) {
-            flags.add(DropFlag.PLAYER);
+            flags.add(DropFlag.NO_PLAYER);
         } else {
             if (getLootingLevel(event.getEntity().getKiller().getInventory().getItemInMainHand()) > 0) {
                 flags.add(DropFlag.LOOTING);

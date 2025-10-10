@@ -4,7 +4,7 @@ public enum DropFlag {
 
     SILK_TOUCH,
     FORTUNE,
-    PLAYER,
+    NO_PLAYER,
     LOOTING,
     IS_FULLY_GROWN,
     PLAYER_PLACED
