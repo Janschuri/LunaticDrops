@@ -69,7 +69,7 @@ public class EntityBreedListener implements Listener {
             loot.runCommands();
 
             if (debugDrop) {
-                Component msg = Component.text("Needed " + rolls + " rolls to get a drop from loot (" + loot.getDisplayItem().getType() + ") with a chance of " + Utils.formatChance(loot.getChance())).color(TextColor.color(0xFF5555));
+                Component msg = Component.text("Needed " + rolls + " rolls to get a drop from loot (" + loot.getDisplayItem().getType() + ") with a chance of " + Utils.formatChance(loot.getChance())).color(TextColor.color(0x55FF55));
                 player.sendMessage(msg);
             }
         }
