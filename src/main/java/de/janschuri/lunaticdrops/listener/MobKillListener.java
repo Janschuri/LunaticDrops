@@ -57,7 +57,7 @@ public class MobKillListener implements Listener {
 
         for (Loot loot : mobKill.getLoot()) {
             int rolls = 1;
-            boolean debugDrop = player.hasPermission("lunaticdrops.admin.debugdrops.mob_kill") && LunaticDrops.isDebug();
+            boolean debugDrop = player != null && player.hasPermission("lunaticdrops.admin.debugdrops.mob_kill") && LunaticDrops.isDebug();
 
 
             List<ItemStack> items = loot.getDrops(bonusRolls, flags);
