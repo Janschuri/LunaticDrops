@@ -51,7 +51,7 @@ public class HarvestListener implements Listener {
 
         for (Loot loot : harvest.getLoot()) {
             int rolls = 1;
-            boolean debugDrop = player.hasPermission("lunaticdrops.admin.debugdrops.block_break") && LunaticDrops.isDebug();
+            boolean debugDrop = player.hasPermission("lunaticdrops.admin.debugdrops.harvest") && LunaticDrops.isDebug();
 
             List<ItemStack> items = loot.getDrops(bonusRolls, flags);
 

@@ -45,7 +45,7 @@ public class EntityBreedListener implements Listener {
 
         for (Loot loot : entityBreed.getLoot()) {
             int rolls = 1;
-            boolean debugDrop = player.hasPermission("lunaticdrops.admin.debugdrops.block_break") && LunaticDrops.isDebug();
+            boolean debugDrop = player.hasPermission("lunaticdrops.admin.debugdrops.entity_breed") && LunaticDrops.isDebug();
 
             List<ItemStack> items = loot.getDrops(bonusRolls, flags);
 
