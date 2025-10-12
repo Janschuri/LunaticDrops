@@ -5,8 +5,12 @@ import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.DropBlockBreak;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.LootFlag;
+import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -20,10 +24,8 @@ import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BlockBreakListener implements Listener {
 
@@ -77,26 +79,39 @@ public class BlockBreakListener implements Listener {
         boolean eraseVanillaDrops = false;
 
         for (Loot loot : blockBreak.getLoot()) {
-            if (Utils.isLucky(loot.getChance())) {
-                loot.runCommands();
-                List<ItemStack> items = loot.getDrops(bonusRolls, flags);
+            int rolls = 1;
+            boolean debugDrop = event.getPlayer().hasPermission("lunaticdrops.admin.debugdrops.block_break") && LunaticDrops.isDebug();
+            List<ItemStack> items = loot.getDrops(bonusRolls, flags);
 
-                if (items == null) {
+            if (items.isEmpty()) {
+                if (debugDrop) {
+                    boolean dropped = false;
+                    while (!dropped && rolls < 100000) {
+                        rolls++;
+                        items = loot.getDrops(bonusRolls, flags);
+                        if (!items.isEmpty()) {
+                            dropped = true;
+                        }
+                    }
+                } else {
                     continue;
                 }
+            }
 
-                if (items.isEmpty()) {
-                    continue;
-                }
+            if (loot.isEraseVanillaDrops()) {
+                eraseVanillaDrops = true;
+            }
 
-                if (loot.isEraseVanillaDrops()) {
-                    eraseVanillaDrops = true;
-                }
+            items.forEach(item -> {
+                Item drop = location.getWorld().dropItem(location.clone().add(0.5, 0.5, 0.5), item);
+                drops.add(drop);
+            });
 
-                items.forEach(item -> {
-                    Item drop = location.getWorld().dropItem(location.clone().add(0.5, 0.5, 0.5), item);
-                    drops.add(drop);
-                });
+            loot.runCommands();
+
+            if (debugDrop) {
+                Component msg = Component.text("Needed " + rolls + " rolls to get a drop from loot (" + loot.getDisplayItem().getType() + ") with a chance of " + Utils.formatChance(loot.getChance())).color(TextColor.color(0xFF5555));
+                event.getPlayer().sendMessage(msg);
             }
         }
 

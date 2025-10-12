@@ -87,7 +87,12 @@ public class SingleLoot extends Loot {
             return new ArrayList<>();
         }
 
-        int amount = minAmount + (int) (Math.random() * (maxAmount - minAmount + 1));
+        int amount = 0;
+
+        if (Utils.isLucky(getChance())) {
+            amount = minAmount + (int) (Math.random() * (maxAmount - minAmount + 1));
+        }
+
 
         if (hasFlag(LootFlag.APPLY_FORTUNE) && flags.contains(DropFlag.FORTUNE)) {
             for (int i = 0; i < bonusRolls; i++) {
@@ -111,6 +116,10 @@ public class SingleLoot extends Loot {
             if (amount > maxAmount) {
                 amount = maxAmount;
             }
+        }
+
+        if (amount <= 0) {
+            return new ArrayList<>();
         }
 
         ItemStack item = drop.clone();

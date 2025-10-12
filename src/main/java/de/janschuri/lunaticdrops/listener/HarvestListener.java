@@ -6,7 +6,10 @@ import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
@@ -44,24 +47,40 @@ public class HarvestListener implements Listener {
         List<ItemStack> drops = new ArrayList<>();
         boolean eraseVanillaDrops = false;
 
+        Player player = event.getPlayer();
+
         for (Loot loot : harvest.getLoot()) {
-            if (Utils.isLucky(loot.getChance())) {
-                loot.runCommands();
-                List<ItemStack> items = loot.getDrops(bonusRolls, flags);
+            int rolls = 1;
+            boolean debugDrop = player.hasPermission("lunaticdrops.admin.debugdrops.block_break") && LunaticDrops.isDebug();
 
-                if (items == null) {
+            List<ItemStack> items = loot.getDrops(bonusRolls, flags);
+
+            if (items.isEmpty()) {
+                if (debugDrop) {
+                    boolean dropped = false;
+                    while (!dropped && rolls < 100000) {
+                        rolls++;
+                        items = loot.getDrops(bonusRolls, flags);
+                        if (!items.isEmpty()) {
+                            dropped = true;
+                        }
+                    }
+                } else {
                     continue;
                 }
+            }
 
-                if (items.isEmpty()) {
-                    continue;
-                }
+            if (loot.isEraseVanillaDrops()) {
+                eraseVanillaDrops = true;
+            }
 
-                if (loot.isEraseVanillaDrops()) {
-                    eraseVanillaDrops = true;
-                }
+            drops.addAll(items);
 
-                drops.addAll(items);
+            loot.runCommands();
+
+            if (debugDrop) {
+                Component msg = Component.text("Needed " + rolls + " rolls to get a drop from loot (" + loot.getDisplayItem().getType() + ") with a chance of " + Utils.formatChance(loot.getChance())).color(TextColor.color(0xFF5555));
+                player.sendMessage(msg);
             }
         }
 
