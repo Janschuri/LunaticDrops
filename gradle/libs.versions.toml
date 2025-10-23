@@ -3,7 +3,7 @@
 
 [versions]
 com-jeff-media-custom-block-data = "2.2.4"
-de-janschuri-lunaticlib = "2.0.0"
+de-janschuri-lunaticlib = "2.0.0-SNAPSHOT"
 io-papermc-paper-paper-api = "1.19-R0.1-SNAPSHOT"
 de-rapha149-signgui = "2.5.4"
 net-objecthunter-exp4j = "0.4.8"

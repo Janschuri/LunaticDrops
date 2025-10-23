@@ -32,7 +32,7 @@ dependencies {
 }
 
 group = "de.janschuri"
-version = "1.1.0"
+version = "1.1.0-SNAPSHOT"
 description = "LunaticDrops"
 java.sourceCompatibility = JavaVersion.VERSION_16
 
