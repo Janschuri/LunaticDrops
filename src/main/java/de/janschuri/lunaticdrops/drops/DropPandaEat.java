@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Map;
 
-import static de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils.itemStackToMap;
+import static de.janschuri.lunaticlib.platform.paper.utils.ItemStackUtils.itemStackToMap;
 
 public class DropPandaEat extends Drop {
 
@@ -33,17 +33,17 @@ public class DropPandaEat extends Drop {
 
     public boolean matchEatenItem(ItemStack item) {
         if (matchNBT) {
-            Logger.debugLog("Matching NBT");
+            Logger.debug("Matching NBT");
             return item.isSimilar(eatenItem);
         } else {
-            Logger.debugLog("Not matching NBT");
+            Logger.debug("Not matching NBT");
             return item.getType() == eatenItem.getType();
         }
     }
 
     @Override
     public String getName() {
-        Logger.debugLog("Returning name: " + name);
+        Logger.debug("Returning name: " + name);
         return name;
     }
 

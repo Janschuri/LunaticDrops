@@ -33,31 +33,25 @@ public class LeavesDecayListener  implements Listener {
             return;
         }
 
-        List<LootFlag> flags = new ArrayList<>();
+        List<DropFlag> flags = new ArrayList<>();
         int bonusRolls = 0;
 
         List<ItemStack> drops = new ArrayList<>();
         boolean eraseVanillaDrops = false;
 
         for (Loot loot : leaves.getLoot()) {
-            if (Utils.isLucky(loot.getChance())) {
-                loot.runCommands();
-                List<ItemStack> items = loot.getDrops(bonusRolls, flags);
+            List<ItemStack> items = loot.getDrops(bonusRolls, flags);
 
-                if (items == null) {
-                    continue;
-                }
-
-                if (items.isEmpty()) {
-                    continue;
-                }
-
-                if (loot.isEraseVanillaDrops()) {
-                    eraseVanillaDrops = true;
-                }
-
-                drops.addAll(items);
+            if (items.isEmpty()) {
+                continue;
             }
+
+            if (loot.isEraseVanillaDrops()) {
+                eraseVanillaDrops = true;
+            }
+
+            drops.addAll(items);
+            loot.runCommands();
         }
 
 

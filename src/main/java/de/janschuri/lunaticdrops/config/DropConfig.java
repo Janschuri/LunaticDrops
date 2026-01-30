@@ -5,8 +5,8 @@ import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.LootTable;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
 import de.janschuri.lunaticdrops.utils.Logger;
-import de.janschuri.lunaticlib.common.config.LunaticConfig;
-import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
+import de.janschuri.lunaticlib.config.LunaticConfig;
+import de.janschuri.lunaticlib.platform.paper.utils.ItemStackUtils;
 import org.bukkit.inventory.ItemStack;
 
 import java.nio.file.Path;
@@ -55,7 +55,7 @@ public class DropConfig extends LunaticConfig {
         List<Map<String, Object>> lootList = getMapList(key);
 
         if (lootList == null) {
-            Logger.errorLog("Loot list not found in config");
+            Logger.error("Loot list not found in config");
             return null;
         }
 
@@ -63,7 +63,7 @@ public class DropConfig extends LunaticConfig {
 
         for (Map<String, Object> lootMap : lootList) {
             if (!lootMap.containsKey("type")) {
-                Logger.errorLog("Loot type not found in config");
+                Logger.error("Loot type not found in config");
                 return null;
             }
 
@@ -74,7 +74,7 @@ public class DropConfig extends LunaticConfig {
             } else if (type.equals("table")) {
                 loot.add(new LootTable().fromMap(lootMap));
             } else {
-                Logger.errorLog("Unknown loot type in config");
+                Logger.error("Unknown loot type in config");
                 return null;
             }
         }
@@ -85,7 +85,7 @@ public class DropConfig extends LunaticConfig {
     protected ItemStack getItemStack(String key) {
         Map<String, Object> itemMap = getMap(key);
         if (itemMap == null) {
-            Logger.errorLog("Item not found in config");
+            Logger.error("Item not found in config");
             return null;
         }
         return ItemStackUtils.mapToItemStack(itemMap);

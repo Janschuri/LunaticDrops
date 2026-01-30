@@ -5,7 +5,7 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 import java.util.Random;
 
-public class Utils extends de.janschuri.lunaticlib.common.utils.Utils {
+public class Utils extends de.janschuri.lunaticlib.utils.Utils {
 
     private static final Random random = new Random();
 

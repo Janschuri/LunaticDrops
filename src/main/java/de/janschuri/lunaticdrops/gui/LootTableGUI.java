@@ -1,9 +1,9 @@
 package de.janschuri.lunaticdrops.gui;
 
 import de.janschuri.lunaticdrops.loot.SingleLoot;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.Reopenable;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.ListGUI;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.buttons.InventoryButton;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.guis.ListGUI;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.interfaces.Reopenable;
 import org.bukkit.NamespacedKey;
 
 import java.util.HashMap;

@@ -4,10 +4,10 @@ import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.DropBlockBreak;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.SelectBlockGUI;
-import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.buttons.InventoryButton;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.guis.SelectBlockGUI;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.handler.GUIManager;
+import de.janschuri.lunaticlib.platform.paper.utils.ItemStackUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -72,7 +72,7 @@ public class EditorGUIBlockBreak extends EditorGUI {
                                 this.block = block;
 
                                 if (LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, block.name())) {
-                                    Logger.debugLog("Mob kill drop already exists for " + block.name());
+                                    Logger.debug("Block Break drop already exists for " + block.name());
                                     GUIManager.openGUI(new EditorGUIBlockBreak((DropBlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, block.name())), player);
                                     return;
                                 }

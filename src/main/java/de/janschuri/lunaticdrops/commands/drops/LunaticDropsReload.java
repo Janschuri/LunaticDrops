@@ -3,11 +3,11 @@ package de.janschuri.lunaticdrops.commands.drops;
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.commands.Subcommand;
 import de.janschuri.lunaticdrops.utils.Logger;
-import de.janschuri.lunaticlib.Command;
-import de.janschuri.lunaticlib.CommandMessageKey;
-import de.janschuri.lunaticlib.Sender;
-import de.janschuri.lunaticlib.common.command.HasParentCommand;
-import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
+import de.janschuri.lunaticlib.commands.Command;
+import de.janschuri.lunaticlib.commands.HasParentCommand;
+import de.janschuri.lunaticlib.config.CommandMessageKey;
+import de.janschuri.lunaticlib.config.LunaticCommandMessageKey;
+import de.janschuri.lunaticlib.sender.Sender;
 
 import java.util.Map;
 
@@ -38,7 +38,7 @@ public class LunaticDropsReload extends Subcommand implements HasParentCommand {
         if (LunaticDrops.loadConfig()) {
             sender.sendMessage(getMessage(RELOADED_MK));
         } else {
-            Logger.errorLog("Config could not be reloaded.");
+            Logger.error("Config could not be reloaded.");
             return false;
         }
 

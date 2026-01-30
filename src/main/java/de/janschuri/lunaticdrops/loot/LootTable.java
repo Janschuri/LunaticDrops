@@ -1,5 +1,6 @@
 package de.janschuri.lunaticdrops.loot;
 
+import de.janschuri.lunaticdrops.listener.DropFlag;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.Utils;
 import org.bukkit.Material;
@@ -38,9 +39,13 @@ public class LootTable extends Loot {
     }
 
     @Override
-    public List<ItemStack> getDrops(int bonusRolls, List<LootFlag> flags) {
+    public List<ItemStack> getDrops(int bonusRolls, List<DropFlag> flags) {
         eraseVanillaDrops = false;
         runCommands = new ArrayList<>();
+
+        if (!Utils.isLucky(getChance())) {
+            return new ArrayList<>();
+        }
 
         if (cumulative) {
             double[] chances = new double[lootList.size()];
@@ -118,7 +123,7 @@ public class LootTable extends Loot {
                     cumulative
             );
         } catch (Exception e) {
-            Logger.errorLog("Error loading LootTable: " + e.getMessage());
+            Logger.error("Error loading LootTable: " + e.getMessage());
             return new LootTable();
         }
     }

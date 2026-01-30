@@ -2,7 +2,6 @@ package de.janschuri.lunaticdrops.config;
 
 import de.janschuri.lunaticdrops.drops.Drop;
 import de.janschuri.lunaticdrops.drops.DropEntityBreed;
-import de.janschuri.lunaticdrops.drops.DropMobKill;
 import de.janschuri.lunaticdrops.utils.Logger;
 import org.bukkit.entity.EntityType;
 
@@ -40,7 +39,7 @@ public class DropConfigEntityBreed extends DropConfig {
         try {
             return EntityType.valueOf(mobType);
         } catch (IllegalArgumentException e) {
-            Logger.errorLog("Invalid mob type: " + mobType);
+            Logger.error("Invalid mob type: " + mobType);
             return null;
         }
     }

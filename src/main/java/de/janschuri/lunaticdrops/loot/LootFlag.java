@@ -46,6 +46,12 @@ public enum LootFlag {
         public String getDisplayName() {
             return "Only Full Grown";
         }
+    },
+    DROP_PLAYER_PLACED {
+        @Override
+        public String getDisplayName() {
+            return "Drop Player Placed";
+        }
     };
 
     public String getDisplayName() {

@@ -2,15 +2,13 @@ package de.janschuri.lunaticdrops.listener;
 
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.DropEntityBreed;
-import de.janschuri.lunaticdrops.drops.DropMobKill;
 import de.janschuri.lunaticdrops.loot.Loot;
-import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,30 +33,46 @@ public class EntityBreedListener implements Listener {
             return;
         }
 
-        List<LootFlag> flags = new ArrayList<>();
+        List<DropFlag> flags = new ArrayList<>();
         int bonusRolls = 0;
 
-        if (!(event.getBreeder() instanceof Player)) {
-            flags.add(LootFlag.DROP_ONLY_TO_PLAYER);
+        LivingEntity breeder = event.getBreeder();
+
+        if (!(breeder instanceof Player)) {
+            flags.add(DropFlag.NO_PLAYER);
         }
 
         List<ItemStack> drops = new ArrayList<>();
 
         for (Loot loot : entityBreed.getLoot()) {
+            int rolls = 1;
+            List<ItemStack> items = loot.getDrops(bonusRolls, flags);
 
-            if (Utils.isLucky(loot.getChance())) {
-                loot.runCommands();
-                List<ItemStack> items = loot.getDrops(bonusRolls, flags);
+            boolean debugDrop = breeder instanceof Player player && player.hasPermission("lunaticdrops.admin.debugdrops.entity_breed") && LunaticDrops.isDebug();
 
-                if (items == null) {
+            if (items.isEmpty()) {
+                if (debugDrop) {
+                    boolean dropped = false;
+                    while (!dropped && rolls < 100000) {
+                        rolls++;
+                        items = loot.getDrops(bonusRolls, flags);
+                        if (!items.isEmpty()) {
+                            dropped = true;
+                        }
+                    }
+                } else {
                     continue;
                 }
+            }
 
-                if (items.isEmpty()) {
-                    continue;
-                }
+            drops.addAll(items);
 
-                drops.addAll(items);
+            loot.runCommands();
+
+            if (debugDrop) {
+                Player player = (Player) breeder;
+                Component msg = Component.text("Needed " + rolls + " rolls to get a drop from loot (" + loot.getDisplayItem().getType() + ") with a chance of " + Utils.formatChance(loot.getChance())).color(TextColor.color(0x55FF55));
+                player.sendMessage(msg);
             }
         }
 

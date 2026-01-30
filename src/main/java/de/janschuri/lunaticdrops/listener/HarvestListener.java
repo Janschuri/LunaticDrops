@@ -3,11 +3,13 @@ package de.janschuri.lunaticdrops.listener;
 import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.DropHarvest;
 import de.janschuri.lunaticdrops.loot.Loot;
-import de.janschuri.lunaticdrops.loot.LootFlag;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
@@ -20,7 +22,7 @@ public class HarvestListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(PlayerHarvestBlockEvent event) {
-        Logger.debugLog("PlayerHarvestBlock: " + event.getHarvestedBlock().getType().name());
+        Logger.debug("PlayerHarvestBlock: " + event.getHarvestedBlock().getType().name());
 
         Location location = event.getHarvestedBlock().getLocation();
 
@@ -31,7 +33,7 @@ public class HarvestListener implements Listener {
         }
 
         if (harvest == null) {
-            Logger.debugLog("No harvest found for block: " + event.getHarvestedBlock().getType().name());
+            Logger.debug("No harvest found for block: " + event.getHarvestedBlock().getType().name());
             return;
         }
 
@@ -39,30 +41,46 @@ public class HarvestListener implements Listener {
             return;
         }
 
-        List<LootFlag> flags = new ArrayList<>();
+        List<DropFlag> flags = new ArrayList<>();
         int bonusRolls = 0;
 
         List<ItemStack> drops = new ArrayList<>();
         boolean eraseVanillaDrops = false;
 
+        Player player = event.getPlayer();
+
         for (Loot loot : harvest.getLoot()) {
-            if (Utils.isLucky(loot.getChance())) {
-                loot.runCommands();
-                List<ItemStack> items = loot.getDrops(bonusRolls, flags);
+            int rolls = 1;
+            boolean debugDrop = player.hasPermission("lunaticdrops.admin.debugdrops.harvest") && LunaticDrops.isDebug();
 
-                if (items == null) {
+            List<ItemStack> items = loot.getDrops(bonusRolls, flags);
+
+            if (items.isEmpty()) {
+                if (debugDrop) {
+                    boolean dropped = false;
+                    while (!dropped && rolls < 100000) {
+                        rolls++;
+                        items = loot.getDrops(bonusRolls, flags);
+                        if (!items.isEmpty()) {
+                            dropped = true;
+                        }
+                    }
+                } else {
                     continue;
                 }
+            }
 
-                if (items.isEmpty()) {
-                    continue;
-                }
+            if (loot.isEraseVanillaDrops()) {
+                eraseVanillaDrops = true;
+            }
 
-                if (loot.isEraseVanillaDrops()) {
-                    eraseVanillaDrops = true;
-                }
+            drops.addAll(items);
 
-                drops.addAll(items);
+            loot.runCommands();
+
+            if (debugDrop) {
+                Component msg = Component.text("Needed " + rolls + " rolls to get a drop from loot (" + loot.getDisplayItem().getType() + ") with a chance of " + Utils.formatChance(loot.getChance())).color(TextColor.color(0x55FF55));
+                player.sendMessage(msg);
             }
         }
 

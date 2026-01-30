@@ -8,13 +8,13 @@ import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.SingleLoot;
 import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryButton;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.InventoryGUI;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.Reopenable;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.ListGUI;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.list.PaginatedList;
-import de.janschuri.lunaticlib.platform.bukkit.util.ItemStackUtils;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.buttons.InventoryButton;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.guis.InventoryGUI;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.guis.ListGUI;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.handler.GUIManager;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.interfaces.Reopenable;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.interfaces.list.PaginatedList;
+import de.janschuri.lunaticlib.platform.paper.utils.ItemStackUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -253,12 +253,11 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
     private BiConsumer<SingleLoot, Boolean> getLootReturnConsumer(InventoryClickEvent event, Loot oldLoot) {
         return (newLoot, editMode) -> {
             this.editMode = editMode;
-            Logger.debugLog(String.format("Loot: %s", newLoot));
 
             if (newLoot != null) {
                 int index = this.loot.indexOf(oldLoot);
 
-                Logger.debugLog(String.format("Index of loot: %d", index));
+                Logger.debug(String.format("Index of loot: %d", index));
 
                 if (index < 0) {
                     this.loot.add(newLoot);
@@ -269,7 +268,7 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
                 this.loot.remove(oldLoot);
             }
 
-            Logger.debugLog(String.format("this.loot: %s", this.loot));
+            Logger.debug(String.format("this.loot: %s", this.loot));
 
             GUIManager.openGUI(this, (Player) event.getWhoClicked());
         };

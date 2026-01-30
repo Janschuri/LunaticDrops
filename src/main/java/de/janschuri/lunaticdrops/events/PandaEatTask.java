@@ -27,12 +27,12 @@ public class PandaEatTask implements Runnable {
                     ItemStack item = panda.getEquipment().getItemInMainHand();
                     if (isPandaEating(panda)) {
                         if (!eatingTasks.containsKey(pandaUUID)) {
-                            Logger.debugLog("Panda started eating");
+                            Logger.debug("Panda started eating");
                             eatingTasks.put(panda.getUniqueId(), item);
                         }
                     } else {
                         if (eatingTasks.containsKey(pandaUUID)) {
-                            Logger.debugLog("Panda stopped eating");
+                            Logger.debug("Panda stopped eating");
                             PandaEatDropItemEvent event = new PandaEatDropItemEvent(panda, eatingTasks.get(pandaUUID));
                             Bukkit.getPluginManager().callEvent(event);
                             eatingTasks.remove(pandaUUID);

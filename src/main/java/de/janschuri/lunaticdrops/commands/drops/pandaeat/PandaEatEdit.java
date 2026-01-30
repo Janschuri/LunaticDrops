@@ -6,11 +6,15 @@ import de.janschuri.lunaticdrops.drops.Drop;
 import de.janschuri.lunaticdrops.drops.DropPandaEat;
 import de.janschuri.lunaticdrops.gui.editor.EditorGUIPandaEat;
 import de.janschuri.lunaticdrops.utils.TriggerType;
-import de.janschuri.lunaticlib.*;
-import de.janschuri.lunaticlib.common.command.HasParams;
-import de.janschuri.lunaticlib.common.command.HasParentCommand;
-import de.janschuri.lunaticlib.common.config.LunaticCommandMessageKey;
-import de.janschuri.lunaticlib.platform.bukkit.inventorygui.GUIManager;
+import de.janschuri.lunaticlib.commands.Command;
+import de.janschuri.lunaticlib.commands.HasParams;
+import de.janschuri.lunaticlib.commands.HasParentCommand;
+import de.janschuri.lunaticlib.config.CommandMessageKey;
+import de.janschuri.lunaticlib.config.LunaticCommandMessageKey;
+import de.janschuri.lunaticlib.platform.paper.inventorygui.handler.GUIManager;
+import de.janschuri.lunaticlib.sender.PlayerSender;
+import de.janschuri.lunaticlib.sender.Sender;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -76,9 +80,9 @@ public class PandaEatEdit extends Subcommand implements HasParams, HasParentComm
     }
 
     @Override
-    public List<MessageKey> getParamsNames() {
+    public List<Component> getParamsNames() {
         return List.of(
-                NAME_MK
+                getMessage(NAME_MK.noPrefix())
         );
     }
 

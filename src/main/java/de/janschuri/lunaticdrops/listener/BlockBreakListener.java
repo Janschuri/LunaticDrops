@@ -5,8 +5,12 @@ import de.janschuri.lunaticdrops.LunaticDrops;
 import de.janschuri.lunaticdrops.drops.DropBlockBreak;
 import de.janschuri.lunaticdrops.loot.Loot;
 import de.janschuri.lunaticdrops.loot.LootFlag;
+import de.janschuri.lunaticdrops.utils.Logger;
 import de.janschuri.lunaticdrops.utils.TriggerType;
 import de.janschuri.lunaticdrops.utils.Utils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -20,10 +24,8 @@ import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BlockBreakListener implements Listener {
 
@@ -32,10 +34,12 @@ public class BlockBreakListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockDropLowest(BlockDropItemEvent event) {
         Block block = event.getBlock();
+        List<DropFlag> flags = new ArrayList<>();
+
         PersistentDataContainer blockDataContainer = new CustomBlockData(block, LunaticDrops.getInstance());
         if (blockDataContainer.has(LunaticDrops.PLACED_BY_PLAYER_KEY, org.bukkit.persistence.PersistentDataType.INTEGER)) {
             blockDataContainer.remove(LunaticDrops.PLACED_BY_PLAYER_KEY);
-            return;
+            flags.add(DropFlag.PLAYER_PLACED);
         }
 
         if (event.getPlayer().getGameMode().equals(GameMode.CREATIVE)) {
@@ -54,21 +58,20 @@ public class BlockBreakListener implements Listener {
             return;
         }
 
-        List<LootFlag> flags = new ArrayList<>();
         int bonusRolls = 0;
 
         if (isSilk(event.getPlayer().getInventory().getItemInMainHand())) {
-            flags.add(LootFlag.DROP_WITH_SILK_TOUCH);
+            flags.add(DropFlag.SILK_TOUCH);
         }
 
         if (getFortuneLevel(event.getPlayer().getInventory().getItemInMainHand()) > 0) {
-            flags.add(LootFlag.APPLY_FORTUNE);
+            flags.add(DropFlag.FORTUNE);
             bonusRolls = getFortuneLevel(event.getPlayer().getInventory().getItemInMainHand());
         }
 
         if (event.getBlockState().getBlockData() instanceof Ageable ageable) {
-            if (ageable.getAge() < ageable.getMaximumAge()) {
-                flags.add(LootFlag.ONLY_FULL_GROWN);
+            if (ageable.getAge() == ageable.getMaximumAge()) {
+                flags.add(DropFlag.IS_FULLY_GROWN);
             }
         }
 
@@ -76,26 +79,39 @@ public class BlockBreakListener implements Listener {
         boolean eraseVanillaDrops = false;
 
         for (Loot loot : blockBreak.getLoot()) {
-            if (Utils.isLucky(loot.getChance())) {
-                loot.runCommands();
-                List<ItemStack> items = loot.getDrops(bonusRolls, flags);
+            int rolls = 1;
+            boolean debugDrop = event.getPlayer().hasPermission("lunaticdrops.admin.debugdrops.block_break") && LunaticDrops.isDebug();
+            List<ItemStack> items = loot.getDrops(bonusRolls, flags);
 
-                if (items == null) {
+            if (items.isEmpty()) {
+                if (debugDrop) {
+                    boolean dropped = false;
+                    while (!dropped && rolls < 100000) {
+                        rolls++;
+                        items = loot.getDrops(bonusRolls, flags);
+                        if (!items.isEmpty()) {
+                            dropped = true;
+                        }
+                    }
+                } else {
                     continue;
                 }
+            }
 
-                if (items.isEmpty()) {
-                    continue;
-                }
+            if (loot.isEraseVanillaDrops()) {
+                eraseVanillaDrops = true;
+            }
 
-                if (loot.isEraseVanillaDrops()) {
-                    eraseVanillaDrops = true;
-                }
+            items.forEach(item -> {
+                Item drop = location.getWorld().dropItem(location.clone().add(0.5, 0.5, 0.5), item);
+                drops.add(drop);
+            });
 
-                items.forEach(item -> {
-                    Item drop = location.getWorld().dropItem(location.clone().add(0.5, 0.5, 0.5), item);
-                    drops.add(drop);
-                });
+            loot.runCommands();
+
+            if (debugDrop) {
+                Component msg = Component.text("Needed " + rolls + " rolls to get a drop from loot (" + loot.getDisplayItem().getType() + ") with a chance of " + Utils.formatChance(loot.getChance())).color(TextColor.color(0x55FF55));
+                event.getPlayer().sendMessage(msg);
             }
         }
 
