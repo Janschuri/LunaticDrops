@@ -43,6 +43,10 @@ public class LootTable extends Loot {
         eraseVanillaDrops = false;
         runCommands = new ArrayList<>();
 
+        if (!Utils.isLucky(getChance())) {
+            return new ArrayList<>();
+        }
+
         if (cumulative) {
             double[] chances = new double[lootList.size()];
 

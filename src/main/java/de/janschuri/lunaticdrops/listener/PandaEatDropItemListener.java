@@ -90,6 +90,8 @@ public class PandaEatDropItemListener implements Listener {
                         if (!itemDrops.isEmpty()) {
                             loot.runCommands();
                         }
+
+                        drops.addAll(itemDrops);
                     }
             }
         }
