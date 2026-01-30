@@ -72,7 +72,7 @@ public class EditorGUIBlockBreak extends EditorGUI {
                                 this.block = block;
 
                                 if (LunaticDrops.dropExists(TriggerType.BLOCK_BREAK, block.name())) {
-                                    Logger.debug("Mob kill drop already exists for " + block.name());
+                                    Logger.debug("Block Break drop already exists for " + block.name());
                                     GUIManager.openGUI(new EditorGUIBlockBreak((DropBlockBreak) LunaticDrops.getDrop(TriggerType.BLOCK_BREAK, block.name())), player);
                                     return;
                                 }

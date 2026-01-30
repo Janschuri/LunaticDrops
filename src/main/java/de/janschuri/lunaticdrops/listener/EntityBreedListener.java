@@ -8,6 +8,7 @@ import de.janschuri.lunaticdrops.utils.Utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,19 +36,19 @@ public class EntityBreedListener implements Listener {
         List<DropFlag> flags = new ArrayList<>();
         int bonusRolls = 0;
 
-        if (!(event.getBreeder() instanceof Player)) {
+        LivingEntity breeder = event.getBreeder();
+
+        if (!(breeder instanceof Player)) {
             flags.add(DropFlag.NO_PLAYER);
         }
-
-        Player player = (Player) event.getBreeder();
 
         List<ItemStack> drops = new ArrayList<>();
 
         for (Loot loot : entityBreed.getLoot()) {
             int rolls = 1;
-            boolean debugDrop = player.hasPermission("lunaticdrops.admin.debugdrops.entity_breed") && LunaticDrops.isDebug();
-
             List<ItemStack> items = loot.getDrops(bonusRolls, flags);
+
+            boolean debugDrop = breeder instanceof Player player && player.hasPermission("lunaticdrops.admin.debugdrops.entity_breed") && LunaticDrops.isDebug();
 
             if (items.isEmpty()) {
                 if (debugDrop) {
@@ -69,6 +70,7 @@ public class EntityBreedListener implements Listener {
             loot.runCommands();
 
             if (debugDrop) {
+                Player player = (Player) breeder;
                 Component msg = Component.text("Needed " + rolls + " rolls to get a drop from loot (" + loot.getDisplayItem().getType() + ") with a chance of " + Utils.formatChance(loot.getChance())).color(TextColor.color(0x55FF55));
                 player.sendMessage(msg);
             }
