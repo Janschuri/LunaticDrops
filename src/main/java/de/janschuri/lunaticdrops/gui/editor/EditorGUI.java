@@ -253,7 +253,6 @@ public abstract class EditorGUI extends ListGUI<Loot> implements PaginatedList<L
     private BiConsumer<SingleLoot, Boolean> getLootReturnConsumer(InventoryClickEvent event, Loot oldLoot) {
         return (newLoot, editMode) -> {
             this.editMode = editMode;
-            Logger.debug(String.format("Loot: %s", newLoot));
 
             if (newLoot != null) {
                 int index = this.loot.indexOf(oldLoot);
